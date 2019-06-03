@@ -1,6 +1,6 @@
-# RaukR-2018 Teaching Materials
+# RaukR-2019 Teaching Materials
 
-The GitHub repo for RaukR ggplot can be accessed [here](https://github.com/NBISweden/RaukR-2018). Course content (Topics and Workshops) are listed below.
+The GitHub repo for RaukR ggplot can be accessed [here](https://github.com/NBISweden/RaukR-2019). Course content (Topics and Workshops) are listed below.
 
 ## Topics
 
@@ -16,7 +16,7 @@ The GitHub repo for RaukR ggplot can be accessed [here](https://github.com/NBISw
 * **Presentation-Demo** (*Author:* A. Dummy, *Reviewer:* R.E. Wiewer)
     + [Presentation](Demo/Presentation/Presentation-Demo.html)
     + [Lab](Demo/Lab/Lab-Demo.html)
-	
+
 
 ---
 
