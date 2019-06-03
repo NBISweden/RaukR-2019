@@ -1,0 +1,445 @@
+---
+title: "Basic Statistics part"
+subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
+author: "<b>Bengt Sennblad</b>"
+institute: NBIS, SciLifeLab
+keywords: r, RaukR, markdown
+output: 
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: false
+    chakra: 'assets/remark-latest.min.js'
+    css: 'assets/presentation.css'
+    lib_dir: libs
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "RaukR 2019 • %current%/%total%"
+---
+exclude: true
+count: false
+
+```{r,echo=FALSE,child="assets/header-presentation.Rmd"}
+```
+
+<!-- ----------------- Only edit title & author above this ----------------- -->
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+# load the packages you need
+
+#library(tidyverse)
+#library(ggplot2)
+```
+---
+name: contents
+
+## Contents
+
+* [Introduction](#intro)
+
+---
+name: disposition
+
+##disposition -- the real basics
+
+* models -> stat models
+* Use of stat models (type example linear regression)
+  + simulation of data
+      - variation
+      - distribution
+  + Probabilities of outcome
+      - What are probabilities
+      - conditional on model
+      - full prob, conditional probs, likelihood, post probs-- Bayes theorem?
+          * Bayesian and frequentists (not XOR!)
+* Statistical tests
+  + parametric (linear regression?)
+  + non-parametric (GSEA?)
+ 
+  
+---
+name: brainstorm
+
+Things that may or may not be treated (preferably in a separate session)
+  - multivariate linear models
+  - confounders?
+  - GLM, LMM 
+  - sensitivity specificity ROC
+  - PCA etc?
+  
+Things that would be very handy to have an intuition about for the exercise:
+  - Matrix algebra version of linear model (e.g., for simulation exercise)
+  - sampling from a distribution (rnorm, but what happens etc)
+      
+    
+
+---
+name: models1
+## Models
+
+* What is a model?
+
+--
+  + simplification (abstraction) of reality that helps us address a specific problem
+  
+---
+## Models | `Example: R proficiency as a function of beer`
+.pull-left-50[
+We want to model how beer consumption affects the ability to program well in R
+
+* $x$ number of beers drunk
+* $y$ Ability to program in R
+]
+
+--
+.pull-right-50[
+```{r, beer1, echo=F, fig.height = 4.5}
+x = seq(0,10)
+b0 = 1.0
+b1=-0.1
+y = sapply(x, function(x) x*b1 + b0)
+plot(x,y, type='b', ylab = "y = R proficiency", xlab = "x= Beers drunk")
+```
+
+]
+
+--
+This is a *linear model*, $$y = kx+c,$$ where $y$ changes in proportion to $x$.
+
+***
+
+--
+__Notice that a model is always restricted by its assumptions:__
+* In the model plot above, I have used strong assumptions about $k$ and $c$ being exactly $k=-0.1$ and $c=1.0$. 
+* Therefore, people with a different susceptibility to alcohol $(k \neq -0.1)$ or a different initial proficiency in R $(c \neq 1.0)$ are *not* correctly modeled by this model.
+  
+
+---
+## Models | `Example: R proficiency as a function of beer`
+.center[ .large[How can we solve this? ] ]
+Several possibilities (and we will discuss other common ones later), but one way is:
+
+.pull-left-50[
+
+* Create a *new* model taking this into account, where we let
+  + we assume higher body mass gives less alcohol susceptibility (lower $k$)
+  + for simplicity, assume also that lower body mass have lower initial proficiency (lower $c$).
+
+* This will be a "hierarchical model" with:
+  + a main linear model $$y=kx+c,$$ whose parameters are modeled by
+  + linear submodels $k=f(mass)$ and $c=f(mass)$
+]
+
+--
+
+.pull-right-50[
+```{r beer2, echo=F, fig.height=5}
+x= seq(0,10)
+mass = c(90,80,70,60,50)
+b1 = -0.55 + mass * 0.005
+b0 = 0.1 + mass * 0.01
+lin=function(x,k,c){
+  return(k * x + c)
+}
+y = sapply(seq(1,5),function(i) lin(x, b1[i], b0[i]))
+plot(x,y[,1], type='b', ylim = c(min(y), max(1,0,max(y))), 
+     ylab = "y = R proficiency", xlab = "x= Beers drunk")
+for(i in seq(2,5)){
+  points(x,y[,i], type='b',col=i)
+  legend("bottomleft", legend = paste(mass, " kg"), fill=seq(1,5))
+  abline(h=0.0)
+}
+```
+]
+--
+
+Still not quite right...
+
+
+---
+
+## Models | `Example`
+.pull-left-50[  
+More realistic?
+```{r, beer3, echo=F, fig.height = 5}
+x = seq(0,10)
+b0 = 5
+b1=-3
+
+invlogit<-function(x, k, c){
+  return(1/(1+exp(-k*(x-c))))
+}
+y = invlogit(x, b1, b0)
+plot(x,y, type='b', 
+     ylab = "y = R proficiency", xlab = "x= Beers drunk")
+```
+
+This is a logistic model $y = \frac{1}{1-e^{-kx+c}} \Leftrightarrow \log\frac{y}{1+y} = kx+c$, where there are saturation towards the extremes
+]
+
+--
+.pull-right-50[  
+* Models can also be described as a graph ('graph models'):
+  + This is a graph model showing whether it is possible to fly to RaukR from a selection of cities of the world
+
+```{r models1, echo=F, fig.width=5}
+require(igraph)
+towns = c("RaukR/Visby", "Stockholm", "Oslo", "Helsinki","Copenhagen", "Berlin", "Rome", "Moscow", "New York","Toronto", "Rio de Janeiro", "Stånga")
+adj.matrix= matrix(rep(0, length(towns)*length(towns)), nr=length(towns), dimnames=list(towns, towns))
+edges=list(c("RaukR/Visby", "Stockholm"), 
+           c("Stockholm", "Oslo"), c("Stockholm", "Helsinki"), c("Stockholm","Copenhagen"), c("Stockholm","Berlin"), c("Stockholm","Berlin"),c("Stockholm","Rome"),c("Stockholm", "Moscow"), c("Stockholm","New York"),
+           c("Oslo", "Helsinki"), c("Oslo","Copenhagen"), c("Oslo","Berlin"), c("Oslo","Rome"), c("Oslo","Moscow"), c("Oslo","New York"),
+           c("Helsinki", "Copenhagen"), c("Helsinki","Berlin"), c("Helsinki","Rome"), c("Helsinki","Moscow"), c("Helsinki","New York"),
+           c("Copenhagen", "Berlin"), c("Copenhagen","Rome"), c("Copenhagen","Moscow"), c("Copenhagen","New York"),
+           c("Berlin", "Rome"), c("Berlin", "Moscow"), c("Berlin", "New York"), 
+           c("Rome", "Moscow"), c("Rome", "New York"), c("Rome", "Rio de Janeiro"), 
+           c("Moscow", "New York"), 
+           c("New York","Toronto"), c("New York","Rio de Janeiro")
+)
+
+for(i in edges){
+  adj.matrix[i[1],i[2]]=1
+  adj.matrix[i[2],i[1]]=1
+}
+g <- graph.adjacency(adj.matrix, mode="undirected")
+# How to set coordinates:
+# t=tkplot(g)
+# Manually adjust
+# paste(tk_coords(t), collapse=",")
+# Copy and paste coordinate vector below
+coords = matrix(c(383,274,221,240,147,112,319,75,332,411,389,420,352,256,135,0,248,43,74,147,178,230,138,394), nrow=12)
+#coords = matrix(c(438,313,233,240,122,92,371,158,344,375,463,451,275,257,146,0,62,157,183,261,76,12,142,322), nrow=12)
+plot(g, layout=coords)
+```  
+
+
+]
+
+---
+
+# But what can models be used for?
+
+Perform 
+## Task | `Simulation`
+## Task | `Probability of data`
+## Task | `Significance test`
+
+---
+name: Simulation1
+
+## Task | `Simulation`
+
+$y = \beta_1* x + \beta_0$ is a *generating* model -- it describes how to generate $y$ from observed $x$ and parameters $k,c$.
+
+* Generate 100 samples of $x,y$ by
+  - generate 100 genotypes $x$ from a uniform distribution on integers $0,1,2$ (tip: use `runif`)
+  - set $\beta_0=0.3$ and $\beta_0=0.3$
+  - generate $y$ using the  model $y = \sim \beta_1* x + \beta_0$
+  - plot $y$ against $x$.
+
+.pull-left-50[
+```{r, echo =TRUE, eval=FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(genos=round(runif(N,min=0,max=2)))
+
+sim1$phenos = b0 + b1 * sim1$genos
+
+plot(x=sim1$genos, y=sim1$phenos)
+```
+]
+
+.pull-right-50[
+```{r, echo =FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(genos=round(runif(N,min=0,max=2)))
+
+sim1$phenos = b0 + b1 * sim1$genos
+par(mfrow=c(2,1))
+
+plot(x=sim1$genos, y=sim1$phenos)
+```
+]
+
+---
+name: Simulation2
+
+## Task | `Simulation`
+
+### Deterministic vs statistical models
+* $y = \beta_1* x + \beta_0$ is a *deterministic* model
+    + does not model any variation
+    + Common, e.g., in classical physics ( $E=mc^3$ )
+* $y = \beta_1* x + \beta_0 +\epsilon,$ where $\epsilon ~\sim N(0,\sigma^2)$ is a *statistical* (equiv. *stochastic*, *random*) model
+    + attempts to model variation around a population mean (the *residuals*) determined by the model
+    + used in statistic analysis
+
+.pull-left-50[
+```{r, echo =TRUE, eval=FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(genos=round(runif(N,min=0,max=2)))
+
+sim1$phenos = b0 + b1 * sim1$genos + rnorm(N, mean=0, sd=0.05) 
+
+plot(x=sim1$genos, y=sim1$phenos)
+```
+]
+
+.pull-right-50[
+```{r, echo =FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(genos=round(runif(N,min=0,max=2)))
+
+sim1$phenos = b0 + b1 * sim1$genos + rnorm(N, mean=0, sd=0.05) 
+
+par(mfrow=c(2,1))
+plot(x=sim1$genos, y=sim1$phenos)
+```
+]
+
+---
+name: Probability1
+
+## Task | Probability of (observed) data
+
+For the linear model $y=\beta_0+\beta_1 x$, with parameters $(\beta_0=0.3, \beta_1=0.2, \sigma^2=0.05$), what is $$Pr[y\in (0.7,0.8]|x=2],$$ i.e., the probability that $0.7\leq y<0.8$ if $x=2$?
+
+### Simulation
+* simulate 1000 $y$ using the model above with $x=2$ and store in a vector $Y$.
+* Make a histogram of $Y$ and estimate (*tip*: make sure that the requested interval corresponds to a histogram column)
+
+.pull-left-50[
+```{r, echo=TRUE, eval=FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N=1000
+x = 2
+
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+hist(y, frequency=TRUE, right=TRUE, breaks=seq(0,1.0, 0.1), ylim =c(0,1000), labels=TRUE)
+```
+]
+.pull-right-50[
+```{r, echo=FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N=1000
+x = 2
+
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+par(mfrow=c(2,1))
+hist(y, frequency=TRUE, right=TRUE, breaks=seq(0,1.0, 0.1), ylim =c(0,1000), labels=TRUE)
+```
+]
+
+---
+name: Probability2
+
+## Task | Probability of (observed) data
+
+### Analytic solution | `challenge`
+* Translate the requested interval of $y$ values to an interval of residuals
+* Calculate the probability of the residual interval using the probability distribution for the Normal distribution (tip: look up help for `Normal`)
+    + The distribution function of the vale $y$ is the probability that the stochastic variable $Y<=y$. *(Memo: introduce stochastic variable better and we need som plot explaining the probaility distribution)*
+
+```{r, echo=TRUE}
+b0 = 0.3
+b1 = 0.2
+y = c(0.7, 0.8)
+
+res = y - (b0 + b1 * x) # = c(0, 0.1)
+paste("residuals = c(",res[1], ", ", res[2],")")
+
+paste("Pr[y in (0.7, 0.8) = ",pnorm(res[1], sd=0.05) - pnorm(res[2], sd=0.05))
+```
+
+---
+
+name: models3
+
+* model structure vs. model parameters (also observation space!?)
+  
+
+---
+name: tests
+## Parametric statistical tests
+
+* Model comparison
+  - Null model vs alternative model
+    + NUll model often constrained alternative model (nested models), e.g., mean constrained to be 0
+  - Likelihood ratio 
+      + how much better does the alternative model explain data than the null model
+      + (why does alternative model always have better likeihood?)
+* significance
+  - what does x times better mean? is this a random artefact?
+  - simulation under null model -> distribution of test statistic (LR)
+* Test statistic
+  - chosen to fit some distribution
+      + example -2\log LR ~ \xi^2(diff in #params)
+    
+---
+name: nonparam
+## Non-parametric tests
+
+* definition difficult
+  - assuming model structure but not params
+  - assuming no model structure
+* tests
+  - based on ranks
+  - often tests if two unknown distributions are the same or fit a specified distribution?
+
+---
+name: report
+
+## Session  
+
+* This presentation was created in RStudio using [`remarkjs`](https://github.com/gnab/remark) framework through R package [`xaringan`](https://github.com/yihui/xaringan).
+* For R Markdown, see <http://rmarkdown.rstudio.com>
+* For R Markdown presentations, see <https://rmarkdown.rstudio.com/lesson-11.html>
+
+```{r,echo=TRUE}
+R.version
+```
+
+---
+name: end-slide
+class: end-slide
+
+# Thank you. Questions?
+<!-- --------------------- Do not edit this and below --------------------- -->
+
+---
+name: end-slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+```{r,echo=FALSE,child="assets/footer-presentation.Rmd"}
+```
+
+```{r,include=FALSE,eval=FALSE}
+# manually run this to render this document to HTML
+rmarkdown::render("presentation.Rmd")
+# manually run this to convert HTML to PDF
+#pagedown::chrome_print("presentation.html",output="presentation.pdf")
+```
+
