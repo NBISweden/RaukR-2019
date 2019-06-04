@@ -160,12 +160,18 @@ This is a logistic model `\(y = \frac{1}{1-e^{-kx+c}} \Leftrightarrow \log\frac{
 
 ---
 
+name: models3
+
+* model structure vs. model parameters (also observation space!?)
+
+---
+
 # But what can models be used for?
 
 Perform 
 ## Task | `Simulation`
 ## Task | `Probability of data`
-## Task | `Significance test`
+## Task | `Statistical test`
 
 ---
 name: Simulation1
@@ -234,13 +240,13 @@ plot(x=sim1$genos, y=sim1$phenos)
 ---
 name: Probability1
 
-## Task | Probability of (observed) data
+## Task | `Probability of observed data`
 
-For the linear model `\(y=\beta_0+\beta_1 x\)`, with parameters `\((\beta_0=0.3, \beta_1=0.2, \sigma^2=0.05\)`), what is `$$Pr[y\in (0.7,0.8]|x=2],$$` i.e., the probability that `\(0.7\leq y&lt;0.8\)` if `\(x=2\)`?
+For the linear model `$$Y=\beta_0+\beta_1 X,$$` with parameters `\((\beta_0=0.3, \beta_1=0.2, \sigma^2=0.05\)`), estimate `$$Pr[Y &lt;= 0.6|x=2].$$` 
 
 ### Simulation
 * simulate 1000 `\(y\)` using the model above with `\(x=2\)` and store in a vector `\(Y\)`.
-* Make a histogram of `\(Y\)` and estimate (*tip*: make sure that the requested interval corresponds to a histogram column)
+* Make a histogram of `\(Y\)` and estimate (*tip*: make sure that `\(0.7\)` is among to a histogram breakpoints)
 
 .pull-left-50[
 
@@ -248,22 +254,30 @@ For the linear model `\(y=\beta_0+\beta_1 x\)`, with parameters `\((\beta_0=0.3,
 #parameters
 b0 = 0.3
 b1 = 0.2
-N=1000
+N = 1000
 x = 2
 
 y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
 
-hist(y, frequency=TRUE, right=TRUE, breaks=seq(0,1.0, 0.1), ylim =c(0,1000), labels=TRUE)
+h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.0, 0.1), ylim =c(0,1000), labels=TRUE)
+
+# compute requested probability from hist
+paste("Pr[Y&lt;=0.6|X=2] = ",sum(h$counts[1:6])/N)
 ```
 ]
 .pull-right-50[
+
+```
+## [1] "Pr[Y&lt;=0.6|X=2] =  0.015"
+```
+
 &lt;img src="presentation1_files/figure-html/unnamed-chunk-8-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 
 ---
 name: Probability2
 
-## Task | Probability of (observed) data
+## Task | `Probability of observed data`
 
 ### Analytic solution | `challenge`
 * Translate the requested interval of `\(y\)` values to an interval of residuals
@@ -274,53 +288,137 @@ name: Probability2
 ```r
 b0 = 0.3
 b1 = 0.2
-y = c(0.7, 0.8)
+y = 0.6
 
-res = y - (b0 + b1 * x) # = c(0, 0.1)
-paste("residuals = c(",res[1], ", ", res[2],")")
+res = y - (b0 + b1 * x) 
+paste("residuals = ",res)
 
-paste("Pr[y in (0.7, 0.8) = ",pnorm(res[1], sd=0.05) - pnorm(res[2], sd=0.05))
+paste("Pr[Y&lt;=.6|X=2] = ",pnorm(res, sd=0.05))
 ```
 
 ```
-## [1] "residuals = c( 0 ,  0.1 )"
-## [1] "Pr[y in (0.7, 0.8) =  -0.477249868051821"
+## [1] "residuals =  -0.1"
+## [1] "Pr[Y&lt;=.6|X=2] =  0.0227501319481792"
 ```
 
----
-
-name: models3
-
-* model structure vs. model parameters (also observation space!?)
-  
-
+* *Challenge*: try both approaches with other values of `\(y\)` or try to compute `\(Pr[Y&gt;y|X=2]\)`.
 ---
 name: tests
-## Parametric statistical tests
+## Task | `Statistical tests`
 
-* Model comparison
-  - Null model vs alternative model
-    + NUll model often constrained alternative model (nested models), e.g., mean constrained to be 0
-  - Likelihood ratio 
-      + how much better does the alternative model explain data than the null model
-      + (why does alternative model always have better likeihood?)
-* significance
-  - what does x times better mean? is this a random artefact?
-  - simulation under null model -&gt; distribution of test statistic (LR)
-* Test statistic
-  - chosen to fit some distribution
-      + example -2\log LR ~ \xi^2(diff in #params)
-    
+We will now consider an extension of the previous task to several data points. 
+
+As you can imagine, doing this with the above approach could be cumbersome. 
+
+Instead specific tests have been developed. 
+
+### Student's t-test
+Uses normalized residuals as a test statistics:
+
+`\begin{eqnarray*}
+t  
+&amp;= \sum_{i}\frac{x_i-\mu}{s/\sqrt{N}} 
+&amp;= \frac{\bar{x}-\mu}{s/\sqrt{N}}
+\end{eqnarray*}`
+where `\(s\)` is the estimated standard deviation from the observed data. 
+
+As you can see this boils down to comparing the (standardized) estimated mean from the data, `\(\bar{x}\)` and the model mean, `\(\mu\)`. (*Challenge*: show the equality above)
+
+Conveniently, The *t*-test is implemented in the R function `t-test`
+---
+name: tests
+## Task | `Statistical tests`
+
+* For simplicity, we will limit ourselves to the case `\(x=2\)` (else *t*-test does not work -- handle this better)
+* Perform a one sample t-test using `\(\mu\)` from our original linear model, above, on new data simulated from a linear model with different parameters.
+* *Challenge*: Try to use other parameters when simulating the new data.
+
+.pull-left-50[
+
+```r
+# compute the mean, mu, from our model 
+b0 = 0.3
+b1 = 0.2
+x = 2
+mu = b0 + b1 * x
+
+# Let's simulate the data from another model
+b0 = 0.1
+b1 = 0.5
+N=100
+y = b0 + b1 * rep(x,100) + rnorm(N, mean=0, sd=0.05) 
+# t-test
+t.test(y, mu=mu)
+```
+]
+
+
+.pull-right-50[
+
+```
+## 
+## 	One Sample t-test
+## 
+## data:  y
+## t = 85.18, df = 99, p-value &lt; 2.2e-16
+## alternative hypothesis: true mean is not equal to 0.7
+## 95 percent confidence interval:
+##  1.097863 1.116841
+## sample estimates:
+## mean of x 
+##  1.107352
+```
+&lt;br&gt;
+&lt;br&gt;
+]     
+
+.pull-left-50[
+
+* In `lm`, a *t*-test is used to test if the estimated parameters are significantly different from 0. (mention NULL hypothse earlier)
+
+
+```r
+summary(lm(phenos~genos, data=sim1))
+```
+]
+.pull-right-50[
+
+```
+## 
+## Call:
+## lm(formula = phenos ~ genos, data = sim1)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.120050 -0.034706  0.001331  0.032762  0.119969 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.297696   0.008127   36.63   &lt;2e-16 ***
+## genos       0.204220   0.007101   28.76   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.04738 on 98 degrees of freedom
+## Multiple R-squared:  0.8941,	Adjusted R-squared:  0.893 
+## F-statistic: 827.1 on 1 and 98 DF,  p-value: &lt; 2.2e-16
+```
+]
+
 ---
 name: nonparam
-## Non-parametric tests
+## Parametric vs Non-parametric tests
 
-* definition difficult
-  - assuming model structure but not params
-  - assuming no model structure
-* tests
-  - based on ranks
-  - often tests if two unknown distributions are the same or fit a specified distribution?
+The test we have used above are parametric, i.e., they are based on a parameterized model, e.g., the *t*-test assumes an underlying Normal distribution.
+
+There are also non-parametric tests.
+
+* definition of non-parametric tests a bit unclear
+  - assumes model structure, but not params, or
+  - assumes no model structure and no parameters
+* non-parametric tests
+  - often based on ranks of values are
+  - often tests if two samples are simlar or significantly different
 
 ---
 name: report
@@ -371,7 +469,7 @@ count: false
 
 &lt;p&gt;R version 3.5.3 (2019-03-11)&lt;br&gt;&lt;p&gt;Platform: x86_64-apple-darwin15.6.0 (64-bit)&lt;/p&gt;&lt;p&gt;OS: macOS High Sierra 10.13.6&lt;/p&gt;&lt;br&gt;
 
-Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 03-Jun-2019 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 18:00:54  
+Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 04-Jun-2019 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 13:39:19  
 
 __2019__ • [SciLifeLab](https://www.scilifelab.se/) • [NBIS](https://nbis.se/)
     </textarea>

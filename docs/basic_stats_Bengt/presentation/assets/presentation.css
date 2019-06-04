@@ -288,7 +288,7 @@ img, video, iframe {
 }
 
 /* logo every slide top right */
-.remark-slide-content:before {
+.remark-slide-content:before {remark
   content: url(logo.svg);
   height: 55px;
   width: 55px;
@@ -333,6 +333,16 @@ img, video, iframe {
 .table{
   font-size: 0.8em;
 }
+
+.remark-slide table {
+  margin: auto;
+  border-top: 1px solid #666;
+  border-bottom: 1px solid #666;
+}
+.remark-slide table thead th { border-bottom: 1px solid #ddd; }
+th, td { padding: 5px; }
+.remark-slide thead, .remark-slide tfoot, .remark-slide tr:nth-child(even) { background: #eee }
+
 
 /* COLUMNS ------------------------------------------------------------------- */
 
