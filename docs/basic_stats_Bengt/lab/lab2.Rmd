@@ -24,18 +24,8 @@ output:
 <!-- ------------ Only edit title, subtitle & author above this ------------ -->
 
 
-# Disposition -- the real basics
-
-* Likelihood and Posterior probabilitites
-    + Frequentists and Bayesian
-* Overfitting
-    + Likelihood ratio test?
-* Regularization
-    + AIC
-    + Lasso
- 
-
 # Probability and statistic models
+
 
 Consider a generative model, with parameters $\theta$, for how some data $D$. We would like to test if $\theta$ are 
 good parameters. Given the model, we can compute $$Pr[D| \theta],$$ i.e., the probability that the model with parameters
@@ -52,13 +42,15 @@ philosofical branches of statistics:
 
 ## Bayesian approach
 
+<details>
+<summary> Lecture notes </summary>
 
 Bayes' theorem (Thomas Bayes, 1702-1761) provides a way to obtain the requested $P[\theta|X,Y]$
 
 
 $$Pr[\theta|D] = \frac{Pr[D| \theta]Pr[\theta]}{Pr[D]}$$
+**Posterior probability**
 
-### Posterior probability
 $Pr[\theta|D],$ the probability, computed posterior to analysis, of the parameters $\theta$ conditioned on the observed data, i.e, our requested probability.
 
 An important characteristic of Bayesian statistics is that the focus is not on point estimates, but on the posterior probability distribution over the parameter space of $\theta$, which provides a measure of uncertainty (probabilities) in comparison to other values.
@@ -75,13 +67,14 @@ plot(theta,pp_theta, type='l', ylim=c(0,1.0))
 
 ```
 
+**Prior probability of $\theta$**
 
-### Prior probability of $\theta$
 $Pr[\theta]$ is the *prior* probability of $\theta$ and should according to Bayesian statistics reflect what we know (or believe to know) about how close $\theta$ is to the true parameters. We can use information from previous studies or we can assign a *uninformative* prior, e.g., $Pr[\theta]$ follows a uniform distribution for all $\theta$ in the interval $[a,b]$. 
 
 It can be shown that the effect of the prior on the posterior probsbiity is largest when the observed data is small. With larger sample sizes, the posterior probability will eventually just depend on $Pr[D|\theta]$.
 
-### Marginal Probability of $Y|X$
+**Marginal Probability of $Y|X$**
+
 $Pr[D]=\int_{\theta}Pr[D| \theta]Pr[\theta]$ is the probability of $D$ regardless of $\theta$. This can often be difficult difficult to calculate and, for this reason, Bayesian models are often designed so that this can be calculated analystically or some approximation approach, such as Markov chain Monte Carlo (MCMC) is used.
 
 <details>
@@ -104,9 +97,13 @@ Notice that this also works if we have more than one condition:
 
 What happens in Bayes rule is that we first, in the numerator, perform $Pr[B|A]*Pr[A] = Pr[A,B]$ and then divide this with the denominator $\frac{Pr[A,B]}{Pr[B]} = Pr[A|B]$.
 
+***
 
 </details>
 
+***
+
+</details>
 
 ## Likelihood -- The frequentist approach
 
@@ -153,8 +150,10 @@ which means that the factor $k$ disappears. Hence the factor $k$ is always ignor
 </details>
 
 In maximum likelihood estimation of some parameters $\theta$, one simply selects the estimates $\widehat\theta$ that gives the highest likelihood $max_{\theta}L[\theta|X,Y] = L[\widehat\theta|X,Y]$. In many applications of  likelihood and maximum likelihood, it is practical to instead use the logarithm of the likelihood, the logLikelihood, $\log L[\theta_1|Y,X]$.
+
 <details>
 <summary> Extra Reading </summary>
+
 As mentioned above, the logarithm of the likelihood, the logLikelihood, $\log L[\theta_1|Y,X]$, or sometimes the negative logLikelihood, $-\log L[\theta_1|Y,X]$, is often used. Notice, that 
 
 1. The $\theta$ estimates that maximizes  $\log L[\theta|Y,X]$ also maximizes $L[\theta|Y,X]$
@@ -184,9 +183,6 @@ It turns out that the  likelihood estimates of both $\beta$ and $\sigma^2$ are f
 
 $$  \log L[\beta, \sigma^2|Y,X] \approx -\frac{N}{2} \log RSS$$
 
-<details>
-<summary> Extra Reading </summary>
-
 The likelihood for given $\beta$ and $\sigma^2$, given observed data $Y$ and $X$ is given by
 
 $$ L[\beta, \sigma^2|Y,X] = \prod_i pdf_{Normal}(y_i, \mu=\beta x_i, \sigma^2=\sigma^2) = \prod_i \frac{1}{\sqrt{2\pi \sigma^2}}e^{-\frac{(y_i-\beta x_i)^2}{2\sigma^"}} $$
@@ -214,8 +210,13 @@ where $C=\frac{N}{2}\left(\log \frac{2\pi}{N} -1\right)$ is a constant that is u
 ***
 </details>
 
+***
+</details>
 
 ## Bayesians vs frequentists
+
+<details>
+<summary> Lecture notes </summary>
 
 There is often described a severe controversy between Bayesians and frequentists. However, this controversy represents the extreme hardcore Bayesians and frequentists.
 
@@ -228,6 +229,10 @@ In reality, there is a large gray-zone where frequentists and Bayesians meet and
 * etc.
 
 Most practical statisticians use the tool that is adequate for the problem at hand, whether it is Bayesian or frequentist.
+
+***
+</details>
+
 
 #  Overfitting
 
@@ -263,11 +268,9 @@ b0=3
 b=c(runif(3, min=0.5, max=1.0))
 
 # generate y
-Y <- b0 + X[,1] * b[1] + X[,2] * b[2] + X[,3] * b[3] + rnorm(N)
+Y = b0 + X[,1] * b[1] + X[,2] * b[2] + X[,3] * b[3] + rnorm(N)
 
 ```
-
-
 
 
 ## Overfitting | `Model comparison`

@@ -320,26 +320,8 @@ div.tocify {
 <p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet"></p>
 <p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
 <!-- ------------ Only edit title, subtitle & author above this ------------ -->
-<div id="disposition-the-real-basics" class="section level1">
-<h1><span class="header-section-number">1</span> Disposition – the real basics</h1>
-<ul>
-<li>Likelihood and Posterior probabilitites
-<ul>
-<li>Frequentists and Bayesian</li>
-</ul></li>
-<li>Overfitting
-<ul>
-<li>Likelihood ratio test?</li>
-</ul></li>
-<li>Regularization
-<ul>
-<li>AIC</li>
-<li>Lasso</li>
-</ul></li>
-</ul>
-</div>
 <div id="probability-and-statistic-models" class="section level1">
-<h1><span class="header-section-number">2</span> Probability and statistic models</h1>
+<h1><span class="header-section-number">1</span> Probability and statistic models</h1>
 <p>Consider a generative model, with parameters <span class="math inline">\(\theta\)</span>, for how some data <span class="math inline">\(D\)</span>. We would like to test if <span class="math inline">\(\theta\)</span> are
 good parameters. Given the model, we can compute <span class="math display">\[Pr[D| \theta],\]</span> i.e., the probability that the model with parameters
 <span class="math inline">\(\theta\)</span> generates <span class="math inline">\(D\)</span>.</p>
@@ -352,22 +334,19 @@ philosofical branches of statistics:</p>
 <li><em>Frequentist statistics</em></li>
 </ul>
 <div id="bayesian-approach" class="section level2">
-<h2><span class="header-section-number">2.1</span> Bayesian approach</h2>
+<h2><span class="header-section-number">1.1</span> Bayesian approach</h2>
+<details>
+<p><summary> Lecture notes </summary></p>
 <p>Bayes’ theorem (Thomas Bayes, 1702-1761) provides a way to obtain the requested <span class="math inline">\(P[\theta|X,Y]\)</span></p>
-<p><span class="math display">\[Pr[\theta|D] = \frac{Pr[D| \theta]Pr[\theta]}{Pr[D]}\]</span></p>
-<div id="posterior-probability" class="section level3">
-<h3><span class="header-section-number">2.1.1</span> Posterior probability</h3>
+<p><span class="math display">\[Pr[\theta|D] = \frac{Pr[D| \theta]Pr[\theta]}{Pr[D]}\]</span>
+<strong>Posterior probability</strong></p>
 <p><span class="math inline">\(Pr[\theta|D],\)</span> the probability, computed posterior to analysis, of the parameters <span class="math inline">\(\theta\)</span> conditioned on the observed data, i.e, our requested probability.</p>
 <p>An important characteristic of Bayesian statistics is that the focus is not on point estimates, but on the posterior probability distribution over the parameter space of <span class="math inline">\(\theta\)</span>, which provides a measure of uncertainty (probabilities) in comparison to other values.</p>
 <p><img src="lab2_files/figure-html/unnamed-chunk-2-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
-</div>
-<div id="prior-probability-of-theta" class="section level3">
-<h3><span class="header-section-number">2.1.2</span> Prior probability of <span class="math inline">\(\theta\)</span></h3>
+<p><strong>Prior probability of <span class="math inline">\(\theta\)</span></strong></p>
 <p><span class="math inline">\(Pr[\theta]\)</span> is the <em>prior</em> probability of <span class="math inline">\(\theta\)</span> and should according to Bayesian statistics reflect what we know (or believe to know) about how close <span class="math inline">\(\theta\)</span> is to the true parameters. We can use information from previous studies or we can assign a <em>uninformative</em> prior, e.g., <span class="math inline">\(Pr[\theta]\)</span> follows a uniform distribution for all <span class="math inline">\(\theta\)</span> in the interval <span class="math inline">\([a,b]\)</span>.</p>
 <p>It can be shown that the effect of the prior on the posterior probsbiity is largest when the observed data is small. With larger sample sizes, the posterior probability will eventually just depend on <span class="math inline">\(Pr[D|\theta]\)</span>.</p>
-</div>
-<div id="marginal-probability-of-yx" class="section level3">
-<h3><span class="header-section-number">2.1.3</span> Marginal Probability of <span class="math inline">\(Y|X\)</span></h3>
+<p><strong>Marginal Probability of <span class="math inline">\(Y|X\)</span></strong></p>
 <p><span class="math inline">\(Pr[D]=\int_{\theta}Pr[D| \theta]Pr[\theta]\)</span> is the probability of <span class="math inline">\(D\)</span> regardless of <span class="math inline">\(\theta\)</span>. This can often be difficult difficult to calculate and, for this reason, Bayesian models are often designed so that this can be calculated analystically or some approximation approach, such as Markov chain Monte Carlo (MCMC) is used.</p>
 <details>
 <p><summary> Extra reading </summary></p>
@@ -380,11 +359,13 @@ To obtain the probability that both <span class="math inline">\(A\)</span> and <
 Notice that this also works if we have more than one condition:
 <span class="math inline">\(Pr[A|B,C] * Pr[B] = Pr[A,B|C].\)</span></p>
 <p>What happens in Bayes rule is that we first, in the numerator, perform <span class="math inline">\(Pr[B|A]*Pr[A] = Pr[A,B]\)</span> and then divide this with the denominator <span class="math inline">\(\frac{Pr[A,B]}{Pr[B]} = Pr[A|B]\)</span>.</p>
+<hr />
+</details>
+<hr />
 </details>
 </div>
-</div>
 <div id="likelihood-the-frequentist-approach" class="section level2">
-<h2><span class="header-section-number">2.2</span> Likelihood – The frequentist approach</h2>
+<h2><span class="header-section-number">1.2</span> Likelihood – The frequentist approach</h2>
 <details>
 <p><summary> Lecture notes </summary></p>
 <p>Likelihood (INtroduced by Fisher, 1925, formalized by Edwards, 1972) builds on the intuition that if <span class="math inline">\(\theta\)</span> (or the model) is close to the ‘truth’, then <span class="math inline">\(Pr[Y| X, \theta]\)</span> will be higher than for wrong <span class="math inline">\(\theta\)</span> (model). We should therefore select the <span class="math inline">\(\theta\)</span> that maximizes <span class="math inline">\(Pr[Y| X, \theta]\)</span>; this is called maximum likelihood estimation (MLE) of <span class="math inline">\(\theta\)</span>.</p>
@@ -408,10 +389,10 @@ Notice that this also works if we have more than one condition:
 <p>which means that the factor <span class="math inline">\(k\)</span> disappears. Hence the factor <span class="math inline">\(k\)</span> is always ignored. Likelihood ratios is the basis of most model comparison statistics, e.g., the Wald test, the Score test, regularization…</p>
 <hr />
 </details>
-In maximum likelihood estimation of some parameters <span class="math inline">\(\theta\)</span>, one simply selects the estimates <span class="math inline">\(\widehat\theta\)</span> that gives the highest likelihood <span class="math inline">\(max_{\theta}L[\theta|X,Y] = L[\widehat\theta|X,Y]\)</span>. In many applications of likelihood and maximum likelihood, it is practical to instead use the logarithm of the likelihood, the logLikelihood, <span class="math inline">\(\log L[\theta_1|Y,X]\)</span>.
+<p>In maximum likelihood estimation of some parameters <span class="math inline">\(\theta\)</span>, one simply selects the estimates <span class="math inline">\(\widehat\theta\)</span> that gives the highest likelihood <span class="math inline">\(max_{\theta}L[\theta|X,Y] = L[\widehat\theta|X,Y]\)</span>. In many applications of likelihood and maximum likelihood, it is practical to instead use the logarithm of the likelihood, the logLikelihood, <span class="math inline">\(\log L[\theta_1|Y,X]\)</span>.</p>
 <details>
-<p><summary> Extra Reading </summary>
-As mentioned above, the logarithm of the likelihood, the logLikelihood, <span class="math inline">\(\log L[\theta_1|Y,X]\)</span>, or sometimes the negative logLikelihood, <span class="math inline">\(-\log L[\theta_1|Y,X]\)</span>, is often used. Notice, that</p>
+<p><summary> Extra Reading </summary></p>
+<p>As mentioned above, the logarithm of the likelihood, the logLikelihood, <span class="math inline">\(\log L[\theta_1|Y,X]\)</span>, or sometimes the negative logLikelihood, <span class="math inline">\(-\log L[\theta_1|Y,X]\)</span>, is often used. Notice, that</p>
 <ol style="list-style-type: decimal">
 <li>The <span class="math inline">\(\theta\)</span> estimates that maximizes <span class="math inline">\(\log L[\theta|Y,X]\)</span> also maximizes <span class="math inline">\(L[\theta|Y,X]\)</span></li>
 <li>The <span class="math inline">\(\theta\)</span> estimates that minimizes <span class="math inline">\(-\log L[\theta|Y,X]\)</span> maximizes <span class="math inline">\(L[\theta|Y,X]\)</span></li>
@@ -429,8 +410,6 @@ As mentioned above, the logarithm of the likelihood, the logLikelihood, <span cl
 <p>where the residuals <span class="math inline">\(\epsilon\sim N(0,\sigma^2)\)</span>.</p>
 <p>It turns out that the likelihood estimates of both <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\sigma^2\)</span> are functions of the RSS of the residuals, so that the likelihood can be approximated by</p>
 <p><span class="math display">\[  \log L[\beta, \sigma^2|Y,X] \approx -\frac{N}{2} \log RSS\]</span></p>
-<details>
-<p><summary> Extra Reading </summary></p>
 <p>The likelihood for given <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\sigma^2\)</span>, given observed data <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span> is given by</p>
 <p><span class="math display">\[ L[\beta, \sigma^2|Y,X] = \prod_i pdf_{Normal}(y_i, \mu=\beta x_i, \sigma^2=\sigma^2) = \prod_i \frac{1}{\sqrt{2\pi \sigma^2}}e^{-\frac{(y_i-\beta x_i)^2}{2\sigma^&quot;}} \]</span></p>
 <p>where <span class="math inline">\(pdf_{Normal}\)</span> denotes the probability distribution function for the Normal distribution. If we work with the logLIkelihood instead, we get</p>
@@ -451,9 +430,13 @@ As mentioned above, the logarithm of the likelihood, the logLikelihood, <span cl
 where <span class="math inline">\(C=\frac{N}{2}\left(\log \frac{2\pi}{N} -1\right)\)</span> is a constant that is usually ignored (in likelihood ratios, which is equivalent to log likelihoods differences, it will disappear).</p>
 <hr />
 </details>
+<hr />
+</details>
 </div>
 <div id="bayesians-vs-frequentists" class="section level2">
-<h2><span class="header-section-number">2.3</span> Bayesians vs frequentists</h2>
+<h2><span class="header-section-number">1.3</span> Bayesians vs frequentists</h2>
+<details>
+<p><summary> Lecture notes </summary></p>
 <p>There is often described a severe controversy between Bayesians and frequentists. However, this controversy represents the extreme hardcore Bayesians and frequentists.</p>
 <p>In reality, there is a large gray-zone where frequentists and Bayesians meet and socialize:</p>
 <ul>
@@ -464,16 +447,18 @@ where <span class="math inline">\(C=\frac{N}{2}\left(\log \frac{2\pi}{N} -1\righ
 <li>etc.</li>
 </ul>
 <p>Most practical statisticians use the tool that is adequate for the problem at hand, whether it is Bayesian or frequentist.</p>
+<hr />
+</details>
 </div>
 </div>
 <div id="overfitting" class="section level1">
-<h1><span class="header-section-number">3</span> Overfitting</h1>
+<h1><span class="header-section-number">2</span> Overfitting</h1>
 <p>We will now look at a general problem in statistical modeling that can be visualized quite well with Likelihoods. We will later look at some solutions to this problem.</p>
 <div id="overfitting-example-data" class="section level2">
-<h2><span class="header-section-number">3.1</span> Overfitting | <code>Example data</code></h2>
+<h2><span class="header-section-number">2.1</span> Overfitting | <code>Example data</code></h2>
 <p>First, you need some test data to play around with. For simplicity and convenience, you will simulate a toy data from a linear model and use this in the exercises. The advantage for us using simulated data is that we know the ‘truth’, i.e., how the data was simulated and we therefore have <em>oracle knowledge</em> about the true parameter values, e.g., for <span class="math inline">\(\beta\)</span>.</p>
 <div id="task-simulation-of-example-data" class="section level3">
-<h3><span class="header-section-number">3.1.1</span> Task | <code>simulation of example data</code></h3>
+<h3><span class="header-section-number">2.1.1</span> Task | <code>simulation of example data</code></h3>
 <ul>
 <li>The data should comprise 100 samples.</li>
 <li>First generate 10 variables <span class="math inline">\((x_1,x_2,\ldots, x_{0})\)</span> from a uniform distribution (use the function <code>runif</code>) and store them in a Matrix <span class="math inline">\(X\)</span>.</li>
@@ -496,11 +481,11 @@ b0=3
 b=c(runif(3, min=0.5, max=1.0))
 
 # generate y
-Y &lt;- b0 + X[,1] * b[1] + X[,2] * b[2] + X[,3] * b[3] + rnorm(N)</code></pre>
+Y = b0 + X[,1] * b[1] + X[,2] * b[2] + X[,3] * b[3] + rnorm(N)</code></pre>
 </div>
 </div>
 <div id="overfitting-model-comparison" class="section level2">
-<h2><span class="header-section-number">3.2</span> Overfitting | <code>Model comparison</code></h2>
+<h2><span class="header-section-number">2.2</span> Overfitting | <code>Model comparison</code></h2>
 <p>Now consider the following two models for our data</p>
 <p><span class="math display">\[\begin{eqnarray}
 y &amp; \sim &amp; \beta_0 + \beta_1 x_1 &amp; (1) \\
@@ -508,7 +493,7 @@ y &amp; \sim &amp;  \beta_0 + \beta_1 x_1 + \beta_2 x_2 &amp; (2)
 \end{eqnarray}\]</span></p>
 <p>What are the max Likelihood estimates of the two models? (we can use the R function <code>logLik</code> in the <code>stats</code> package)</p>
 <div id="task-plot-two-likelihoods" class="section level3">
-<h3><span class="header-section-number">3.2.1</span> Task | <code>plot two likelihoods</code></h3>
+<h3><span class="header-section-number">2.2.1</span> Task | <code>plot two likelihoods</code></h3>
 <ul>
 <li>Create <code>lm</code> models for the two models, and</li>
 <li>store the likelihood (use <code>logLik</code>) in a vector</li>
@@ -531,7 +516,7 @@ plot(ll, ylab=&quot;log L&quot;, xlab=&quot;model #&quot;, type = &quot;b&quot;,
 <p>… 2 variables are clearly better than 1 variable – What if we add more variables?</p>
 </div>
 <div id="task-plot-all-likelihoods" class="section level3">
-<h3><span class="header-section-number">3.2.2</span> Task | <code>plot all likelihoods</code></h3>
+<h3><span class="header-section-number">2.2.2</span> Task | <code>plot all likelihoods</code></h3>
 <ul>
 <li>Now repeat this for the sequence of models obtained by creating the next model by simply adding the next <span class="math inline">\(X\)</span> variable in order.</li>
 </ul>
@@ -551,7 +536,7 @@ plot(ll, ylab=&quot;log L&quot;, xlab=&quot;model #&quot;, type = &quot;b&quot;,
 <hr />
 </details>
 <div id="think-about" class="section level4">
-<h4><span class="header-section-number">3.2.2.1</span> Think about:</h4>
+<h4><span class="header-section-number">2.2.2.1</span> Think about:</h4>
 <ul>
 <li><p>How does the Likelihood behave as more variables are added?</p></li>
 <li><p>Which is the maximum likelihood model? Is this correct given our <em>oracle knowledge</em>?</p></li>
@@ -802,7 +787,7 @@ no
 </div>
 </div>
 <div id="regularization" class="section level1">
-<h1><span class="header-section-number">4</span> Regularization</h1>
+<h1><span class="header-section-number">3</span> Regularization</h1>
 <details>
 <p><summary> Lecture notes </summary></p>
 <p>Regularization is a concept that adds auxiliary criteria, so-called <em>regularization terms</em>, to probabilistic models. This is called regularized likelihood models or penalized likelihood models. Typically, the regularization term is a function of parameters <span class="math inline">\(\beta\)</span>:</p>
@@ -825,7 +810,7 @@ plot(pl, xlim=c(1,P), ylim=c(floor(min(pl)),ceiling(max(pl))),ylab=&quot;log pL&
 <p><img src="lab2_files/figure-html/unnamed-chunk-9-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
 </details>
 <div id="regularization-bayesian-interpretation" class="section level2">
-<h2><span class="header-section-number">4.1</span> Regularization | <code>Bayesian interpretation</code></h2>
+<h2><span class="header-section-number">3.1</span> Regularization | <code>Bayesian interpretation</code></h2>
 <details>
 <p><summary> Lecture notes </summary></p>
 <p>Regularization is a canonical example where Bayesian and frequentist statistics meet.</p>
@@ -841,7 +826,7 @@ rL[\beta | X, Y]  &amp;=&amp; Pr[Y | X, \beta] * e^{- f(\beta)}
 </details>
 </div>
 <div id="regularization-aic-and-model-testing" class="section level2">
-<h2><span class="header-section-number">4.2</span> Regularization | <code>AIC and model testing</code></h2>
+<h2><span class="header-section-number">3.2</span> Regularization | <code>AIC and model testing</code></h2>
 <details>
 <p><summary> Lecture notes </summary></p>
 <p>Coming from a <em>information theory</em> base, Hirotugu Akaike came up with a very similar approach for the overfitting problem.</p>
@@ -875,7 +860,7 @@ we see that <span class="math inline">\(rL\)</span> can be viewed as a likelihoo
 </details>
 </details>
 <div id="task-aic-analysis" class="section level3">
-<h3><span class="header-section-number">4.2.1</span> Task | <code>AIC analysis</code></h3>
+<h3><span class="header-section-number">3.2.1</span> Task | <code>AIC analysis</code></h3>
 <ul>
 <li><p>A typical strategy is to select the model, <span class="math inline">\(m\)</span> with <span class="math inline">\(AIC_m=AIC_{min}\)</span> and then evaluate how much better it is than the other candidate models, e.g., using the <span class="math inline">\(relL\)</span>.</p></li>
 <li>Apply this AIC strategy applied to our example data using the R funcion <code>AIC</code></li>
@@ -1092,7 +1077,7 @@ plot(aic$rl, xlim=c(1,P), ylab=&quot;relL&quot;, xlab=&quot;model #&quot;, type 
 <hr />
 </details>
 <div id="think-about-1" class="section level4">
-<h4><span class="header-section-number">4.2.1.1</span> Think about:</h4>
+<h4><span class="header-section-number">3.2.1.1</span> Think about:</h4>
 <ul>
 <li>Which is the best model? Is this correct compared to our <em>oracle knowledge</em>?</li>
 <li>How good is it compared to the others?</li>
@@ -1126,7 +1111,7 @@ Some possible answers
 </div>
 </div>
 <div id="regularization-lasso-and-feature-selection" class="section level2">
-<h2><span class="header-section-number">4.3</span> Regularization | <code>LASSO and Feature selection</code></h2>
+<h2><span class="header-section-number">3.3</span> Regularization | <code>LASSO and Feature selection</code></h2>
 <details>
 <p><summary> Lecture notes </summary></p>
 <p>LASSO stands for Least absolute shrinkage and selection operator (“shrinkage” is another common term for regularization) and is a method for selecting variables to include in a multivariate model.</p>
@@ -1185,7 +1170,7 @@ where <span class="math inline">\(t\)</span> is related to <span class="math inl
 </details>
 </details>
 <div id="task-lasso-using-the-glmnet-r-package" class="section level3">
-<h3><span class="header-section-number">4.3.1</span> Task | <code>Lasso using the glmnet R-package</code></h3>
+<h3><span class="header-section-number">3.3.1</span> Task | <code>Lasso using the glmnet R-package</code></h3>
 <ul>
 <li>Use function <code>glmnet</code> to perform LASSO analysis on our example data; relevant arguments of the function:
 <ul>
@@ -1219,7 +1204,7 @@ fit = glmnet(X,Y, family=&quot;gaussian&quot;, alpha=1, standardize=T)</code></p
 <hr />
 </details>
 <div id="think-about-2" class="section level4">
-<h4><span class="header-section-number">4.3.1.1</span> Think about</h4>
+<h4><span class="header-section-number">3.3.1.1</span> Think about</h4>
 <ul>
 <li>In which order are variables included (i.e., their <span class="math inline">\(\beta\)</span> becomes non-zero?</li>
 <li>In which direction is the effect</li>
@@ -1246,7 +1231,7 @@ Some possible answers
 </div>
 </div>
 <div id="cross-validation" class="section level2">
-<h2><span class="header-section-number">4.4</span> Cross-validation</h2>
+<h2><span class="header-section-number">3.4</span> Cross-validation</h2>
 <details>
 <p><summary> Lecture notes </summary></p>
 <p>The LASSO model will be different depending on how we set <span class="math inline">\(\lambda\)</span>. A problem is to decide the optimal <span class="math inline">\(\lambda\)</span> to use.</p>
@@ -1257,7 +1242,7 @@ Some possible answers
 <p><code>glmnet</code> addresses this using <em><span class="math inline">\(k\)</span>-fold cross-validation</em> – what is that?</p>
 </details>
 <div id="cross-validation-how-to-test-for-overfitting" class="section level3">
-<h3><span class="header-section-number">4.4.1</span> Cross-validation | <code>How to test for overfitting</code></h3>
+<h3><span class="header-section-number">3.4.1</span> Cross-validation | <code>How to test for overfitting</code></h3>
 <details>
 <p><summary> Lecture notes </summary></p>
 <p>The ultimate way of testing an estimated model (with parameters) is to apply it to new data and evaluate how well it performs, e.g., by measuring the <em>mean squared error</em>, <span class="math inline">\(MSE\)</span> (<span class="math inline">\(=RSS/N\)</span>).
@@ -1276,7 +1261,7 @@ For <span class="math inline">\(i \in \{1,2,\ldots, k\}\)</span>, set <span clas
 </details>
 </div>
 <div id="task-determine-optimal-lassolambdausing-cross-validation" class="section level3">
-<h3><span class="header-section-number">4.4.2</span> Task | <code>Determine optimal LASSO</code><span class="math inline">\(\lambda\)</span><code>using cross-validation</code></h3>
+<h3><span class="header-section-number">3.4.2</span> Task | <code>Determine optimal LASSO</code><span class="math inline">\(\lambda\)</span><code>using cross-validation</code></h3>
 <ul>
 <li>Use the function <code>cv.glmnet</code> to perform cross validation (same options as for <code>glmnet</code>)</li>
 <li><code>plot</code> the cross-validation results</li>
@@ -1297,7 +1282,7 @@ minlambda=cvglm$lambda.min</code></pre>
 <hr />
 </details>
 <div id="think-about-3" class="section level4">
-<h4><span class="header-section-number">4.4.2.1</span> Think about</h4>
+<h4><span class="header-section-number">3.4.2.1</span> Think about</h4>
 <ul>
 <li>Which is the <span class="math inline">\(\lambda\)</span> selected by <code>cv.glmnet</code>?</li>
 <li>Does this make sense given our <em>oracle knowledge</em>?</li>
@@ -1316,7 +1301,7 @@ Some possible answers
 </div>
 </div>
 <div id="task-final-lasso-effect-sizes" class="section level3">
-<h3><span class="header-section-number">4.4.3</span> Task| <code>Final LASSO effect sizes</code></h3>
+<h3><span class="header-section-number">3.4.3</span> Task| <code>Final LASSO effect sizes</code></h3>
 <ul>
 <li>Finally print a table with the <span class="math inline">\(\beta\)</span> coefficients (including the intercept, <span class="math inline">\(\beta_0\)</span>) for the optimal model (i.e., at minimum <span class="math inline">\(\lambda\)</span>). (Use function<code>coef</code>).</li>
 </ul>
@@ -1474,7 +1459,7 @@ estimate(lambda=0.106)
 <hr />
 </details>
 <div id="think-about-4" class="section level4">
-<h4><span class="header-section-number">4.4.3.1</span> Think about</h4>
+<h4><span class="header-section-number">3.4.3.1</span> Think about</h4>
 <ul>
 <li>Does the effect sizes make sense – if not can you think of why?</li>
 </ul>
@@ -1498,7 +1483,7 @@ Some possible answers
 </div>
 </div>
 <div id="session-info" class="section level1">
-<h1><span class="header-section-number">5</span> Session info</h1>
+<h1><span class="header-section-number">4</span> Session info</h1>
 <pre><code>## R version 3.5.3 (2019-03-11)
 ## Platform: x86_64-apple-darwin15.6.0 (64-bit)
 ## Running under: macOS High Sierra 10.13.6
@@ -1531,12 +1516,12 @@ Some possible answers
 ## [28] hms_0.4.2         packrat_0.5.0     digest_0.6.19    
 ## [31] stringi_1.4.3     xaringan_0.10     grid_3.5.3       
 ## [34] tools_3.5.3       magrittr_1.5      tibble_2.1.1     
-## [37] crayon_1.3.4      pkgconfig_2.0.2   xml2_1.2.0       
-## [40] assertthat_0.2.1  rmarkdown_1.13    httr_1.4.0       
-## [43] rstudioapi_0.10   iterators_1.0.10  R6_2.4.0         
-## [46] compiler_3.5.3</code></pre>
+## [37] crayon_1.3.4      pkgconfig_2.0.2   rsconnect_0.8.13 
+## [40] xml2_1.2.0        assertthat_0.2.1  rmarkdown_1.13   
+## [43] httr_1.4.0        rstudioapi_0.10   iterators_1.0.10 
+## [46] R6_2.4.0          compiler_3.5.3</code></pre>
 <p style="text-align: left; font-size: small;">
-Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 05-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 16:11:50.
+Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 05-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 16:41:13.
 </p>
 <hr/>
 <div style="padding-bottom: 1.5em">
