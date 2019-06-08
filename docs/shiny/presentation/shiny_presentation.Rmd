@@ -283,16 +283,16 @@ ui=fluidPage(
   selectInput("data",label="Select data",
               choices=c("mtcars","faithful","iris")),
   tableOutput("table"),
- {{uiOutput("ui")}}
+ uiOutput("ui")
 ),
 
 server=function(input, output) {
   
   data <- reactive({ get(input$data, 'package:datasets') })
   
- {{output$ui <- renderUI({
+ output$ui <- renderUI({
   if(input$data=="iris") plotOutput("plot",width="400px")
-  })}}
+  })
   
   output$plot <- renderPlot({hist(data()[, 1])})
   output$table <- renderTable({head(data())})
@@ -358,7 +358,7 @@ shinyApp(
   server=function(input,output) {
   
     output$plot_output <- renderPlot({
-      {{hist(rnorm(input$num_input))}}
+      hist(rnorm(input$num_input))
     })
   
   }
@@ -383,11 +383,11 @@ shinyApp(
   server=function(input,output) {
     
     output$plot_output <- renderPlot({
-      {{hist(rnorm(input$num_input))}}
+    hist(rnorm(input$num_input))
     })
     
     output$text_output <- renderText({
-      {{mean(rnorm(input$num_input))}}
+      mean(rnorm(input$num_input))
     })
     
   }
@@ -411,7 +411,7 @@ shinyApp(
   
   server=function(input,output) {
   
-    {{rand <- reactive({ rnorm(input$num_input) })}}
+    rand <- reactive({ rnorm(input$num_input) })
     
     output$plot_output <- renderPlot({
       hist(rand())
@@ -495,8 +495,8 @@ shinyApp(
   
   server=function(input,output) {
     output$text_output <- renderText({
-   {{input$btn_go}}
-   {{isolate(input$text_input)}}
+   input$btn_go
+   isolate(input$text_input)
       })
   }
 )
@@ -549,7 +549,7 @@ ui=fluidPage(
 
 server=function(input, output) {
   getdata <- reactive({ 
-  {{validate(need(try(input$data_input),"Please select a data set"))}}
+  validate(need(try(input$data_input),"Please select a data set"))
     get(input$data_input,'package:datasets') 
     })
   output$table_output <- renderTable({head(getdata())})
@@ -567,7 +567,7 @@ server=function(input, output) {
 
 .pull-left-70[.limity100[
 ```
-{{valfn <- function(x) if(is.null(x) | is.na(x) | x=="") return("Input data is incorrect.")}}
+valfn <- function(x) if(is.null(x) | is.na(x) | x=="") return("Input data is incorrect.")
 
 shinyApp(
 ui=fluidPage(
@@ -578,7 +578,7 @@ ui=fluidPage(
 
 server=function(input,output) {
   getdata <- reactive({ 
-  {{validate(valfn(try(input$data_input)))}}
+  validate(valfn(try(input$data_input)))
     get(input$data_input,'package:datasets')
     })
   output$table_output <- renderTable({head(getdata())})
@@ -607,20 +607,20 @@ ui=fluidPage(
   selectInput("data_input",label="Select data",
               choices=c("mtcars","faithful","iris")),
   textOutput("text_output"),
-  {{downloadButton("button_download","Download")}}
+  downloadButton("button_download","Download")
 ),
 
 server=function(input, output) {
   getdata <- reactive({ get(input$data_input, 'package:datasets') })
   output$text_output <- renderText(paste0("Selected dataset: ",input$data_input))
   
-{{output$button_download <- downloadHandler(
+  output$button_download <- downloadHandler(
   filename = function() {
      paste0(input$data_input,".csv")
    },
   content = function(file) {
      write.csv(getdata(),file,row.names=FALSE,quote=F)
-   })}}
+   })
 })
 ```
 
@@ -639,7 +639,7 @@ ui=fluidPage(
               choices=c("mtcars","faithful","iris")),
   textOutput("text_output"),
   plotOutput("plot_output",width="400px"),
-  {{downloadButton("button_download", "Download")}}
+  downloadButton("button_download", "Download")
 ),
 
 server=function(input, output) {
@@ -647,7 +647,7 @@ server=function(input, output) {
   output$text_output <- renderText(paste0("Selected dataset: ",input$data_input))
   output$plot_output <- renderPlot({hist(getdata()[, 1])})
   
-{{output$button_download <- downloadHandler(
+output$button_download <- downloadHandler(
   filename = function() {
     paste0(input$data_input,".png")
   },
@@ -655,7 +655,7 @@ server=function(input, output) {
     png(file)
     hist(getdata()[, 1])
     dev.off()
-  })}}
+  })
 })
 ```
 

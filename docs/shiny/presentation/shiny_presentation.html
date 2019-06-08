@@ -278,16 +278,16 @@ ui=fluidPage(
   selectInput("data",label="Select data",
               choices=c("mtcars","faithful","iris")),
   tableOutput("table"),
- {{uiOutput("ui")}}
+ uiOutput("ui")
 ),
 
 server=function(input, output) {
   
   data &lt;- reactive({ get(input$data, 'package:datasets') })
   
- {{output$ui &lt;- renderUI({
+ output$ui &lt;- renderUI({
   if(input$data=="iris") plotOutput("plot",width="400px")
-  })}}
+  })
   
   output$plot &lt;- renderPlot({hist(data()[, 1])})
   output$table &lt;- renderTable({head(data())})
@@ -353,7 +353,7 @@ shinyApp(
   server=function(input,output) {
   
     output$plot_output &lt;- renderPlot({
-      {{hist(rnorm(input$num_input))}}
+      hist(rnorm(input$num_input))
     })
   
   }
@@ -378,11 +378,11 @@ shinyApp(
   server=function(input,output) {
     
     output$plot_output &lt;- renderPlot({
-      {{hist(rnorm(input$num_input))}}
+    hist(rnorm(input$num_input))
     })
     
     output$text_output &lt;- renderText({
-      {{mean(rnorm(input$num_input))}}
+      mean(rnorm(input$num_input))
     })
     
   }
@@ -406,7 +406,7 @@ shinyApp(
   
   server=function(input,output) {
   
-    {{rand &lt;- reactive({ rnorm(input$num_input) })}}
+    rand &lt;- reactive({ rnorm(input$num_input) })
     
     output$plot_output &lt;- renderPlot({
       hist(rand())
@@ -490,8 +490,8 @@ shinyApp(
   
   server=function(input,output) {
     output$text_output &lt;- renderText({
-   {{input$btn_go}}
-   {{isolate(input$text_input)}}
+   input$btn_go
+   isolate(input$text_input)
       })
   }
 )
@@ -545,7 +545,7 @@ ui=fluidPage(
 
 server=function(input, output) {
   getdata &lt;- reactive({ 
-  {{validate(need(try(input$data_input),"Please select a data set"))}}
+  validate(need(try(input$data_input),"Please select a data set"))
     get(input$data_input,'package:datasets') 
     })
   output$table_output &lt;- renderTable({head(getdata())})
@@ -563,7 +563,7 @@ server=function(input, output) {
 
 .pull-left-70[.limity100[
 ```
-{{valfn &lt;- function(x) if(is.null(x) | is.na(x) | x=="") return("Input data is incorrect.")}}
+valfn &lt;- function(x) if(is.null(x) | is.na(x) | x=="") return("Input data is incorrect.")
 
 shinyApp(
 ui=fluidPage(
@@ -574,7 +574,7 @@ ui=fluidPage(
 
 server=function(input,output) {
   getdata &lt;- reactive({ 
-  {{validate(valfn(try(input$data_input)))}}
+  validate(valfn(try(input$data_input)))
     get(input$data_input,'package:datasets')
     })
   output$table_output &lt;- renderTable({head(getdata())})
@@ -603,20 +603,20 @@ ui=fluidPage(
   selectInput("data_input",label="Select data",
               choices=c("mtcars","faithful","iris")),
   textOutput("text_output"),
-  {{downloadButton("button_download","Download")}}
+  downloadButton("button_download","Download")
 ),
 
 server=function(input, output) {
   getdata &lt;- reactive({ get(input$data_input, 'package:datasets') })
   output$text_output &lt;- renderText(paste0("Selected dataset: ",input$data_input))
   
-{{output$button_download &lt;- downloadHandler(
+  output$button_download &lt;- downloadHandler(
   filename = function() {
      paste0(input$data_input,".csv")
    },
   content = function(file) {
      write.csv(getdata(),file,row.names=FALSE,quote=F)
-   })}}
+   })
 })
 ```
 
@@ -635,7 +635,7 @@ ui=fluidPage(
               choices=c("mtcars","faithful","iris")),
   textOutput("text_output"),
   plotOutput("plot_output",width="400px"),
-  {{downloadButton("button_download", "Download")}}
+  downloadButton("button_download", "Download")
 ),
 
 server=function(input, output) {
@@ -643,7 +643,7 @@ server=function(input, output) {
   output$text_output &lt;- renderText(paste0("Selected dataset: ",input$data_input))
   output$plot_output &lt;- renderPlot({hist(getdata()[, 1])})
   
-{{output$button_download &lt;- downloadHandler(
+output$button_download &lt;- downloadHandler(
   filename = function() {
     paste0(input$data_input,".png")
   },
@@ -651,7 +651,7 @@ server=function(input, output) {
     png(file)
     hist(getdata()[, 1])
     dev.off()
-  })}}
+  })
 })
 ```
 
@@ -771,7 +771,7 @@ count: false
 
 &lt;p&gt;R version 3.5.2 (2018-12-20)&lt;br&gt;&lt;p&gt;Platform: x86_64-pc-linux-gnu (64-bit)&lt;/p&gt;&lt;p&gt;OS: Ubuntu 18.04.2 LTS&lt;/p&gt;&lt;br&gt;
 
-Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 08-Jun-2019 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 21:48:40  
+Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 08-Jun-2019 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 21:58:58  
 
 __2019__ • [SciLifeLab](https://www.scilifelab.se/) • [NBIS](https://nbis.se/)
     </textarea>
