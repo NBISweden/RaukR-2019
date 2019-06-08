@@ -30,11 +30,7 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
 #### 18-Jun-2019 (Tue)
 #### 19-Jun-2019 (Wed)
 #### 20-Jun-2019 (Thu)
-
----
-* **Demo material** (*Author:* A. Dummy, *Reviewer:* R.E. Wiewer)
-    + [Presentation](Demo/Presentation/Presentation-Demo.html)
-    + [Lab](Demo/Lab/Lab-Demo.html)
+    
 ---
 
 **2019** • NBIS
