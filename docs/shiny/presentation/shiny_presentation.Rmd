@@ -277,7 +277,7 @@ name: ui-dynamic
 
 - UI elements are created conditionally using `uiOutput()`/`renderUI()`
 
-```{r,eval=FALSE}
+```
 shinyApp(
 ui=fluidPage(
   selectInput("data",label="Select data",
@@ -348,7 +348,7 @@ name: reactive-1
 
 ## Reactivity
 
-```{r,eval=FALSE}
+```
 shinyApp(
   
   ui=fluidPage(
@@ -372,7 +372,7 @@ name: reactive-2
 
 ## Reactivity
 
-```{r,eval=FALSE}
+```
 shinyApp(
   
   ui=fluidPage(
@@ -401,7 +401,7 @@ name: reactive-3
 
 ## Reactivity
 
-```{r,eval=FALSE}
+```
 shinyApp(
   
   ui=fluidPage(
@@ -486,7 +486,7 @@ name: isolate
 
 * Reactivity can be controlled.
 
-```{r,eval=FALSE}
+```
 shinyApp(
   ui=fluidPage(
     textInput("text_input",label="textInput"),
@@ -539,7 +539,7 @@ server=function(input, output) {
 * `validate()` using `need()`
 
 .pull-left-70[.limity100[
-```{r,eval=FALSE}
+```
 shinyApp(
 ui=fluidPage(
   selectInput("data_input",label="Select data",
@@ -566,7 +566,7 @@ server=function(input, output) {
 * `validate()` using custom function
 
 .pull-left-70[.limity100[
-```{r,eval=FALSE}
+```
 {{valfn <- function(x) if(is.null(x) | is.na(x) | x=="") return("Input data is incorrect.")}}
 
 shinyApp(
@@ -601,7 +601,7 @@ name: download-data
 
 * Add button and `downloadHandler()` function
 
-```{r,eval=FALSE}
+```
 shinyApp(
 ui=fluidPage(
   selectInput("data_input",label="Select data",
@@ -632,7 +632,7 @@ name: download-plot
 
 ## Download • Plots
 
-```{r,eval=FALSE}
+```
 shinyApp(
 ui=fluidPage(
   selectInput("data_input",label="Select data",
