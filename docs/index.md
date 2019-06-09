@@ -6,6 +6,8 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
 ### Week 1
 #### 10-Jun-2019 (Mon)
 
+* **Introduction to RaukR 2019** (*Author:* Marcin Kierczak)
+    + [Presentation](intro_Marcin/intro_Marcin.html)
 * **Reproducible research** (*Author:* Roy Francis, *Reviewer:* Marcin Kierczak)
     + [Presentation](rr/presentation/rr_presentation.html)
     + [Lab](rr/lab/rr_lab.html)

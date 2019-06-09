@@ -1,0 +1,356 @@
+---
+title: "Object-Oriented Programming in R"
+subtitle: "A Quick Intro to R Classes Hands-on"
+author: "Marcin Kierczak"
+date: "`r format(Sys.Date(),format='%d-%b-%Y')`"
+output:
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    number_sections: true
+    theme: united
+    highlight: tango
+    df_print: paged
+    code_folding: hide
+    self_contained: false
+    keep_md: false
+    encoding: "UTF-8"
+    css: ["assets/course.css"]
+---
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,results='hide'}
+# run setup code
+source("assets/setup.R")
+library(R6)
+```
+
+```{r,echo=FALSE,results='hide'}
+## LIBRARIES AND VARIABLES
+# load the packages you need for this document
+
+#library(ggplot2)
+library(tidyverse)
+
+# variables needed in this document
+# raukr colours
+#rv_col_dark <- "#125687"
+#rv_col_light <- "#e7eef3"
+```
+
+<img src="assets/logo.svg" alt="logo_raukr" class="trlogo">
+
+---
+
+<p class="abstract">
+During this lab, we will go through the most important features of 3 out of the 4 existing OOP systems in R:
+
+* S3,
+* S4,
+* R6.
+
+While S3 and S4 are base-R OOP systems, R6 is provided by the `R6` package. Both S3 and S4 follow the *functional OOP style* while `R6` is more similar to OOP models known from Java or C++. We will not cover the Reference Classes (a.k.a. RC) which is yet another base-R OOP model. Why? Well, it is really tricky to use and its documentation is not always complete... 
+</p>
+
+---
+
+# S3 Classes
+
+* what is the class of the object returned by the `lm()` function?
+```{r results='hide'}
+obj <- lm(speed ~ dist, data = cars) 
+class(obj)
+```
+* what basic data type is it build upon?
+```{r results='hide'}
+typeof(obj)
+```
+* what attributes does the object of the `lm` class have?
+```{r results='hide'}
+attributes(obj)
+```
+* what is the structure of the `lm` object?
+```{r results='hide'}
+str(obj)
+```
+* does the `lm` class implement own `str()`?
+```{r results='hide'}
+str(obj)
+# compare to:
+str(unclass(obj)) 
+
+# Answer: no
+```
+
+* what is the class of a `tibble`? You have to loadt the `tidyverse` package and use on of the built-in datasets, e.g. `mtcars` as argument to `as_tibble()` to check the class.
+```{r results='hide'}
+require(tidyverse)
+obj <- as_tibble(mtcars)
+class(obj)
+```
+
+* what is the underlying data type?
+```{r results='hide'}
+typeof(obj)
+```
+
+* is the `str()` function used by tibbles the default `str()`?
+```{r results='hide'}
+str(obj)
+str(unclass(obj))
+# Answer: no
+```
+
+* implement your own class `meta_frame` that is a `data.frame` with additional attributes:
+    + character attribute `descr` (a description),
+    + `creation` attribute whic will hold the creation date.
+
+Check that it works, i.e. that it has the expected attributes and that it is a separate class.
+
+How do you access the `description` field?
+
+```{r results='hide'}
+meta_frame <- function(df, descr, creation) {
+  structure(
+    list(
+      df = df, 
+      descr = descr, 
+      creation = creation
+    ),
+    class = "meta_frame"
+  )
+}
+obj <- meta_frame(mtcars, 'The mtcars dataset', '10-06-2018')
+str(obj)
+obj$descr
+```
+
+* design implementation of your own S3 class `protein` that stores the following information (you will implement the class in the next point, now just think and draw on paper if you wish):
+    + protein sequence,
+    + protein length,
+    + post-translational modification (PTM) site coords,
+    + PTM type that can be either of: "phosphorylation", or "methylation".
+    
+* implement the `protein` class from the previous point using the *constructor, validator and helper* design pattern. Try to reduce the number of input arguments to: +     + asequence and 
+    + a list of PTMs.
+    
+```{r, results='hide'}
+# Constructor
+new_protein <- function(sequence, length, ptm_site, ptm_type) {
+  stopifnot(is.character(sequence))
+  stopifnot(is.integer(length))
+  stopifnot(is.numeric(ptm_site))
+  stopifnot(is.character(ptm_type))
+  structure(
+    sequence,
+    length = length,
+    ptm_site = ptm_site,
+    ptm_type = ptm_type,
+    class = "protein"
+  )
+}
+
+# Helper
+protein <- function(sequence, ptm) {
+  sequence <- sequence
+  len <- nchar(sequence)
+  ptm_site <- ptm[[1]]
+  ptm_type = ptm[[2]]
+  validate_protein(new_protein(sequence, len, ptm_site, ptm_type))
+}
+
+# Validator
+validate_protein <- function(x) {
+  sequence <- unclass(x)
+  len <- attr(x, 'length')
+  ptm_site <- attr(x, 'ptm_site')
+  ptm_type <- attr(x, 'ptm_type')
+  if (is.na(sequence)) {
+    stop('Sequence is missing!', call. = FALSE)
+  }
+  if (length(ptm_site) != length(ptm_type)) {
+    stop('PTM type and site differ in length!', call. = FALSE)
+  }
+  if ((sum(!ptm_type %in% c('phosphorylation', 'methylation'))) > 0) {
+    stop('Invalid PTM types detected!', call. = FALSE)
+  }
+  return(x)
+}
+```
+* what would you improve in our implementation of `protein`. Is it really user friendly?
+
+* write a generic `print` for the `protein` class. It should print e.g.:
+```
+[1] "============== Protein =============="
+[1] "Sequence:ARNDKLLQWYTTARD"
+[1] "Length: 15 aa."
+[1] "============== PTM section =============="
+[1] "Site: 3" "Site: 5"
+[1] "Type: phosphorylation" "Type: methylation"  
+```
+
+```{r, results='hide'}
+print.protein <- function(x) {
+  sequence <- unclass(x)
+  len <- attr(x, 'length')
+  ptm_site <- attr(x, 'ptm_site')
+  ptm_type <- attr(x, 'ptm_type')
+  print("============== Protein ==============")
+  print(paste0("Sequence:", sequence))
+  print(paste0("Length: ", len, " aa."))
+  print("============== PTM section ==============")
+  print(paste0("Site: ", ptm_site))
+  print(paste0("Type: ", ptm_type))
+}
+```
+
+* test that the `protein` class works as it should and that generic `print` works as well.
+```{r, results='hide'}
+my_prot <- protein("ARNDKLLQWYTTARD", 
+                   list(
+                     site = c(3, 5), 
+                     type = c('phosphorylation', 'methylation')
+                    )
+                  )
+class(my_prot)
+typeof(my_prot)
+print(my_prot)
+```
+
+# S4 Classes
+
+* Re-write the `protein` class in S4 (with validation!).
+
+```{r, results='hide'}
+# Generator
+.protein <- setClass('protein',
+                     slots = c(
+                       sequence = 'character',
+                       length = 'numeric',
+                       ptm_site = 'numeric',
+                       ptm_type = 'character'
+                      )
+                    )
+
+# Constructor
+protein <- function(sequence, ptm) {
+  sequence <- sequence
+  len <- nchar(sequence)
+  ptm_site <- ptm[[1]]
+  ptm_type <- ptm[[2]]
+  if (is.na(sequence)) {
+    stop('Sequence is missing!', call. = FALSE)
+  }
+  if (length(ptm_site) != length(ptm_type)) {
+    stop('PTM type and site differ in length!', call. = FALSE)
+  }
+  if ((sum(!ptm_type %in% c('phosphorylation', 'methylation'))) > 0) {
+    stop('Invalid PTM types detected!', call. = FALSE)
+  }
+  pt <- .protein(sequence = sequence, 
+           length = len, 
+           ptm_site = ptm_site, 
+           ptm_type = ptm_type)
+  return(pt)
+}
+```
+
+* create an S4 object of the `protein` class and check whether it works.
+```{r, results='hide'}
+my_prot <- protein("ARNDKLLQWYTTARD", 
+                   list(
+                     site = c(3, 5), 
+                     type = c('phosphorylation', 'methylation')
+                    )
+                  )
+class(my_prot)
+typeof(my_prot)
+str(my_prot)
+```
+
+* implement the generic `print` using S4 and check that it works.
+```{r, results='hide'}
+setMethod('print', 'protein', 
+  function(x) {
+    sequence <- x@sequence
+    len <- x@length
+    ptm_site <- x@ptm_site
+    ptm_type <- x@ptm_type
+    print("============== Protein ==============")
+    print(paste0("Sequence:", sequence))
+    print(paste0("Length: ", len, " aa."))
+    print("============== PTM section ==============")
+    print(paste0("Site: ", ptm_site))
+    print(paste0("Type: ", ptm_type))
+})
+
+print(my_prot)
+```
+
+* implement a new S4 class `ext_protein` that extends `protein` with 3 slots: 
+    + feature type,
+    + feature position, and
+    + feature value.
+    
+```{r, results='hide'}
+.ext_protein <- setClass('ext_protein', 
+                         contains = c('protein'),
+                         slots = c(
+                           prot = 'protein',
+                           feature_type = 'character',
+                           feature_position = 'numeric',
+                           feature_value = 'character'
+                         ))
+my_ext_prot <- .ext_protein(prot = my_prot,
+                           feature_type = 'modification',
+                           feature_position = 11,
+                           feature_value = 'absent'
+                  )
+class(my_ext_prot)
+typeof(my_ext_prot)
+str(my_ext_prot)
+```
+
+# R6 Classes
+
+* install and load the `R6` package,
+* implement the `protein` class using R6 model and check that it works as expected:
+```{r, results='hide'}
+require(R6)
+protein <- R6Class(classname = 'protein',
+                        public = list(
+                          seq = NA,
+                          length = NULL,
+                          ptm_site = NA,
+                          ptm_type = NA,
+                          initialize = function(seq = NA, ptm = NA) {
+                            self$seq <- seq
+                            self$length <- nchar(self$seq)
+                            self$ptm_site <- ptm[[1]]
+                            self$ptm_type <- ptm[[2]]
+                            # Check types
+                            stopifnot(is.character(seq))
+                            
+                            #Validate
+                            if (is.na(self$seq)) {
+                              stop('Sequence is missing!', call. = FALSE)
+                            }
+                            if (length(self$ptm_site) != length(self$ptm_type)) {
+                              stop('PTM type and site differ in length!', call. = FALSE)
+                            }
+                            if ((sum(!self$ptm_type %in% c('phosphorylation', 'methylation'))) > 0) {
+    stop('Invalid PTM types detected!', call. = FALSE)
+  }
+                          }
+ )
+)
+
+my_new_prot <- protein$new(seq = "ARNDKLLQWYTTARD", ptm = 
+                   list(
+                     site = c(3, 5), 
+                     type = c('phosphorylation', 'methylation')
+                    ))
+str(my_new_prot)
+```
+
+**Congratulations! You are familiar with S3, S4 and R6 object models by now!**

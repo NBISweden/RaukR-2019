@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Object-Oriented Programming in R</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Marcin Kierczak" />
+    <meta name="keywords" content="r, RaukR, markdown, oop" />
+    <link rel="stylesheet" href="assets/presentation.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Object-Oriented Programming in R
+## Advanced R for Bioinformatics. Visby, 2018.
+### Marcin Kierczak
+### 12 June, 2018
+
+---
+
+class: spaced 
+
+
+
+
+
+## Object Oriented Programming
+
+* A programming paradigm.
+* We work with objects.
+* Reflects many real-life systems -- easy to model things.
+* Plato's cave (?): ideal objects -- classes, reflections -- instances.
+
+--
+
+&lt;img src="oop_assets/oop_concept.png" width="450" height="400" style="display: block; margin: auto;" /&gt;
+
+---
+name: oop_in_r
+
+## OOP Systems in R
+
+* **S3** -- basic R OOP system,
+
+* **S4** -- a bit more advanced OOP, common in, e.g. Bioconductor,
+
+* RC -- Reference Classes, the most advanced and close to, e.g. Java OOP, extension of S4,
+
+* **R6** -- simplified RC, extension of S3, `require(R6)`
+
+---
+name: S3_intro
+## S3 Classes
+An S3 class object is one of R base types (e.g. integer) with `class` attribute set:
+--
+.pull-left-50[
+
+```r
+obj &lt;- factor(c("a", "b", "c"))
+typeof(obj)
+```
+
+```
+## [1] "integer"
+```
+
+```r
+class(obj)
+```
+
+```
+## [1] "factor"
+```
+]
+
+.pull-right-50[
+
+```r
+attributes(obj)
+```
+
+```
+## $levels
+## [1] "a" "b" "c"
+## 
+## $class
+## [1] "factor"
+```
+
+```r
+str(obj)
+```
+
+```
+##  Factor w/ 3 levels "a","b","c": 1 2 3
+```
+]
+
+--
+
+
+```r
+print(obj)
+```
+
+```
+## [1] a b c
+## Levels: a b c
+```
+--
+
+```r
+print(unclass(obj))
+```
+
+```
+## [1] 1 2 3
+## attr(,"levels")
+## [1] "a" "b" "c"
+```
+---
+name: S3_custom_str
+## Custom `str` Methods
+
+Some S3 classes provide a custom `str`, e.g.: 
+
+```r
+time &lt;- strptime("2018-06-07", "%Y-%m-%d")
+```
+
+.pull-left-50[
+
+```r
+str(time)
+```
+
+```
+##  POSIXlt[1:1], format: "2018-06-07"
+```
+]
+.pull-right-50[
+
+```r
+str(unclass(time))
+```
+
+```
+## List of 11
+##  $ sec   : num 0
+##  $ min   : int 0
+##  $ hour  : int 0
+##  $ mday  : int 7
+##  $ mon   : int 5
+##  $ year  : int 118
+##  $ wday  : int 4
+##  $ yday  : int 157
+##  $ isdst : int 1
+##  $ zone  : chr "CEST"
+##  $ gmtoff: int NA
+```
+]
+
+---
+name: S3_generic_dispatch
+## Generic Methods and Method Dispatch
+Have you ever wondered why `print()` or `summary()` work on many types (classes) of data? 
+
+--
+
+They are so-called *generics*, i.e. functions and methods that operate on classes. They know which method to apply to which class thanks to the process of *method dispatch*. 
+
+The naming scheme for generics is: `generic.class()` i.e. a generic that applies to the `class` class. 
+
+Examples:
+* `print.factor()`, 
+* `print.default()`, 
+* `print.data.frame()`.
+
+To see the code of a method: 
+
+```r
+require(GenABEL)
+getS3method('summary', 'check.marker') %&gt;% 
+  head(n = 5)
+```
+
+```
+##                                                        
+## 1 function (object, ...)                               
+## 2 {                                                    
+## 3     out1 &lt;- rep(NA, 25)                              
+## 4     dim(out1) &lt;- c(5, 5)                             
+## 5     out1[1, 2] &lt;- cross(object$nocall, object$nofreq)
+```
+
+---
+name: S3_constructing
+## Creating S3 Classes
+To create an S3 class, simply give a name to a data structure:
+
+```r
+gf &lt;- structure(list(), class = 'genomic_features')
+class(gf)
+```
+
+```
+## [1] "genomic_features"
+```
+OR
+
+```r
+gf &lt;- list()
+class(gf) &lt;- 'genomic_features'
+class(gf)
+```
+
+```
+## [1] "genomic_features"
+```
+
+You can use some inheritance too:
+
+```r
+egf &lt;- list()
+class(egf) &lt;- c('genomic_features', 'extended_genomic_features')
+class(egf)
+```
+
+```
+## [1] "genomic_features"          "extended_genomic_features"
+```
+
+---
+name: S3_correctness_checks
+## Checking for Corectness
+
+```r
+linmod &lt;- with(mtcars, lm(log(mpg) ~ log(disp)))
+linmod
+```
+
+```
+## 
+## Call:
+## lm(formula = log(mpg) ~ log(disp))
+## 
+## Coefficients:
+## (Intercept)    log(disp)  
+##      5.3810      -0.4586
+```
+--
+
+```r
+class(linmod) &lt;- "data.frame"
+linmod
+```
+
+```
+##  [1] coefficients  residuals     effects       rank          fitted.values
+##  [6] assign        qr            df.residual   xlevels       call         
+## [11] terms         model        
+## &lt;0 rows&gt; (or 0-length row.names)
+```
+--
+.center[
+# S C A R Y !
+]
+---
+name: S3_helper_validator_constructor
+## Constructor, Validator
+
+* Constructor
+
+```r
+new_Animal &lt;- function(species, age) {
+  stopifnot(is.character(species))
+  stopifnot(is.numeric(age))
+  
+  structure(
+    species,
+    age = age,
+    class = "Animal"
+  )
+}
+```
+* Validator 
+
+```r
+validate_Animal &lt;- function(x) {
+  species &lt;- unclass(x)
+  age &lt;- attr(x, 'age')
+  
+  if (is.na(species) || species == "") {
+    stop('Species name is missing!', call. = FALSE)
+  }
+  if (!is.numeric(age) || age &lt; 1 || age &gt;= 100) {
+    stop("Invalid age!", call. = FALSE)
+  }
+  return(x)
+}
+```
+
+---
+name: S3_helper
+## Helper
+* Helper
+
+```r
+Animal &lt;- function(x) {
+  species &lt;- x[[1]] 
+  age &lt;- x[[2]]
+  validate_Animal(new_Animal(species, age))
+}
+```
+
+--
+
+
+```r
+# Testing
+dog &lt;- Animal(list('Canis familiaris', 7))
+class(dog)
+```
+
+```
+## [1] "Animal"
+```
+
+--
+  
+
+```r
+cat &lt;- Animal(list('Felis felis', '9'))
+```
+
+```
+## Error: is.numeric(age) is not TRUE
+```
+
+```r
+cat &lt;- Animal(list('Felis felis', 9))
+class(cat)
+```
+
+```
+## [1] "Animal"
+```
+
+---
+name: S3_object_styles
+## Building S3 Classes -- Styles
+One can build an S3 class on top of any existing base type, e.g. a named list:
+
+```r
+point_in_space_class &lt;- function(x, y, z) {
+  structure(
+    list(
+      x = x, 
+      y = y, 
+      z = z
+    ),
+    class = "point_in_space_class"
+  )
+}
+```
+
+---
+name: S4_classes
+## S4 classes
+S4 classes are more advanced as you actually define the structure of the data within the object of your particular class:
+
+```r
+setClass('gene', 
+         representation(name='character', 
+                        coords='numeric')
+         )
+
+.intragenic_region &lt;- setClass(Class = 'intragenic_region', 
+                               slots = c(
+                                 name='character', 
+                                 coords='numeric'
+                               )
+                              )
+
+my.gene &lt;- new('gene', name = 'ANK3', 
+               coords = c(1.4e6, 1.412e6))
+
+# but since SetClass returns a low-level constructor
+my.intra1 &lt;- .intragenic_region(name = 'int1', 
+                  coords = c(1.7e6, 1.717e6))
+```
+
+---
+name: S4_inheritance
+## Inheritance in S4
+
+```r
+.ext_gene &lt;- setClass(Class = 'ext_gene',
+                      contains = "gene",
+                      slots = c(
+                        gene = 'gene',
+                        feature_name = 'character',
+                        feature_value = 'character'
+                      ))
+
+ANK3 &lt;- .ext_gene(name = 'ANK3', 
+                  coords = c(1.4e6, 1.412e6),
+                  feature_name = 'num_introns',
+                  feature_value = '5')
+str(ANK3)
+```
+
+```
+## Formal class 'ext_gene' [package ".GlobalEnv"] with 5 slots
+##   ..@ gene         :Formal class 'gene' [package ".GlobalEnv"] with 2 slots
+##   .. .. ..@ name  : chr(0) 
+##   .. .. ..@ coords: num(0) 
+##   ..@ feature_name : chr "num_introns"
+##   ..@ feature_value: chr "5"
+##   ..@ name         : chr "ANK3"
+##   ..@ coords       : num [1:2] 1400000 1412000
+```
+
+---
+name: S4_sealed
+## Sealed Class
+
+Preventing double class definition:
+
+```r
+setClass('Not_Sealed')
+setClass('Not_Sealed')
+```
+
+But to prevent this:
+
+```r
+setClass('Sealed', sealed = T)
+setClass('Sealed')
+```
+
+```
+## Error in setClass("Sealed"): "Sealed" has a sealed class definition and cannot be redefined
+```
+---
+name: S4_slots
+## S4 class -- slots
+The variables within an S4 class are stored in the so-called **slots**. In the above example, we have 2 such slots: *name* and *coords*. Here is how to access them:
+
+```r
+my.gene@name # access using @ operator
+my.gene@coords[2] # access the 2nd element in slot coords
+```
+
+```
+## [1] "ANK3"
+## [1] 1412000
+```
+
+---
+name: S4_methods
+## S4 class -- methods
+The power of classes lies in the fact that they define both the data types in particular slots and operations (functions) we can perform on them. Let us define a *generic print function* for an S4 class:
+
+```r
+setMethod('print', 'gene', 
+          function(x) {
+              cat('GENE: ', x@name, ' --&gt; ')
+              cat('[', x@coords, ']')
+          })
+print(my.gene) # and we use the newly defined print
+```
+
+```
+## [1] "print"
+## GENE:  ANK3  --&gt; [ 1400000 1412000 ]
+```
+
+---
+name: R6_intro
+
+## Introduction to R6 classes
+
+* `require(R6)`,
+* do not rely on S4 like RC, but on S3,
+* are faster than RC,
+* do not do *copy-on-modify*,
+* thus provide OO model similar to C++ or Java.
+* methods belong to objects, not to generics.
+
+---
+name: R6
+
+## R6 Class Example
+
+
+```r
+library(R6)
+
+Person &lt;- R6Class("Person",
+  public = list(
+    name = NULL,
+    hair = NULL,
+    initialize = function(name = NA, hair = NA) {
+      stopifnot(is.character(name), is.character(hair))
+      self$name &lt;- name
+      self$hair &lt;- hair
+      self$greet()
+    },
+    set_hair = function(val) {
+      self$hair &lt;- val
+    },
+    greet = function() {
+      cat(paste0("Hello, my name is ", self$name, ".\n"))
+    }
+  )
+)
+```
+
+---
+name: R6_Kate
+
+## R6 in Action
+
+```r
+kate &lt;- Person$new(name = 'Kate', hair = 'blond')
+str(kate)
+```
+
+```
+## Hello, my name is Kate.
+## Classes 'Person', 'R6' &lt;Person&gt;
+##   Public:
+##     clone: function (deep = FALSE) 
+##     greet: function () 
+##     hair: blond
+##     initialize: function (name = NA, hair = NA) 
+##     name: Kate
+##     set_hair: function (val)
+```
+--
+
+```r
+kate$greet()
+kate$set_hair('red')
+kate
+```
+
+```
+## Hello, my name is Kate.
+## &lt;Person&gt;
+##   Public:
+##     clone: function (deep = FALSE) 
+##     greet: function () 
+##     hair: red
+##     initialize: function (name = NA, hair = NA) 
+##     name: Kate
+##     set_hair: function (val)
+```
+
+---
+## R6 copy-on-modify
+
+```r
+kate$hair
+```
+
+```
+## [1] "red"
+```
+--
+
+```r
+ann &lt;- kate
+ann$set_hair('blue')
+ann$hair
+```
+
+```
+## [1] "blue"
+```
+--
+
+```r
+kate$hair
+```
+
+```
+## [1] "blue"
+```
+---
+name: report
+
+## Session  
+
+* This presentation was created in RStudio using [`remarkjs`](https://github.com/gnab/remark) framework through R package [`xaringan`](https://github.com/yihui/xaringan).
+* For R Markdown, see &lt;http://rmarkdown.rstudio.com&gt;
+* For R Markdown presentations, see &lt;https://rmarkdown.rstudio.com/lesson-11.html&gt;
+
+
+```r
+R.version
+```
+
+```
+##                _                           
+## platform       x86_64-apple-darwin17.3.0   
+## arch           x86_64                      
+## os             darwin17.3.0                
+## system         x86_64, darwin17.3.0        
+## status                                     
+## major          3                           
+## minor          4.3                         
+## year           2017                        
+## month          11                          
+## day            30                          
+## svn rev        73796                       
+## language       R                           
+## version.string R version 3.4.3 (2017-11-30)
+## nickname       Kite-Eating Tree
+```
+
+---
+name: end-slide
+class: end-slide
+
+# Thank you
+    </textarea>
+<script src="assets/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "4:3",
+"highlightLanguage": "r",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "RaukR 2018 . %current%/%total%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
