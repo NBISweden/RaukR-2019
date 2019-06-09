@@ -10,22 +10,21 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
     + [Presentation](rr/presentation/rr_presentation.html)
     + [Lab](rr/lab/rr_lab.html)
 
-* **Best Coding Practises** (*Author:* Marcin Kierczak, *Reviewer:* 
-R.F. Francis)
-	+ [Presentation](best_coding_practises_Marcin/presentation/pres_best_coding_practises.html)
-	+ [Lab](best_coding_practises_Marcin/lab/BestCodingPractisesLab.html)
+* **Best Coding Practises** (*Author:* Marcin Kierczak, *Reviewer:* Roy Francis)
+    + [Presentation](best_coding_practises_Marcin/presentation/pres_best_coding_practises.html)
+    + [Lab](best_coding_practises_Marcin/lab/BestCodingPractisesLab.html)
 
 #### 11-Jun-2019 (Tue)
 #### 12-Jun-2019 (Wed)
 #### 13-Jun-2019 (Thu)
 
-* **ggplot** (*Author:* Roy Francis, *Reviewer:* NA)
+* **ggplot** (*Author:* Roy Francis, *Reviewer:* Marcin Kierczak)
     + [Presentation](ggplot/presentation/ggplot_presentation.html)
     + [Lab](ggplot/lab/ggplot_lab.html)
 
 #### 14-Jun-2019 (Fri)
 
-* **shiny** (*Author:* Roy Francis, *Reviewer:* NA)
+* **shiny** (*Author:* Roy Francis, *Reviewer:* Marcin Kierczak)
     + [Presentation](shiny/presentation/shiny_presentation.html)
     + [Lab](shiny/lab/shiny_lab.html)
 
