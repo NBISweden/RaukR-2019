@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Best Coding Practises</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Marcin Kierczak" />
+    <meta name="keywords" content="r, RaukR, markdown" />
+    <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+    <link id="font-awesome-1-attachment" rel="attachment" href="libs/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+    <script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+    <script src="libs/jquery-1.12.4/jquery.min.js"></script>
+    <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+    <script src="libs/datatables-binding-0.6/datatables.js"></script>
+    <link href="libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
+    <script src="libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
+    <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+    <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+    <script src="libs/d3-3.5.6/d3.min.js"></script>
+    <link href="libs/profvis-0.3.6/profvis.css" rel="stylesheet" />
+    <script src="libs/profvis-0.3.6/profvis.js"></script>
+    <link href="libs/highlight-6.2.0/textmate.css" rel="stylesheet" />
+    <script src="libs/highlight-6.2.0/highlight.js"></script>
+    <script src="libs/profvis-binding-0.3.6/profvis.js"></script>
+    <link rel="stylesheet" href="assets/presentation.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Best Coding Practises
+## RaukR 2019 • Advanced R for Bioinformatics
+### <b>Marcin Kierczak</b>
+### NBIS, SciLifeLab
+
+---
+
+exclude: true
+count: false
+
+
+&lt;link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;amp;subset=latin-ext" rel="stylesheet"&gt;
+
+
+
+
+
+&lt;!-- ----------------- Only edit title &amp; author above this ----------------- --&gt;
+
+
+
+
+
+name: overview
+## Topics of This Presentation
+&lt;br&gt;&lt;br&gt;
+Code:
+&lt;br&gt;
+
+* **Style** -- __howTo_style.yourCode?
+
+* **Structure** -- manufacture your own building blocks.
+
+* **Debugging** -- my code does not run.
+
+* **Profiling** -- now it does run but... out of memory!
+
+* **Optimization** -- making things better.
+
+---
+
+name: coding-style
+## Coding Style
+* Naming conventions -- assigning names to variables.
+
+* Code formatting -- placement of braces, use of whitespace characters etc.
+.center[
+&lt;img src="./assets/coding_style.jpg" class="fancyimage", style="width:49%; height:49%; box-shadow:0px 0px 0px white"&gt;&lt;br&gt;
+.vsmall[From: [Behind The Lines](http://geekandpoke.typepad.com/geekandpoke/2010/09/behind-the-lines.html) 2010-09-23. By Oliver Widder, Webcomics Geek And Poke.]
+]
+---
+
+name: naming-conventions
+## Naming Conventions
+
+A syntactically valid name:
+
+* Consists of:
+  + letters: `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`
+  + digits: `0123456789`
+  + period: `.`
+  + underscore: `_`
+
+* begins with a letter or the period (`.`) **not** followed by a number
+
+* cannot be one of the *reserved words*: `if`, `else`, `repeat`, `while`, `function`, `for`, `in`, `next`, `break`, `TRUE`, `FALSE`, `NULL`, `Inf`, `NaN`, `NA`, `NA_integer_`, `NA_real_`, `NA_complex_`, `NA_character_`
+
+* also cannot be: `c`, `q`, `t`, `C`, `D`, `I`
+---
+
+name: naming-styles
+## Naming Style
+Variable names that are legal are not necessarily a good style and they may be dangerous:
+
+
+```r
+F + T  
+F &lt;- T  
+F + T  
+```
+
+```
+## [1] 1
+## [1] 2
+```
+
+
+do not do this! 
+--
+unless you are a politician...
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+.center[.large[Avoid `T` and `F` as variable names.]]
+---
+
+## Customary Variable Names
+Also, there is a number of variable names that are traditionally used to name particular variables:
+
+* `usr` -- user, 
+* `pwd` -- password,
+* `x`, `y`, `z` -- vectors,
+* `w` -- weights,
+* `f`, `g` -- functions,
+* `n` -- number of rows,
+* `p` -- number of columns,
+* `i`, `j`, `k` -- indexes,
+* `df` -- data frame,
+* `cnt` -- counter,
+* `M`, `N`, `W` -- matrices, 
+* `tmp` -- temporary variables
+
+Sometimes these are domain-specific:
+
+* `p`, `q` -- allele frequencies in genetics,
+* `N`, `k` -- number of trials and number of successes in stats
+&lt;br&gt;&lt;br&gt;
+.center[.large[Try to avoid use these in this way to avoid possible confusion.]]
+---
+
+## Different Notations
+People use different notation styles throughout their code:
+* `snake_notation_looks_like_this`,
+* `camelNotationLooksLikeThis`,
+* `period.notation.looks.like.this`,
+* `LousyNotation_looks.likeThis`
+
+Try to be consistent and stick to one of them. Bear in mind `period.notation` is used by S3 classes to create generic functions, e.g. `plot.my.object`. A reason to avoid it?
+
+.center[***]
+
+It is also important to maintain code readability by having your variable names:
+* informative, e.g. `genotypes` vs. `fsjht45jkhsdf4`,
+
+* consistent across your code - the same naming convention,
+
+* not too long, e.g. - `weight` vs. `phenotype.weight.measured`,
+
+* in the period notation and the snake notation avoid `my.var.2` or `my_var_2`, use `my.var2` and `my_var2` instead
+---
+
+## Special Variable Names
+Few more things to consider:
+
+* there are built-in variable names: 
+
+  + LETTERS: the 26 upper-case letters of the Roman alphabet
+
+  + letters: the 26 lower-case letters of the Roman alphabet
+
+  + month.abb: the three-letter abbreviations for the English month names
+
+  + month.name: the English names for the months of the year
+
+  + pi: the ratio of the circumference of a circle to its diameter
+  
+* variable names beginning with period are **hidden**: `.my_secret_variable` will not be shown but can be accessed.
+
+---
+name: structuring_your_code
+## Structure Your Code
+
+Decompose the problem!
+
+.center[
+&lt;img src="./assets/Philip-ii-of-macedon.jpg" class="fancyimage", style="height:200px; box-shadow:0px 0px 0px white"&gt;
+&lt;img src="./assets/Julius_Ceasar.jpg" class="fancyimage", style="height:200px; box-shadow:0px 0px 0px white"&gt;
+&lt;img src="./assets/Napoleon_Bonaparte.jpg" class="fancyimage", style="height:200px; box-shadow:0px 0px 0px white"&gt;&lt;br&gt;
+.vsmall[source: Wikimedia Commons]
+]
+
+--
+
+* *Divide et impera* / top-down approach -- split your BIG problem into small subproblems recursively and, **at some level**, encapsulate your code in functional blocks (functions).
+
+* A function should be performing a small task. Should be a logical program unit.
+
+**When should I write a function?**
+
+* one screen rule (resolution...),
+* re-use twice rule.
+
+Consider creating an S4 class -- data-type safety!
+
+---
+name: how_to_write_functions
+## How to write functions
+
+* Avoid accessing (and modifying) globals!
+
+* Use data as the very first argument (pipes).
+
+* Set parameters to defaults -- better more params than too few.
+
+* Remember that global defaults can be changed by `options`.
+
+* If you are re-using someone else's function -- write a wrapper.
+
+* Showing progress and messages is good, but let the others turn this off.
+
+* If you are calling other functions, consider using `...`
+
+.center[
+&lt;img src="./assets/goto.png" class="fancyimage", style="height:230px; box-shadow:0px 0px 0px white"&gt;&lt;br&gt;
+.vsmall[source: http://www.xkcd/com/292]
+]
+
+---
+name: debugging
+
+## Debugging Your Code 
+
+* Sooner or later ALL of us, even the most experienced programmers, introduce errors to their code.
+
+* *20 percent of the code has 80 percent of the errors. Find them, fix them!* 
+.right[*-- Lowell Arthur*]
+
+* *Beware of bugs in the above code; I have only proved it correct, not tried it.* 
+.right[*-- Donald Knuth*]
+
+* The process of debugging is about confirming, one-by-one, that our beliefs about the code are actually true (loosely inspired by Pete Salzman). 
+
+* Debug in a *top-down* and *modular* manner! provided you have coded in a modular way...
+
+&lt;img src="assets/konqui_debugging.png" style="display:block; width:30%; margin-left:auto; margin-right:auto;"&gt;
+
+---
+name: types_of_bugs
+## Types of bugs
+
+### There are different types of bugs we can introduce:
+* Syntax -- `prin(var1), mean(sum(seq((x + 2) * (y - 9 * b)))`
+
+* Arithmetic -- `x/0` (not in R, though!) `Inf/Inf`
+
+* Type -- `mean('a')`
+
+* Logic -- everything works and produces seemingly valid output that is WRONG!
+
+### To avoid bugs:
+* Encapsulate your code in smaller units (functions), you can test.
+
+* Use classes and type checking.
+
+* Test at the boundaries, e.g. loops at min and max value.
+
+* Feed your functions with test data that should result with a known output.
+
+* Use *antibugging*: `stopifnot(y &lt;= 75)`
+
+---
+name: arithmetic_bugs
+## Arithmetic bugs
+
+
+```r
+(vec &lt;- seq(0.1, 0.9, by=0.1))
+vec == 0.7
+vec == 0.5
+(0.5 + 0.1) - 0.6
+(0.7 + 0.1) - 0.8
+```
+
+```
+## [1] 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
+## [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [1] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+## [1] 0
+## [1] -1.110223e-16
+```
+Beware of floating point arithmetics!
+.small[
+
+```r
+head(unlist(.Machine))
+head(unlist(.Platform))
+```
+
+```
+##     double.eps double.neg.eps    double.xmin    double.xmax    double.base 
+##   2.220446e-16   1.110223e-16  2.225074e-308  1.797693e+308   2.000000e+00 
+##  double.digits 
+##   5.300000e+01 
+##                 OS.type                file.sep              dynlib.ext 
+##                  "unix"                     "/"                   ".so" 
+##                     GUI                  endian                 pkgType 
+##                   "X11"                "little" "mac.binary.el-capitan"
+```
+]
+
+---
+name: error_handling
+## Handling Errors
+
+```r
+input &lt;- c(1, 10, -7, -2/5, 0, 'char', 100, pi)
+for (val in input) {
+  (paste0('Log of ', val, 'is ', log10(val)))
+}
+```
+
+```
+## Error in log10(val): non-numeric argument to mathematical function
+```
+
+One option is to use the `try` block:
+
+```r
+for (val in input) {
+  val &lt;- as.numeric(val)
+  try(print(paste0('Log of ', val, ' is ', log10(val))))
+}
+```
+
+```
+## [1] "Log of 1 is 0"
+## [1] "Log of 10 is 1"
+## [1] "Log of -7 is NaN"
+## [1] "Log of -0.4 is NaN"
+## [1] "Log of 0 is -Inf"
+## [1] "Log of NA is NA"
+## [1] "Log of 100 is 2"
+## [1] "Log of 3.14159265358979 is 0.497149872694133"
+```
+
+---
+name: error_handling_cted
+## Handling Errors with `tryCatch`
+
+```r
+for (val in input) {
+  val &lt;- as.numeric(val)
+  result &lt;- tryCatch(log10(val), 
+              warning = function(w) { print('Negative argument supplied. Negating.'); log10(-val) }, 
+              error = function(e) { print('Not a number!'); NaN })
+  print(paste0('Log of ', val, ' is ', result))
+}
+```
+
+```
+## [1] "Log of 1 is 0"
+## [1] "Log of 10 is 1"
+## [1] "Negative argument supplied. Negating."
+## [1] "Log of -7 is 0.845098040014257"
+## [1] "Negative argument supplied. Negating."
+## [1] "Log of -0.4 is -0.397940008672038"
+## [1] "Log of 0 is -Inf"
+## [1] "Log of NA is NA"
+## [1] "Log of 100 is 2"
+## [1] "Log of 3.14159265358979 is 0.497149872694133"
+```
+
+---
+## Debugging -- Errors and Warnings
+* An error in your code will result in a call to the `stop()` function that:
+
+  + breaks the execution of the program (loop, if-statemetnt, etc.),
+ 
+  + performs the action defined by the global parameter `error`.
+  
+* A warning just prints out the warning message (or reports it in another way).
+
+* Global parameter `error` defines what R should do when an error occurs.
+
+
+```r
+options(error = )
+```
+
+* You can use `simpleError()` and `simpleWarning()` to generate errors and warnings in your code:
+
+```r
+f &lt;- function(x) {
+  if (x &lt; 0) {
+    x &lt;- abs(x)
+    w &lt;- simpleWarning("Value less than 0. Taking abs(x)")
+    w
+  }
+}
+```
+
+
+---
+## Debugging -- What are my Options?
+
+* Old-school debugging: a lot of `print` statements
+  + print values of your variables at some checkpoints,
+  + sometimes fine but often laborious,
+  + need to remove/comment out manually after debugging.
+  
+* Dumping frames
+  + on error, R state will be saved to a file,
+  + file can be read into debugger,
+  + values of all variables can be checked,
+  + can debug on another machine, e.g. send dump to your colleague!
+
+* Traceback
+  + a list of the recent function calls with values of their params,
+
+* Step-by-step debugging
+  + execute code line by line within the debugger
+  
+---
+name: debugging_dump_frames
+## Option 1: Dumping Frames
+
+
+```r
+options(error = quote(dump.frames("testdump", TRUE)))
+
+f &lt;- function(x) {
+    sin(x)
+}
+f('test')
+```
+
+```
+## Error in sin(x): non-numeric argument to mathematical function
+```
+
+```r
+options(error = NULL)
+load("testdump.rda")
+# debugger(testdump)
+```
+
+.smaller[&lt;tt&gt;Message:  Error in sin(x) : non-numeric argument to mathematical function &lt;br&gt;
+Available environments had calls: &lt;br&gt;
+1: f("test") &lt;br&gt;
+ &lt;br&gt;
+Enter an environment number, or 0 to exit   &lt;br&gt;
+Selection: 1 &lt;br&gt;
+Browsing in the environment with call: &lt;br&gt;
+   f("test") &lt;br&gt;
+Called from: debugger.look(ind) &lt;br&gt;
+Browse[1]&gt; x &lt;br&gt;
+[1] "test" &lt;br&gt;
+Browse[1]&gt;  &lt;br&gt;
+[1] "test" &lt;br&gt;
+Browse[1]&gt; 
+&lt;/tt&gt;
+]
+Last empty line brings you back to the environments menu.
+
+---
+name: debugging_traceback
+## Option 2: Traceback
+
+
+```r
+f &lt;- function(x) {
+  log10(x)  
+}
+
+g &lt;- function(x) {
+  f(x)
+}
+g('test')
+```
+
+```
+## Error in log10(x): non-numeric argument to mathematical function
+```
+&lt;tt&gt;
+&gt; traceback()&lt;br&gt;
+2: f(x) at #2&lt;br&gt;
+1: g("test")&lt;br&gt;
+&lt;/tt&gt;
+
+`traceback()` shows what were the function calls and what parameters were passed to them when the error occured.
+
+---
+
+## Option 3: Debug step-by-step
+
+Let us define a new function `h(x, y)`:
+
+```r
+h &lt;- function(x, y) { 
+  f(x) 
+  f(y) 
+  }
+```
+Now, we can use `debug()` to debug the function in a step-by-step manner:
+
+```r
+debug(h)
+h('text', 7)
+undebug(h)
+```
+
+---
+## Option 3: Debug step-by-step cted.
+
+`n` -- execute next line, `c` -- execute whole function, `q` -- quit debugger mode.
+
+&lt;tt&gt;
+&gt; debug(h)&lt;br&gt;
+&gt; h('text', 7)&lt;br&gt;
+debugging in: h("text", 7)&lt;br&gt;
+debug at #1: {&lt;br&gt;
+    f(x)&lt;br&gt;
+    f(y)&lt;br&gt;
+}&lt;br&gt;
+&lt;/tt&gt;
+--
+&lt;tt&gt;Browse[2]&gt; x&lt;br&gt;
+[1] "text"&lt;br&gt;&lt;/tt&gt;
+--
+&lt;tt&gt;Browse[2]&gt; y&lt;br&gt;
+[1] 7&lt;br&gt;&lt;/tt&gt;
+--
+&lt;tt&gt;Browse[2]&gt; n&lt;br&gt;
+debug at #2: f(x)&lt;br&gt;&lt;/tt&gt;
+--
+&lt;tt&gt;Browse[2]&gt; x&lt;br&gt;
+[1] "text"&lt;br&gt;&lt;/tt&gt;
+--
+&lt;tt&gt;Browse[2]&gt; n&lt;br&gt;
+Error in log10(x) : non-numeric argument to mathematical function&lt;br&gt;
+&lt;/tt&gt;
+
+---
+
+name: profiling_proc_time
+## Profiling -- `proc.time()`
+Profiling is the process of identifying memory and time bottlenecks in your code.
+
+
+```r
+proc.time()
+```
+
+```
+##    user  system elapsed 
+##   2.120   0.176   2.321
+```
+* `user time` -- CPU time charged for the execution of user instructions of the calling process, 
+* `system time` -- CPU time charged for execution by the system on behalf of the calling process,
+* `elapsed time` -- total CPU time elapsed for the currently running R process.
+
+
+```r
+pt1 &lt;- proc.time()
+tmp &lt;- runif(n =  10e5)
+pt2 &lt;- proc.time()
+pt2 - pt1
+```
+
+```
+##    user  system elapsed 
+##   0.034   0.003   0.037
+```
+---
+name: profiling_system_time
+
+## Profiling -- `system.time()`
+
+```r
+system.time(runif(n = 10e6))
+system.time(rnorm(n = 10e6))
+```
+
+```
+##    user  system elapsed 
+##   0.377   0.020   0.399 
+##    user  system elapsed 
+##   0.636   0.005   0.646
+```
+
+---
+name: profiling_system_time
+
+## Profiling in Action
+
+Let's see profiling in action! We will define four functions that fill a large vector in two different ways:
+--
+
+```r
+fun_fill_loop1 &lt;- function(n = 10e6, f) {
+  result &lt;- NULL
+  for (i in 1:n) {
+    result &lt;- c(result, eval(call(f, 1)))
+  }
+  return(result)
+}
+```
+--
+
+```r
+fun_fill_loop2 &lt;- function(n = 10e6, f) {
+  result &lt;- vector(length = n)
+  for (i in 1:n) {
+    result[i] &lt;- eval(call(f, 1))
+  }
+  return(result)
+}
+```
+ 
+---
+
+## Profiling in Action cted.
+
+It is maybe better to use...
+--
+vectorization!
+--
+
+```r
+fun_fill_vec1 &lt;- function(n = 10e6, f) {
+  result &lt;- NULL
+  result &lt;- eval(call(f, n))
+  return(result)
+}
+```
+--
+
+```r
+fun_fill_vec2 &lt;- function(n = 10e6, f) {
+  result &lt;- vector(length = n)
+  result &lt;- eval(call(f, n))
+  return(result)
+}
+```
+
+---
+name: compare_loop_vec_sys_time
+
+## Profiling our functions
+
+
+```r
+system.time(fun_fill_loop1(n = 10e4, "runif")) # Loop 1
+system.time(fun_fill_loop2(n = 10e4, "runif")) # Loop 2
+system.time(fun_fill_vec1(n = 10e4, "runif"))  # Vectorized 1
+system.time(fun_fill_vec2(n = 10e4, "runif"))  # Vectorized 2
+```
+
+```
+##    user  system elapsed 
+##  17.723  10.508  28.850 
+##    user  system elapsed 
+##   0.308   0.037   0.346 
+##    user  system elapsed 
+##   0.004   0.000   0.004 
+##    user  system elapsed 
+##   0.005   0.000   0.005
+```
+
+The `system.time()` function is not the most accurate though. During the lab, we will experiment with package `microbenchmark`.
+
+---
+name: Rprof
+## More advanced profiling
+We can also do a bit more advanced profiling, including the memory profiling, using, e.g. `Rprof()` function.
+
+
+And let us summarise:
+.small[
+
+```r
+summary &lt;- summaryRprof('profiler_test.out', memory='both')
+datatable(summary$by.self, options=list(pageLength = 10, searching = F, info = F))
+#knitr::kable(summary$by.self)
+```
+
+<div id="htmlwidget-e851599141187db974b8" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e851599141187db974b8">{"x":{"filter":"none","data":[["\"print.default\"","\"runif\"","\"eval\"","\"fun_fill_loop2\"","\"is.pairlist\"","\"parent.frame\"","\".Call\""],[85.32,0.8,0.53,0.18,0.05,0.04,0.03],[98.13,0.92,0.61,0.21,0.06,0.05,0.03],[85.32,0.8,86.92,1.6,0.05,0.04,0.03],[98.13,0.92,99.97,1.84,0.06,0.05,0.03],[[30617.4],[850.8],[32263.6],[1646.2],[46.2],[47.9],[8.7]]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>self.time<\/th>\n      <th>self.pct<\/th>\n      <th>total.time<\/th>\n      <th>total.pct<\/th>\n      <th>mem.total<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"searching":false,"info":false,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+]
+
+---
+name: profr_package
+## Profiling -- `profr` package
+There are also packages available that enable even more advanced profiling:
+
+
+```r
+library(profr)
+Rprof("profiler_test2.out", interval = 0.01)
+tmp &lt;- table(sort(rnorm(1e5)))
+Rprof(NULL)
+profile_df &lt;- parse_rprof('profiler_test2.out')
+```
+This returns a table that can be visualised:
+
+
+<div id="htmlwidget-d1adbdcc76d9b3a91e90" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d1adbdcc76d9b3a91e90">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12"],[1,2,2,2,3,3,3,3,4,4,4,4],[1,1,2,3,1,2,3,4,1,2,3,4],[1,1,1,1,1,1,1,1,1,1,1,1],["table","sort","factor","as.integer","rnorm","sort.default","unique","as.character","sort.int","unique.default","as.character","unique.default"],[0,0,0.04,0.6,0,0.02,0.04,0.4,0.02,0.04,0.06,0.38],[0.62,0.04,0.6,0.62,0.02,0.04,0.4,0.58,0.04,0.06,0.38,0.4],[1,1,1,1,1,1,1,1,1,1,1,1],[false,false,false,true,true,false,false,true,true,true,true,true],[0.62,0.04,0.56,0.02,0.02,0.02,0.36,0.18,0.02,0.02,0.32,0.02],["base","base","base","base","stats","base","base","base","base","base","base","base"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>level<\/th>\n      <th>g_id<\/th>\n      <th>t_id<\/th>\n      <th>f<\/th>\n      <th>start<\/th>\n      <th>end<\/th>\n      <th>n<\/th>\n      <th>leaf<\/th>\n      <th>time<\/th>\n      <th>source<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"searching":false,"info":false,"columnDefs":[{"className":"dt-right","targets":[1,2,3,5,6,7,9]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+
+---
+name: profr_package_cted
+## Profiling -- `profr` package cted.
+
+We can also use the overloaded `ggplot` function:
+
+
+```r
+profr::ggplot.profr(profile_df)
+```
+
+&lt;img src="pres_best_coding_practises_files/figure-html/show_profr_result_plot-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+name: profviz_package
+## Profiling with `profvis`
+
+Yet another nice way to profile your code is by using Hadley Wickham's `profvis` package:
+
+```r
+library(profvis)
+profvis({fun_fill_loop2(1e4, 'runif')
+  fun_fill_vec2(1e4, 'runif')
+  })
+```
+
+---
+name: profvis_run
+## Profiling with `profvis` cted.
+<div id="htmlwidget-a06892e904392efe8ea5" style="width:100%;height:600px;" class="profvis html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a06892e904392efe8ea5">{"x":{"message":{"prof":{"time":[1,1,2,2,2,3,3,3,3,4,4,4,4],"depth":[2,1,3,2,1,4,3,2,1,4,3,2,1],"label":["eval","fun_fill_loop2","parent.frame","eval","fun_fill_loop2","runif","eval","eval","fun_fill_loop2","runif","eval","eval","fun_fill_loop2"],"filenum":[null,2,null,null,2,null,null,null,2,null,null,null,2],"linenum":[null,2,null,null,2,null,null,null,2,null,null,null,2],"memalloc":[31.8302154541016,31.8302154541016,37.2595291137695,37.2595291137695,37.2595291137695,42.2211380004883,42.2211380004883,42.2211380004883,42.2211380004883,48.1784591674805,48.1784591674805,48.1784591674805,48.1784591674805],"meminc":[0,0,5.42931365966797,0,0,4.96160888671875,0,0,0,5.95732116699219,0,0,0],"filename":[null,"<expr>",null,null,"<expr>",null,null,null,"<expr>",null,null,null,"<expr>"]},"interval":10,"files":[{"filename":"<expr>","content":"library(profvis)\nprofvis({fun_fill_loop2(1e4, 'runif')\n  c()\n  })","normpath":"<expr>"}],"prof_output":"/var/folders/rr/w9_s8rqj1k1gt_b12g9jy1k40000gn/T//RtmpgOVACZ/file9f2f6c37df6e.prof","highlight":{"output":["^output\\$"],"gc":["^<GC>$"],"stacktrace":["^\\.\\.stacktraceo(n|ff)\\.\\.$"]},"split":"h"}},"evals":[],"jsHooks":[]}</script>
+
+---
+name: optimizing_code1
+## Optimizing your code
+
+*We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%. A good programmer will not be delulled into complacency by such reasoning, he will be wise to look carefully at the critical code; but only after that code has been identified.*
+&lt;br&gt;&lt;br&gt;
+*-- Donald Knuth*  
+
+&lt;div class="pull-left"&gt;
+&lt;img src="./assets/xkcd_automation.png" style="height:300px;"&gt;
+&lt;br&gt;
+.vsmall[source: http://www.xkcd/com/1319]
+&lt;/div&gt;
+
+&lt;div class="pull-right"&gt;
+&lt;img src="./assets/xkcd_is_it_worth_the_time_2x.png" style="height:300px;"&gt;
+&lt;br&gt;
+.vsmall[source: http://www.xkcd/com/1205]
+&lt;/div&gt;
+
+---
+name: optimization_types
+## Ways to optimize the code
+
+* write it in a more efficient way, e.g. use vectorization or `*apply` family instead of loops etc.,
+* allocating memory to avoid copy-on-modify,
+* use package `BLAS` for linear algebra,
+* use `bigmemory` package,
+* GPU computations,
+* multicore support, e.g. `multicore`, `snow`
+* use `data.table` or `tibble` instead of `data.frame`
+
+---
+name: copy-on-modify
+## Copy-on-modify
+
+
+```r
+library(pryr)
+order &lt;- 1024
+matrix_A &lt;- matrix(rnorm(order^2), nrow = order)
+matrix_B &lt;- matrix_A
+```
+--
+Check where the objects are in the memory:
+--
+
+```r
+address(matrix_A)
+address(matrix_B)
+```
+
+```
+## [1] "0x10ca0b000"
+## [1] "0x10ca0b000"
+```
+--
+What happens if we modify a value in one of the matrices?
+--
+
+```r
+matrix_B[1,1] &lt;- 1
+address(matrix_A)
+address(matrix_B)
+```
+
+```
+## [1] "0x10ca0b000"
+## [1] "0x10d20c000"
+```
+
+---
+## Avoid copying by allocating memory
+
+### No memory allocation
+
+```r
+f1 &lt;- function(to = 3, silent=F) {
+  tmp &lt;- c()
+  for (i in 1:to) {
+    a1 &lt;- address(tmp)
+    tmp &lt;- c(tmp, i)
+    a2 &lt;- address(tmp)
+    if(!silent) { print(paste0(a1, " --&gt; ", a2)) } 
+  }
+}
+f1()
+```
+
+```
+## [1] "0x7fa4f2804ce0 --&gt; 0x7fa4f6cbe4b8"
+## [1] "0x7fa4f6cbe4b8 --&gt; 0x7fa4f6caca08"
+## [1] "0x7fa4f6caca08 --&gt; 0x7fa4fae658c8"
+```
+
+---
+## Avoid copying by allocating memory cted.
+
+### With allocation
+
+```r
+f2 &lt;- function(to = 3, silent = FALSE) {
+  tmp &lt;- vector(length = to, mode='numeric')
+  for (i in 1:to) {
+    a1 &lt;- address(tmp)
+    tmp[i] &lt;- i
+    a2 &lt;- address(tmp)
+    if(!silent) { print(paste0(a1, " --&gt; ", a2)) }
+  }
+}
+f2()
+```
+
+```
+## [1] "0x7fa4fa0441c8 --&gt; 0x7fa4fa0441c8"
+## [1] "0x7fa4fa0441c8 --&gt; 0x7fa4fa0441c8"
+## [1] "0x7fa4fa0441c8 --&gt; 0x7fa4fa0441c8"
+```
+
+---
+## Allocating memory -- benchmark.
+
+```r
+library(microbenchmark)
+benchmrk &lt;- microbenchmark(f1(to = 1e3, silent = T), 
+                           f2(to = 1e3, silent = T), 
+                           times = 100L)
+autoplot(benchmrk)
+```
+
+&lt;img src="pres_best_coding_practises_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+## GPU
+
+```r
+library(gpuR)
+library(microbenchmark)
+A = matrix(rnorm(1000^2), nrow=1000) # stored: RAM, computed: CPU
+B = matrix(rnorm(1000^2), nrow=1000) 
+gpuA = gpuMatrix(A, type = "double") # stored: RAM, computed: GPU
+gpuB = gpuMatrix(B, type = "double")
+vclA = vclMatrix(A, type = "double") # stored: GPU, computed: GPU
+vclB = vclMatrix(B, type = "double")
+bch &lt;- microbenchmark(
+  cpuC = A %*% B,
+  gpuC = gpuA %*% gpuB,
+  vclC = vclA %*% vclB, 
+  times = 10L) 
+```
+.small[
+More on [Charles Determan's Blog](https://www.r-bloggers.com/r-gpu-programming-for-all-with-gpur/).
+]
+
+---
+## GPU cted.
+
+```r
+autoplot(bch)
+```
+
+&lt;img src="pres_best_coding_practises_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+## Parallelization using package `parallel`
+Easiest to paralllelize is `lapply`:
+
+```r
+result &lt;- lapply(1:2, function(x) { c(x, x^2, x^3) } )
+result
+```
+
+```
+## [[1]]
+## [1] 1 1 1
+## 
+## [[2]]
+## [1] 2 4 8
+```
+
+
+```r
+library(parallel)
+num_cores &lt;- detectCores() - 1
+cl &lt;- makeCluster(num_cores) # Init cluster
+parLapply(cl, 1:2, function(x) { c(x, x^2, x^3)} )
+stopCluster(cl)
+```
+
+```
+## [[1]]
+## [1] 1 1 1
+## 
+## [[2]]
+## [1] 2 4 8
+```
+
+---
+name: end-slide
+class: end-slide
+
+&lt;h2 style="color:#fff"&gt; Thank you&lt;/h2&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="assets/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "4:3",
+"highlightLanguage": "r",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "RaukR 2019 • %current%/%total%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

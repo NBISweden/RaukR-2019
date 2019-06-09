@@ -6,9 +6,14 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
 ### Week 1
 #### 10-Jun-2019 (Mon)
 
-* **Reproducible research** (*Author:* Roy Francis, *Reviewer:* NA)
+* **Reproducible research** (*Author:* Roy Francis, *Reviewer:* Marcin Kierczak)
     + [Presentation](rr/presentation/rr_presentation.html)
     + [Lab](rr/lab/rr_lab.html)
+
+* **Best Coding Practises** (*Author:* Marcin Kierczak, *Reviewer:* 
+R.F. Francis)
+	+ [Presentation](best_coding_practises_Marcin/presentation/pres_best_coding_practises.html)
+	+ [Lab](best_coding_practises_Marcin/lab/BestCodingPractisesLab.html)
 
 #### 11-Jun-2019 (Tue)
 #### 12-Jun-2019 (Wed)
@@ -23,7 +28,6 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
 * **shiny** (*Author:* Roy Francis, *Reviewer:* NA)
     + [Presentation](shiny/presentation/shiny_presentation.html)
     + [Lab](shiny/lab/shiny_lab.html)
-
 
 ### Week 2
 #### 17-Jun-2019 (Mon)
