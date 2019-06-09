@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Marcin Kierczak" />
+
+
+<title>Best Coding Practices – tidy, neat and efficient code</title>
+
+<script src="BestCodingPractisesLab_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="BestCodingPractisesLab_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="BestCodingPractisesLab_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="BestCodingPractisesLab_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="BestCodingPractisesLab_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="BestCodingPractisesLab_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="BestCodingPractisesLab_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="BestCodingPractisesLab_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="BestCodingPractisesLab_files/navigation-1.1/tabsets.js"></script>
+<link href="BestCodingPractisesLab_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="BestCodingPractisesLab_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="BestCodingPractisesLab_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="BestCodingPractisesLab_files/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="BestCodingPractisesLab_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="BestCodingPractisesLab_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="BestCodingPractisesLab_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Best Coding Practices – tidy, neat and efficient code</h1>
+<h3 class="subtitle">RaukR 2019 • Advanced R for Bioinformatics</h3>
+<h4 class="author">Marcin Kierczak</h4>
+
+</div>
+
+
+<p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<hr />
+<p class="abstract">
+The objective of this lab is to improve your coding skills by focusing on coding style, code benchmarking and optimization. Below, you will find a number of tasks connected to the topics covered in the <em>Best Coding Practices</em> lecture. Some tasks extend lectures content and require you to find some more information online. Please, note that while we are providing example solutions to many tasks, these are only <strong>examples</strong>. If you solve a task in a different way it does not matter your solution is wrong. In fact, it may be better than our solution. If in doubt, ask PI for help. We are here for you!
+</p>
+<hr />
+<div id="coding-style" class="section level1">
+<h1><span class="header-section-number">1</span> Coding Style</h1>
+<div id="task-valid-variable-names." class="section level2">
+<h2><span class="header-section-number">1.1</span> Task: Valid Variable Names.</h2>
+<p>Which of the following are valid/good variable names in R. What is wrong with the ones that are invalid/bad?
+<code>var1</code>, <code>3way_handshake</code>, <code>.password</code>, <code>__test__</code>, <code>my-matrix-M</code>, <code>three.dimensional.array</code>, <code>3D.distance</code>, <code>.2objects</code>, <code>wz3gei92</code>, <code>next</code>, <code>P</code>, <code>Q</code>, <code>R</code>, <code>S</code>, <code>T</code>, <code>X</code>, <code>is.larger?</code></p>
+</div>
+<div id="task-obscure-code." class="section level2">
+<h2><span class="header-section-number">1.2</span> Task: Obscure Code.</h2>
+<p>The code below works, but can be improved. Do improve it!</p>
+<pre><code>myIterAtoR.max &lt;- 5
+second_iterator.max&lt;-7
+col.NUM= 10
+row.cnt =10
+fwzy45 &lt;- matrix(rep(1, col.NUM*row.cnt),nrow=row.cnt)
+for(haystack in (2-1):col.NUM){
+  for(needle in 1:row.cnt) {
+if(haystack&gt;=myIterAtoR.max){
+fwzy45[haystack, needle]&lt;-NA}
+}}</code></pre>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>iter_max &lt;- 5
+col_num &lt;- 10
+row_num &lt;- 10
+A &lt;- matrix(rep(1, col_num * row_num), nrow = row_num)
+for (i in 1:col_num) {
+  for (j in 1:row_num) {
+    if (i &gt;= iter_max) {
+      A[i, j] &lt;- NA
+    }
+  }
+}
+
+# Can you improve the code more by eliminating loops or at least one of them?</code></pre>
+</div>
+</div>
+</div>
+<div id="task-better-formatting." class="section level2">
+<h2><span class="header-section-number">1.3</span> Task: Better Formatting.</h2>
+<p>Improve formatting and style of the following code:</p>
+<pre><code>simulate_genotype &lt;- function( q, N=100 ) {
+  if( length(q)==1 ){
+    p &lt;- (1 - q)
+    f_gt &lt;- c(p^2, 2*p*q, q^2) # AA, AB, BB
+  }else{
+    f_gt&lt;-q
+  }
+  tmp &lt;- sample( c(&#39;AA&#39;,&#39;AB&#39;,&#39;BB&#39;), size =N, prob=f_gt, replace=T )
+  return(tmp)
+}</code></pre>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>simulate_genotype &lt;- function(q, N = 100) {
+  if (length(q) == 1) {
+    p &lt;- (1 - q)
+    f_gt &lt;- c(p^2, 2*p*q, q^2) # AA, AB, BB
+  } else {
+    f_gt &lt;- q
+  }
+  genotype &lt;- sample(c(&#39;AA&#39;, &#39;AB&#39;, &#39;BB&#39;), 
+                     size = N, 
+                     prob = f_gt, 
+                     replace = T)
+  return(genotype)
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="task-hidden-variable." class="section level2">
+<h2><span class="header-section-number">1.4</span> Task: Hidden Variable.</h2>
+Assign a vector of three last months (abbreviated in English) in a year to a hidden variable <code>my_months</code>.
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>.my_months &lt;- rev(rev(month.abb)[1:3])</code></pre>
+</div>
+</div>
+</div>
+<div id="task-pipeline-friendly-function." class="section level2">
+<h2><span class="header-section-number">1.5</span> Task: Pipeline-friendly Function.</h2>
+<p>Modify the function below so that it works with R pipes <code>%&gt;%</code>:</p>
+<pre><code>my_filter &lt;- function(threshold = 1, data, scalar = 5) {
+  data[data &gt;= threshold] &lt;- NA 
+  data &lt;- data * scalar
+  return(data)
+}</code></pre>
+<p><strong>Note</strong> you need to have the <code>magrittr</code> or <code>tidyverse</code> package loaded in order to be able to use the pipe <code>%&gt;%</code>!</p>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>my_filter &lt;- function(data, threshold = 1, scalar = 5) {
+  data[data &gt;= threshold] &lt;- NA 
+  data &lt;- data * scalar
+  return(data)
+}
+
+# Test:
+c(-5, 5) %&gt;% my_filter()</code></pre>
+</div>
+</div>
+</div>
+<div id="task-untidy-code" class="section level2">
+<h2><span class="header-section-number">1.6</span> Task: Untidy Code?</h2>
+<p>Is the code below correct? Can it be improved?</p>
+<pre><code>simulate_phenotype &lt;- function(pop_params, gp_map, gtype) {
+  pop_mean &lt;- pop_params[1]
+  pop_var &lt;- pop_params[2]
+  pheno &lt;- rnorm(n = N, mean = pop_mean, sd = sqrt(pop_var))
+  effect &lt;- rep(0, times = length(N))
+  for (gt_iter in c(&#39;AA&#39;, &#39;AB&#39;, &#39;BB&#39;)) {
+    effect[gtype == gt_iter] &lt;- rnorm(n = sum(gtype == gt_iter), 
+                                      mean = gp_map[gt_iter, &#39;mean_eff&#39;], 
+                                      sd = sqrt(gp_map[gt_iter, &#39;var_eff&#39;]))
+  }
+  dat &lt;- data.frame(gt = gtype, raw_pheno = pheno, effect = effect, pheno = pheno + effect)
+  return(dat)
+}</code></pre>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>Maybe some small improvements can be done, but in principle the code is clean! Except that... the N is not initialized anywhere.</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="structuring-the-code" class="section level1">
+<h1><span class="header-section-number">2</span> Structuring the Code</h1>
+<div id="task-computing-variance." class="section level2">
+<h2><span class="header-section-number">2.1</span> Task: Computing Variance.</h2>
+<p>Write a modular code (function or functions) that computes the sample standard deviation given a vector of numbers. Decide how to logically structure the code. Assume there are no built-in R functions for computing mean and variance available. The formula for variance is: <span class="math inline">\(SD = \sqrt{\frac{\Sigma_{i=1}^{N}(x_i - \bar{x})^2}{N-1}}\)</span>. Standard deviation is <span class="math inline">\(Var=SD^2\)</span>.<br />
+<br>
+<strong>Hint:</strong> consider that you may want to re-use some computed values in future, e.g. variance.</p>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>sample_mean &lt;- function(x) {
+  mean &lt;- sum(x) / length(x)
+  return(mean)
+} 
+
+sum_squared_deviations &lt;- function(x) {
+  tmp &lt;- (x - sample_mean(x)) ^ 2
+  sum_sq_dev &lt;- sum(tmp)
+  return(sum_sq_dev)
+}
+
+std_dev &lt;- function(x) {
+  variance &lt;- sqrt(sum_squared_deviations(x) / (length(x) - 1))
+  return(variance)
+}
+
+variance &lt;- function(x) {
+  return(std_dev(x) ^ 2)
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="task-writing-a-wrapper-function." class="section level2">
+<h2><span class="header-section-number">2.2</span> Task: Writing a Wrapper Function.</h2>
+<p>You found two functions in two different packages: the <code>randomSampleInt</code> function that generates a random sample of integer numbers and the <code>randomSampleLetter</code> function for generating a random sample of letters. Unfortunately, the functions are called in different ways which you want to unify in order to use them interchangeably in your code. Write a wrapper function around the <code>randomSampleLetter</code> that will provide the same interface to the function as the <code>randomSampleInt</code>. Also, the <code>randomSampleLetter</code> cannot handle the seed. Can you add this feature to your wrapper?</p>
+<pre><code>randomSampleInt &lt;- function(x, verbose, length, seed = 42) {
+  if (verbose) {
+    print(paste0(&#39;Generating random sample of &#39;, length, &#39; integers using seed &#39;, seed))
+  }
+  set.seed(seed)
+  sampleInt &lt;- sample(x = x, size = length, replace = TRUE)
+  return(sampleInt)
+} 
+
+randomSampleLetter &lt;- function(N, silent=T, lett) {
+  if (!silent) {
+    print(paste0(&#39;Generating random sample of &#39;, N, &#39; letters.&#39;))
+  }
+  sample &lt;- sample(x = lett, size = N, replace = TRUE)
+  return(sample)
+}</code></pre>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>randomSampleLetterWrapper &lt;- function(x, verbose, length, seed = 42) {
+  set.seed(seed)
+  result &lt;- randomSampleLetter(N = length, silent = !verbose, lett = x)
+  return(result)
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="task-customizing-plot." class="section level2">
+<h2><span class="header-section-number">2.3</span> Task: Customizing <code>plot</code>.</h2>
+<p>Write a wrapper around the <code>graphics::plot</code> function that modifies its default behaviour so that it plots red crosses instead of black points. Do it in a way that enables the user to modify other function arguments. <strong>Hint:</strong> you may want to have a look at <code>graphics::plot.default</code>.</p>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>my_plot &lt;- function(x, ...) {
+  plot(x, pch = 3, color = &#39;red&#39;, ...) 
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="task-adding-arguments-to-a-function." class="section level2">
+<h2><span class="header-section-number">2.4</span> Task: Adding Arguments to a Function.</h2>
+<p>What if you want to pass some additional parameters to a function and, sadly, the authors forgot to add <code>...</code> to the list of function arguments. There is a way out – you can bind extra arguments supplied as <code>alist</code> structure to the original function arguments retrieved by <code>formals</code>. Try to fix the function below, so that the call <code>red_plot(1, 1, col='red', pch=19)</code> will result in points being represented by red circles. Do use <code>alist</code> and <code>formals</code> and do not edit the <code>red_plot</code> itself! <strong>Hint:</strong> read help for <code>alist</code> and <code>formals</code>. Original function:</p>
+<pre><code>red_plot &lt;- function(x, y) { 
+  plot(x, y, las=1, cex.axis=.8, ...)
+}</code></pre>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>red_plot &lt;- function(x, y) { 
+  plot(x, y, las=1, cex.axis=.8, ...)
+}
+
+red_plot(1, 1, col=&#39;red&#39;, pch=19) # Does not work.
+formals(red_plot) &lt;- c(formals(red_plot), alist(... = )) # Fix.
+red_plot(1, 1, col=&#39;red&#39;, pch=19) # Works!</code></pre>
+</div>
+</div>
+</div>
+<div id="task-using-options." class="section level2">
+<h2><span class="header-section-number">2.5</span> Task: Using <code>options</code>.</h2>
+<p>Use <code>options</code> to change the default prompt in R to <code>hello :-) &gt;</code>.
+Check what options are stored in the <strong>hidden</strong> variable called <em>Options</em>.</p>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>options(prompt = &quot;hello :-) &gt; &quot;)
+.Options
+options(prompt = &quot;&gt; &quot;) # restoring the default</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="debugging" class="section level1">
+<h1><span class="header-section-number">3</span> Debugging</h1>
+<div id="task-code-correctness" class="section level2">
+<h2><span class="header-section-number">3.1</span> Task: Code Correctness</h2>
+<p>Which of the following chunks of code are correct and which contain errors? Identify these errors.</p>
+<div id="chunk-1" class="section level3">
+<h3><span class="header-section-number">3.1.1</span> Chunk 1</h3>
+<pre><code>input &lt;- sample(1:1000, size = 1000, replace = T)
+currmin &lt;- NULL
+for (i in input) {
+  if (input &gt; currmin) {
+    currmin &lt;- input
+    print(paste0(&quot;The new minimum is: &quot;, currmin))
+  }
+}</code></pre>
+</div>
+<div id="chunk-2" class="section level3">
+<h3><span class="header-section-number">3.1.2</span> Chunk 2</h3>
+<pre><code>input &lt;- sample(1:1000, size = 1000, replac = T)
+currmin &lt;- NULL
+for (i in input) {
+  if (input &lt; currmin) {
+    currmin &lt;- input
+    print(paste0(&quot;The new minimum is: &quot;, currmin))
+  }
+}</code></pre>
+</div>
+<div id="chunk-3" class="section level3">
+<h3><span class="header-section-number">3.1.3</span> Chunk 3</h3>
+<pre><code>for (cnt in 1:100) {
+  if (cnt &gt; 12) {
+    print(&quot;12+&quot;)
+  } else {
+    print(&quot;Not 12+&quot;)
+  }
+}</code></pre>
+</div>
+<div id="chunk-4" class="section level3">
+<h3><span class="header-section-number">3.1.4</span> Chunk 4</h3>
+<pre><code>result &lt;- logical(10)
+input &lt;- sample(1:10, size = 10, replace = T)
+for (i in 0:length(input)) {
+  if (input[i] &gt;= 5) {
+    result[i] &lt;- TRUE
+  }
+}</code></pre>
+</div>
+</div>
+<div id="task-debugger." class="section level2">
+<h2><span class="header-section-number">3.2</span> Task: Debugger.</h2>
+<p>Play with debugger as described in lecture slides 17-21.</p>
+</div>
+<div id="task-floating-point-arithmetics." class="section level2">
+<h2><span class="header-section-number">3.3</span> Task: Floating-point Arithmetics.</h2>
+<p>Can you fix the code below so that it produces more reliable result?
+<br>
+<strong>Hint:</strong> think in terms of system-specific representation <span class="math inline">\(\epsilon\)</span>.<br />
+<br>
+Put the value of your double <span class="math inline">\(\epsilon\)</span> into <a href="https://docs.google.com/spreadsheets/d/1_2tDeEkDVS06RkB437yBI1XEB5SUebtHWyxAf_aRJu4/edit?usp=sharing">this spreadsheet</a> (Best Coding Practises Lab sheet).</p>
+<pre><code>vec &lt;- seq(0.1, 0.9, by=0.1)
+vec == 0.7</code></pre>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code># One way is to use epsilon
+# Check machine&#39;s floating point representation
+vec &lt;- seq(0.1, 0.9, by=0.1)
+
+# Make a custom function that uses machines&#39; epsilon for comparing
+# values
+is_equal &lt;- function(x, y) {
+  isEqual &lt;- F
+  if (abs(x - y) &lt; unlist(.Machine)[&#39;double.eps&#39;]) {
+    isEqual &lt;- T
+  }
+  isEqual
+}
+
+# Some tests
+0.7 == 0.6 + 0.1
+is_equal(0.7, 0.6 + 0.1)
+0.7 == 0.8 - 0.1
+is_equal(0.7, 0.8 - 0.1)
+
+# Now you can use the is_equal to fix the code!</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="profiling" class="section level1">
+<h1><span class="header-section-number">4</span> Profiling</h1>
+<div id="task-filling-a-large-matrix." class="section level2">
+<h2><span class="header-section-number">4.1</span> Task: Filling A Large Matrix.</h2>
+<p>Create a 10 000 x 10 000 matrix and fill it with random numbers (from 1 to 42), first row by row and later column by column. Use <code>proc.time</code> to see if there is any difference. Is the measurement reliable? Record the values you got in this spreadsheet:</p>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>N &lt;- 10e3 * 10e3
+
+# By row
+t1 &lt;- proc.time()
+M &lt;- matrix(sample(1:42, size = N, replace = T), nrow = sqrt(N), byrow = T)
+t2 &lt;- proc.time()
+(t2 - t1)
+
+# By column
+t1 &lt;- proc.time()
+M &lt;- matrix(sample(1:42, size = N, replace = T), nrow = sqrt(N), byrow = F)
+t2 &lt;- proc.time()
+(t2 - t1)</code></pre>
+</div>
+</div>
+</div>
+<div id="task-timing-reliability." class="section level2">
+<h2><span class="header-section-number">4.2</span> Task: Timing Reliability.</h2>
+<p>In the lecture slides, you have seen how to time sampling from Gaussian distribution:</p>
+<pre><code>system.time(rnorm(n = 10e6))</code></pre>
+<p>Is such single measurement reliable? Run the code 100 times, plot and record the mean and the variance of the <code>elapsed</code> time. Put these values (elapsed.time mean and variance) into <a href="https://docs.google.com/spreadsheets/d/1_2tDeEkDVS06RkB437yBI1XEB5SUebtHWyxAf_aRJu4/edit?usp=sharing">this spreadsheet</a> (Best Coding Practises Lab sheet).</p>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>timing &lt;- double(100)
+for (i in 1:100) {
+  st &lt;- system.time(rnorm(n = 10e6))
+  timing[i] &lt;- st[3]
+}
+boxplot(timing) 
+mean(timing)
+var(timing)</code></pre>
+</div>
+</div>
+<p>An alternative approach or, more exactly, an alternative notation that achieves the same as the previous chunk of code but in a more compact way makes use of the <code>replicate</code>, a wrapper function around <code>sapply</code> that simplifies repeated evaluation of expressions. The drawback is you do not get the vector of the actual timing values but the results of calling <code>system.time</code> are already averaged for you. Try to read about the <code>replicate</code> and use it to re-write the code above. Put the <code>elapsed.time</code> into <a href="https://docs.google.com/spreadsheets/d/1_2tDeEkDVS06RkB437yBI1XEB5SUebtHWyxAf_aRJu4/edit?usp=sharing">this spreadsheet</a> (Best Coding Practises Lab sheet). How does this value compare to calling <code>system.time</code> within a loop in the previous chunk of code? Are the values similar?</p>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>st2 &lt;- system.time(replicate(n = 100, rnorm(n = 10e6)))</code></pre>
+</div>
+</div>
+</div>
+<div id="task-microbenchmarking." class="section level2">
+<h2><span class="header-section-number">4.3</span> Task: Microbenchmarking.</h2>
+<p>While <code>system.time</code> might be sufficient most of the time, there is also an excellent package <code>microbenchmark</code> that enables more accurate time profiling, aiming at microsecond resolution that most of modern operating systems offer. Most of the benchmarking the <code>microbenchmark</code> does is implemented in low-overhead C functions and also the package makes sure to:
+* estimate granularity and resolution of timing for your particular OS,
+* warm up your processor before measuring, i.e. wake the processor up from any idle state or likewise.</p>
+<p>Begin by installing the <code>microbenchmark</code> package.</p>
+<div id="checking-system-time." class="section level3">
+<h3><span class="header-section-number">4.3.1</span> Checking System Time.</h3>
+Check the current value of the platform’s timer.
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>microbenchmark::get_nanotime()</code></pre>
+</div>
+</div>
+<p>Modify the code below so that it uses the current value of platform’s timer:</p>
+<pre><code>timing &lt;- double(100)
+for (i in 1:100) {
+  st &lt;- system.time(rnorm(n = 10e6))
+  timing[i] &lt;- st[3]
+}
+boxplot(timing)</code></pre>
+Put the mean and the variance into <a href="https://docs.google.com/spreadsheets/d/1_2tDeEkDVS06RkB437yBI1XEB5SUebtHWyxAf_aRJu4/edit?usp=sharing">this spreadsheet</a> (Best Coding Practises Lab sheet, Microbenchmark – loop)
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>library(microbenchmark)
+timing &lt;- double(100)
+for (i in 1:100) {
+  nanotime_start &lt;- get_nanotime()
+  rnorm(n = 10e6)
+  nanotime_stop &lt;- get_nanotime()
+  timing[i] &lt;- nanotime_stop - nanotime_start
+}
+mean(timing)
+var(timing)
+boxplot(timing)</code></pre>
+</div>
+</div>
+</div>
+<div id="microtiming-precision." class="section level3">
+<h3><span class="header-section-number">4.3.2</span> Microtiming Precision.</h3>
+There is an experimental function in the <code>microbenchmark</code> package that helps the package estimate granularity and resolution of your particular timing subsystem. According to the documentation, <em>the function measures the overhead of timing a C function call rounds times and returns all non-zero timings observed.</em>
+<br>
+Run the <code>microtiming_precision</code> function and put the mean and the variance of the resulting vector into <a href="https://docs.google.com/spreadsheets/d/1_2tDeEkDVS06RkB437yBI1XEB5SUebtHWyxAf_aRJu4/edit?usp=sharing">this spreadsheet</a> (Best Coding Practises Lab sheet, Microbenchmark – precision)
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>precision &lt;- microbenchmark::microtiming_precision()
+mean(precision)
+var(precision)</code></pre>
+</div>
+</div>
+Run the function one time without assigning its value to a variable and consult the documentation. Compare the output of running the function without assigning the value to a variable, the values stored in the variable by the function upon assignment and the value specified in the documentation.
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code># In version 1.4-4 of the package, all three ways give different results!
+microbenchmark::microtiming_precision()
+precision &lt;- microbenchmark::microtiming_precision()
+?microbenchmark::microtiming_precision</code></pre>
+</div>
+</div>
+</div>
+<div id="the-microbenchmark-way." class="section level3">
+<h3><span class="header-section-number">4.3.3</span> The Microbenchmark Way.</h3>
+<p>Finally, let’s benchmark our <code>rnorm</code> example using <code>microbenchmark</code>:</p>
+<ul>
+<li>microbenchmark the <code>rnorm(n = 10e6)</code> expression,</li>
+<li>plot the results using both <code>ggplot2</code> and a boxplot (read the <code>microbenchmark</code> package documentation),</li>
+<li>look at the summary of the benchmark,</li>
+<li>how long does it take to dispatch a simple function that does nothing compared to evaluating a constant and adding two integers?</li>
+</ul>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>require(microbenchmark)
+require(ggplot2)
+mb &lt;- microbenchmark(rnorm(n = 10e6))
+autoplot(mb)
+boxplot(mb)
+summary(mb)
+f &lt;- function() {}
+mb2 &lt;- microbenchmark(f(), pi, 2+2)
+summary(mb2)
+autoplot(mb2)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="task-more-advanced-profiling." class="section level2">
+<h2><span class="header-section-number">4.4</span> Task: More Advanced Profiling.</h2>
+<p>Now, we will use a even more sophisticated approach to profiling.</p>
+<div id="the-rprof-way." class="section level3">
+<h3><span class="header-section-number">4.4.1</span> The <code>Rprof</code> way.</h3>
+<ul>
+<li><p>Write three functions that fill by row a <span class="math inline">\(N \times N\)</span> matrix <span class="math inline">\(M\)</span> with randomly generated numbers from a vector given as argument <code>bag</code>, allow for passing random seed value as function argument with the default value of 42. After filling the matrix with values, add to each and every element of <span class="math inline">\(M\)</span> the number of column the element is in and return such matrix from the function. Functions should:</p></li>
+<li><code>fill_alloc</code>) – use memory allocation prior to loop in which the matrix is being filled and allocate memory using <code>init</code> value passed as argument and by default set to <code>NULL</code>,</li>
+<li><code>fill_noalloc</code> – not use memory allocation prior to the loop,</li>
+<li><p><code>fill_noloop</code> should not the loop for filling the matrix in.</p></li>
+</ul>
+<p>** NOTE! ** do not perform addition of column number in the same</p>
+<p>Following this and using <code>rnorm(1000, mean = 0, sd = 1)</code>:</p>
+<ul>
+<li>use <code>Rprof</code> to profile the functinos using the same seed and N=100,</li>
+<li>use <code>Rprof</code> to check whether there is a difference between initializing the matrix using <code>NULL</code> and 0 in <code>fill_alloc</code>,</li>
+<li>what happens if <span class="math inline">\(N = 10\)</span> compared to <span class="math inline">\(N = 20\)</span> to <span class="math inline">\(N = 100\)</span>?</li>
+</ul>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>fill_noloop &lt;- function(N, bag, seed = 42) {
+  set.seed(seed)
+  values &lt;- sample(bag, size = N^2, replace = T)
+  M &lt;- matrix(data = values, nrow = N, byrow = T)
+  for (col_num in 1:N) {
+    M[, col_num] &lt;- M[, col_num] + col_num
+  }
+  return(M)
+}
+
+fill_noalloc &lt;- function(N, bag, seed = 42) {
+  set.seed(seed)
+  values &lt;- sample(bag, size = N^2, replace = T)
+  M &lt;- NULL
+  cnt = 1
+  for (row in 1:N) {
+    row_tmp &lt;- c()
+    for (col in 1:N) {
+      row_tmp &lt;- c(row_tmp, values[cnt])
+      cnt &lt;- cnt + 1
+    }
+    M &lt;- rbind(M, row_tmp)
+  }
+  for (col_num in 1:N) {
+    M[, col_num] &lt;- M[, col_num] + col_num
+  }
+  return(M)
+}
+
+fill_alloc &lt;- function(N, bag, seed = 42, init = NA) {
+  set.seed(seed)
+  values &lt;- sample(bag, size = N^2, replace = T)
+  M &lt;- matrix(rep(init, times=N^2), nrow = N, byrow = T)
+  cnt = 1
+  for (row in 1:N) {
+    for (col in 1:N) {
+      M[row, col] &lt;- values[cnt]
+      cnt &lt;- cnt + 1
+    }
+  }
+  for (col_num in 1:N) {
+    M[, col_num] &lt;- M[, col_num] + col_num
+  }
+  return(M)
+}
+
+summary &lt;- summaryRprof(&#39;profiler_test_fillers.out&#39;, memory=&#39;both&#39;)
+summary$by.self
+
+# answers to the remaining questions are not given</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="optimization" class="section level2">
+<h2><span class="header-section-number">4.5</span> Optimization</h2>
+<p>Have a look at our answers.</p>
+<ul>
+<li>How can you optimize the <code>fill_alloc</code> even further (call the optimized version <code>fill_alloc_opt</code>)?</li>
+</ul>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>fill_alloc_opt &lt;- function(N, bag, seed = 42, init = NA) {
+  set.seed(seed)
+  values &lt;- sample(bag, size = N^2, replace = T)
+  M &lt;- matrix(rep(init, times=N^2), nrow = N, byrow = T)
+  cnt = 1
+  for (row in 1:N) {
+    for (col in 1:N) {
+      M[row, col] &lt;- values[cnt] + col
+      cnt &lt;- cnt + 1
+    }
+  }
+  return(M)
+}</code></pre>
+</div>
+</div>
+<ul>
+<li>Optimize the <code>fill_noloop</code> to <code>fill_noloops</code> that does not use any loops at all.</li>
+</ul>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>fill_noloops &lt;- function(N, bag, seed = 42) {
+  values &lt;- sample(bag, size = N^2, replace = T)
+  inc &lt;- rep(x = 1:N, times = N)
+  M &lt;- matrix(data = values + inc, nrow = N, byrow = T)
+  return(M)
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="using-the-profr-package." class="section level2">
+<h2><span class="header-section-number">4.6</span> Using the <code>profr</code> package.</h2>
+<ul>
+<li>Install and load the <code>profr</code> package.</li>
+<li>Use <code>profr</code> to profile <code>fill_noloop</code>, <code>fill_noloops</code> and <code>fill_alloc_opt</code>.</li>
+</ul>
+<div class="accordion">
+<h3 class="toc-ignore">
+Answer
+</h3>
+<div style="background: #fff;">
+<pre class="r"><code>library(profr)
+Rprof(&quot;profr_noloop.out&quot;, interval = 0.01)
+fill_noloop(1000, rnorm(1000), seed = 42)
+Rprof(NULL)
+profile_noloop_df &lt;- parse_rprof(&#39;profr_noloop.out&#39;)
+
+Rprof(&quot;profr_noloops.out&quot;, interval = 0.01)
+fill_noloops(100, rnorm(1000), seed = 42)
+Rprof(NULL)
+profile_noloops_df &lt;- parse_rprof(&#39;profr_noloops.out&#39;)
+
+Rprof(&quot;profr_alloc_opt.out&quot;, interval = 0.01)
+fill_alloc_opt(10, rnorm(1000), seed = 42)
+Rprof(NULL)
+profile_alloc_opt_df &lt;- parse_rprof(&#39;profr_alloc_opt.out&#39;)
+
+profr::ggplot.profr(profile_noloop_df)
+profr::ggplot.profr(profile_noloops_df)
+profr::ggplot.profr(profile_alloc_opt_df)</code></pre>
+</div>
+</div>
+</div>
+<div id="using-the-profvis-package." class="section level2">
+<h2><span class="header-section-number">4.7</span> Using the <code>profvis</code> package.</h2>
+<ul>
+<li>Install and load the <code>profvis</code> package.</li>
+<li>Use <code>profvis</code> to profile <code>fill_noloop</code>, and <code>fill_alloc</code> functions.</li>
+</ul>
+</div>
+</div>
+<div id="optimize-your-code" class="section level1">
+<h1><span class="header-section-number">5</span> Optimize Your Code</h1>
+<p>In this section, we will deal with some selected ways to optimize your code.</p>
+<div id="task-optimize-this" class="section level2">
+<h2><span class="header-section-number">5.1</span> Task: Optimize This!</h2>
+<p>Given is a function:</p>
+<pre><code>optimize_me &lt;- function(N = 1000, values = c(1:1e4)) {
+  N = 10; values = c(1:1e4)
+  dat1 &lt;- matrix(size = N^2)
+  for (i in 1:N) {
+    for (j in 1:N) {
+      dat1[i, j] &lt;- sample(values, 1)
+    }
+  }
+  dat0 &lt;- dat1
+  dat1[lower.tri(dat1)] &lt;- t(dat1)[lower.tri(dat1)]
+  
+  dat2 &lt;- NULL 
+  for (i in 1:N) {
+    i_tmp &lt;- c()
+    for (j in 1:N) {
+      i_tmp &lt;- c(i_tmp, sample(values, 1))
+    }
+    dat2 &lt;- rbind(dat2, i_tmp)
+  }
+  dat2[lower.tri(dat2)] &lt;- t(dat2)[lower.tri(dat2)]
+ 
+  M &lt;- dat2
+  for (i in 1:N) {
+    for (j in 1:N) {
+      M[i, j] &lt;- dat1[i, j] * dat2[i, j]
+    }
+  }
+  for (i in 1:N) {
+    for (j in 1:N) {
+      M[i, j] &lt;- M[i, j] + values[3]
+    }
+  }
+  N &lt;- M %*% dat0
+  result &lt;- apply(N, 2, mean)
+  return(result)
+}</code></pre>
+<ul>
+<li>What does it do, step-by-step?</li>
+<li>Profile it.</li>
+<li>Is <code>dat1 &lt;- matrix(size = N^2)</code> better than <code>dat1 &lt;- matrix(NA, nrow=N, ncol=N)</code>?</li>
+<li>Can you optimize something using <code>BLAS</code>?</li>
+<li>Can you optimize by using <code>apply</code> somewhere?</li>
+<li>Can you optimize <code>apply</code> further?</li>
+<li>What else can you optimize. Do it. Report speed gain and memory gain compared to the original version in <a href="https://docs.google.com/spreadsheets/d/1_2tDeEkDVS06RkB437yBI1XEB5SUebtHWyxAf_aRJu4/edit?usp=sharing">this spreadsheet</a> (Best Coding Practises Lab sheet, Optimization gains).</li>
+</ul>
+</div>
+</div>
+<div id="session-info" class="section level1">
+<h1><span class="header-section-number">6</span> Session Info</h1>
+<ul>
+<li>This document has been created in RStudio using R Markdown and related packages.</li>
+<li>For R Markdown, see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a></li>
+<li>For details about the OS, packages and versions, see detailed information below:</li>
+</ul>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>## R version 3.5.0 (2018-04-23)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS  10.14.4
+## 
+## Matrix products: default
+## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.1     purrr_0.3.2    
+##  [5] readr_1.3.1     tidyr_0.8.3     tibble_2.1.1    ggplot2_3.1.1  
+##  [9] tidyverse_1.2.1 bsplus_0.1.1    captioner_2.2.3 bookdown_0.11  
+## [13] knitr_1.23     
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_1.0.1       cellranger_1.1.0 plyr_1.8.4       pillar_1.4.0    
+##  [5] compiler_3.5.0   tools_3.5.0      digest_0.6.19    jsonlite_1.6    
+##  [9] lubridate_1.7.4  evaluate_0.14    nlme_3.1-140     gtable_0.3.0    
+## [13] lattice_0.20-38  pkgconfig_2.0.2  rlang_0.3.4      cli_1.1.0       
+## [17] rstudioapi_0.10  yaml_2.2.0       haven_2.1.0      xfun_0.7        
+## [21] withr_2.1.2      xml2_1.2.0       httr_1.4.0       hms_0.4.2       
+## [25] generics_0.0.2   grid_3.5.0       tidyselect_0.2.5 glue_1.3.1      
+## [29] R6_2.4.0         readxl_1.3.1     rmarkdown_1.13.1 modelr_0.1.4    
+## [33] magrittr_1.5     backports_1.1.4  scales_1.0.0     htmltools_0.3.6 
+## [37] rvest_0.3.4      assertthat_0.2.1 colorspace_1.4-1 stringi_1.4.3   
+## [41] lazyeval_0.2.2   munsell_0.5.0    broom_0.5.2      crayon_1.3.4</code></pre>
+<p style="text-align: left; font-size: small;">
+Page built on: <i class="fa fa-calendar" aria-hidden="true"></i> 09-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 14:17:17.
+</p>
+<hr/>
+<div style="padding-bottom: 1.5em">
+<p><span style="float:left; vertical-align:middle">
+<b>2018</b> | <a href="https://www.scilifelab.se/">SciLifeLab</a> &gt; <a href="https://nbis.se/">NBIS</a> &gt; <a href="https://nbisweden.github.io/workshop-RaukR-1806/">RaukR</a>
+</span>
+<span style="float:right; vertical-align:middle">
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://nbisweden.github.io/workshop-RaukR-1806/"><img src="assets/icons8-globe-26.png" alt="website" border="0" style="height:15px"></a>
+</span>
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://twitter.com/hashtag/RaukR?src=hash"><img src="assets/icons8-twitter-26.png" alt="twitter" border="0" style="height:15px"></a>
+</span>
+</span></p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

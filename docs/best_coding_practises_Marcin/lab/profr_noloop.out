@@ -1,0 +1,6 @@
+sample.interval=10000
+"sample.int" "sample" "fill_noloop" 
+"sample" "fill_noloop" 
+"matrix" "fill_noloop" 
+"fill_noloop" 
+"close.connection" "close" "readRDS" "utils:::packageDescription" "package_version" ".rs.getPackageVersion" "<Anonymous>" 

@@ -4,6 +4,12 @@ The GitHub repo for RaukR ggplot can be accessed [here](https://github.com/NBISw
 
 ## Topics
 
+* **Best Coding Practises** (*Author:* Marcin Kierczak, *Reviewer:* 
+R.F. Francis)
+	+ [Presentation](best_coding_practises_Marcin/presentation/pres_best_coding_practises.html)
+	+ 
+[Lab](best_coding_practises_Marcin/lab/BestCodingPractisesLab.html)
+
 <!--- Dummy example (remove index and folder when real entries exist): --->
 * **Presentation-Demo** (*Author:* A. Dummy, *Reviewer:* R.E. Wiewer)
     + [Presentation](Demo/Presentation/Presentation-Demo.html)
