@@ -1,0 +1,642 @@
+---
+title: "Reproducible research"
+subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
+author: "Roy Francis"
+output:
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    number_sections: true
+    theme: united
+    highlight: textmate
+    df_print: paged
+    code_folding: none
+    self_contained: false
+    keep_md: false
+    encoding: "UTF-8"
+    css: ["assets/lab.css"]
+---
+
+```{r,echo=FALSE,child="assets/header-lab.Rmd"}
+```
+
+<!-- ------------ Only edit title, subtitle & author above this ------------ -->
+
+```{r,echo=FALSE,results='hide'}
+## LIBRARIES AND VARIABLES
+# load the packages you need for this document
+
+library(ggplot2)
+library(dplyr)
+library(stringr)
+#library(bsplus)
+
+# variables needed in this document
+# raukr colours
+#rv_col_dark <- "#125687"
+#rv_col_light <- "#e7eef3"
+```
+
+<br>
+<div class="spaced abstract">
+This is the hands-on material for **Reproducible Research**. These are series of excercises to help you get started with reproducible research using R. You can consult the [RMarkdown cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf) for quick reference.
+
+* Familiarise yourself with Markdown/RMarkdown syntax and commonly used snippets. 
+* Set up a project in R
+* Prepare an RMarkdown document
+* Add content and export to some common formats
+</div>
+<br>
+
+# RStudio
+
+Create a new project in RStudio by going to `File > New Project > New Directory`. Select `New Project` if required. Then label the project name and the directory. An empty project is created. The R session has been refreshed. All variables are removed and the environment is cleared.
+
+Create a new RMarkdown file by going to `File > New File > RMarkdown...`. Use the default options.
+
+# RMarkdown
+
+## YAML
+
+The content on the top of the RMarkdown document in three dashes is the YAML matter. The YAML matter for this page looks something like below:
+
+```{r,eval=FALSE,echo=TRUE}
+---
+title: "Reproducible research"
+subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
+author: "Roy Francis"
+output:
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    number_sections: true
+    theme: united
+    highlight: textmate
+    df_print: paged
+    code_folding: none
+    self_contained: false
+    keep_md: false
+    encoding: "UTF-8"
+    css: ["assets/lab.css"]
+---
+```
+
+The title, subtitle, author and date is displayed at the top of the rendered document. Argument `output` is used to specify output document type and related arguments. `rmarkdown::html_document` is commonly used to specify the standard HTML output. `rmarkdown::pdf_document` is used to specify the standard PDF output. This then takes further arguments. Sub arguments differ depending on the output document type.
+
+Above are some of the arguments that can be supplied to the HTML document type. `theme` is used to specify the document style such as the font and layout. `highlight` is used to specify the code highlighting style. `toc` specifies that a table of contents must be included. `toc_float` specifies that the TOC must float on the left of the page while scrolling. `toc_depth` species the maximum level/depth to be displayed in the TOC. `number_sections` specifies if the headings/sections must be automatically numbered. Use `?rmarkdown::html_document` for description of all the various options.
+
+## Text
+
+The above level 2 heading was created by specifying `## Text`. Other headings can be specified similarily.
+
+```
+## Level 2 heading  
+### Level 3 heading  
+#### Level 4 heading  
+##### Level 5 heading  
+###### Level 6 heading 
+```
+
+Italic text like this *This is italic text* can be specified using `*This is italic text*` or `_This is italic text_`. Bold text like this **This is bold text** can be specified using `**This is italic text**` or `**This is italic text**`. Subscript written like this `H~2~O` renders as H~2~O. Superscript written like this `2^10^` renders as 2^10^.
+
+Bullet points are usually specified using `*` or `+` or `-`. 
+
+```
++ Point one
++ Point two
+```
+
++ Point one
++ Point two
+
+Block quotes can be specified using `>`.
+
+```
+> This is a block quote. This
+> paragraph has two lines.
+```
+
+> This is a block quote. This
+> paragraph has two lines.
+
+Lists can also be created inside block quotes.
+
+```
+> 1. This is a list inside a block quote.
+> 2. Second item.
+```
+
+> 1. This is a list inside a block quote.
+> 2. Second item.
+
+Links can be created using `[this](https://rmarkdown.rstudio.com/)` like [this](https://rmarkdown.rstudio.com/).
+
+## Images
+
+Images can be displayed from a relative local location using `![This is a caption](rr_lab_assets/gotland.jpg)`. For example:
+
+![This is a caption](rr_lab_assets/gotland.jpg)
+
+By default, the image is displayed at full scale or until it fills the display width. The image dimension can be adjusted `![This is a caption](rr_lab_assets/gotland.jpg){width=40%}`.
+
+![This is a caption](rr_lab_assets/gotland.jpg){width=40%}
+
+For finer control, raw HTML can be used. For example;
+
+```
+<img src="rr_lab_assets/gotland.jpg" width="150px">
+```
+
+<img src="rr_lab_assets/gotland.jpg" width="150px">
+
+Images can also be displayed using R code. Chunks option `out.width` in RMarkdown can be used to control image display size.
+
+This image is displayed at a size of 200 pixels. 
+
+```{r,echo=FALSE,comment=""}
+cat(paste0("```{r,out.width=200}\n","knitr::include_graphics('rr_lab_assets/gotland.jpg')\n","``` \n"))
+```
+
+```{r,echo=FALSE,fig.retina=NULL,out.width=200}
+knitr::include_graphics("rr_lab_assets/gotland.jpg")
+```
+
+This image is displayed at a size of 75 pixels.  
+
+```{r,echo=FALSE,comment=""}
+cat(paste0("```{r,out.width=75}\n","knitr::include_graphics('rr_lab_assets/gotland.jpg')\n","``` \n"))
+```
+
+```{r,echo=FALSE,fig.retina=NULL,out.width=75}
+knitr::include_graphics("rr_lab_assets/gotland.jpg")
+```
+
+## Code
+
+Text can be formatted as code. Code is displayed using monospaced font. Code formatting that stands by itself as a paragraph is called block code. Block codes are specified using three backticks `` ``` `` followed by code and then three more backticks. 
+
+This text below
+
+````
+```
+This is generic block code.
+```
+````
+
+renders like this
+
+```
+This is generic block code.
+```
+
+Code formatting can also be included in the middle of a sentence. This is called inline code formatting. Using this `` `This is an inline formatted code.` `` renders like this: `This is an inline formatted code.`
+
+The above codes are not actually executed. They are just text formatted in a different font. Code can be executed by specifying the language along with the backticks. Block code formatted as such:
+
+````
+```{r}`r ''`
+str(iris)
+```
+````
+
+renders like this:
+
+```{r}
+str(iris)
+```
+
+Code blocks are called chunks. The chunk is executed when this document is rendered. In the above example, the rendered output has two chunks; input and output chunks. The rendered code output is also given code highlighting based on the language. For example;
+
+This code chunk
+
+````
+```{r,eval=FALSE}`r ''`
+ggplot(dfr4,aes(x=Month,y=fraction,colour=Year,group=Year))+
+  geom_point(size=2)+
+  geom_line()+
+  labs(x="Month",y="Fraction of support issues")+
+  scale_colour_manual(values=c("#000000","#E69F00","#56B4E9",
+  "#009E73","#F0E442","#006699","#D55E00","#CC79A7"))+
+  theme_bw(base_size=12,base_family="Gidole")+
+  theme(panel.border=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x=element_blank(),
+        axis.ticks=element_blank())
+```
+````
+
+when rendered (not evaluated) looks like
+
+```{r,eval=FALSE}
+ggplot(dfr4,aes(x=Month,y=fraction,colour=Year,group=Year))+
+  geom_point(size=2)+
+  geom_line()+
+  labs(x="Month",y="Fraction of support issues")+
+  scale_colour_manual(values=c("#000000","#E69F00","#56B4E9",
+  "#009E73","#F0E442","#006699","#D55E00","#CC79A7"))+
+  theme_bw(base_size=12,base_family="Gidole")+
+  theme(panel.border=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x=element_blank(),
+        axis.ticks=element_blank())
+```
+
+The chunk has several options which can be used to control chunk properties.
+
+Using `` `{r,eval=FALSE}` `` prevents that chunk from being executed. `` `{r,eval=TRUE}` `` which is the default, executes the chunk. Using `` `{r,echo=FALSE}` `` prevents the code from that chunk from being displayed. Using `` `{r,results="hide"}` `` hides the output from that chunk. There are many other [chunk arguments](https://yihui.name/knitr/options/). Here are some of them:
+
+|Option|Default|Description|
+|--|--|--|
+|eval|TRUE|Evaluates the code in this chunk|
+|echo|TRUE|Display the code|
+|results|"markup"|"markup","asis","hold" or "hide"|
+|warning|TRUE|Display warnings from code execution|
+|error|FALSE|Display error from code execution|
+|message|TRUE|Display messages from this chunk|
+|tidy|FALSE|Reformat code in to be tidy|
+|cache|FALSE|Cache results for future renders|
+|comment|"##"|Character to prefix result output|
+
+Chunk options are specified like this:
+
+````
+```{r,eval=FALSE,echo=FALSE,fig.height=6,fig.width=7}`r ''`
+```
+````
+
+## Plots
+
+R Plots can be plotted like below:
+
+````
+```{r,fig.height=6,fig.width=6}`r ''`
+plot(x=iris$Petal.Length,y=iris$Petal.Width)
+```
+````
+
+```{r,fig.height=6,fig.width=6,echo=FALSE}
+plot(x=iris$Petal.Length,y=iris$Petal.Width)
+```
+
+Below are some of chunk options relating to plots.
+
+|Option|Default|Description|
+|--|--|--|
+|fig.height|7|Figure height in inches|
+|fig.width|7|Figure width in inches|
+|fig.cap|""|Figure caption|
+|fig.align|"center"|Figure alignment|
+|dev|"png"|Change png, jpg, pdf, svg etc|
+
+## Export
+
+The RMarkdown notebook can be exported into various format. The most common formats are HTML and PDF.
+
+### HTML
+
+The RMarkdown document can be previewed as an HTML inside RStudio by clicking the 'Knit' button.
+
+![](rr_lab_assets/knit-button.png)
+
+The document can also be exported as an HTML file by running the code below:
+
+```{r,eval=FALSE}
+rmarkdown::render("document.Rmd")
+```
+
+HTML documents can be opened and viewed in any standard browser such as Chrome, Safari, Firefox etc.
+
+```{r,eval=FALSE,echo=FALSE,results="hide"}
+rmarkdown::render("rr_lab.Rmd")
+```
+
+### PDF
+
+An Rmd document can be converted to a PDF. Behind the scenes, the markdown is converted to TeX format. The conversion to PDF needs a tool that understands TeX format and converts to PDF.  This can be softwares like 'MacTeX', 'MikTeX' etc. which needs to be installed on the system beforehand.
+
+The output argument in the YAML matter must be changed to `pdf_document`, and the Rmd file can be converted as follows:
+
+```{r,eval=FALSE,results="hide"}
+rmarkdown::render("document.Rmd")
+```
+
+The PDF output can also be specified as such:
+
+```{r,eval=FALSE,results="hide"}
+rmarkdown::render("document.Rmd",output_format=pdf_document())
+```
+
+Sometimes TeX converters may need additional libraries which may need to be installed. And all features of HTML are not supported on TeX which may return errors.
+
+See [here](https://rmarkdown.rstudio.com/formats.html) for other export formats.
+
+# Report  
+
+This is a do-it-yourself challenge to RMarkdown Notebook/Report. Have a look at the HTML page below and try to recreate the page. Instructions and helpful tips are given below.
+
+This is the [challenge report](rr_challenge_report.html) to prepare.
+
+1. Create a new RMarkdown document
+2. Set YAML matter
+
++ Set title, subtitle, Author name.
++ Set date to be automatically computed in this format "25/04/2018". See [here](https://www.statmethods.net/input/dates.html) on how to format dates. Solution: ``date: "`r "\u0060r format(Sys.Date(),format='%d/%m/%Y')\u0060"`" ``
++ Show a floating table of contents on the top left of the page. See [here](https://rmarkdown.rstudio.com/html_document_format.html) on how to do this.
++ Set automatic numbering of sections. Check `?html_document`.
++ Set theme to 'flatly'.
++ Set code highlighting to 'kate'.
++ Notice the little buttons on the right to show/hide code. Show this button and set all code to hidden by default. See [here](https://rmarkdown.rstudio.com/html_document_format.html#code_folding) on how to do this.
++ Set the default data.frame printing option to pageable HTML table. See [here](https://rmarkdown.rstudio.com/html_document_format.html#data_frame_printing).
+
+3. Add a Level 1 heading
+4. Add some text and a Level 2 heading
+5. Create an R chunk to display the structure of cars dataset. Display the code and the results. See [here](https://yihui.name/knitr/options/#code-chunk) to read more about chunk options.
+6. Display the first six rows and all columns of the cars dataset as a table.
+7. Create a new sub-section and create a scatterplot with the two variables from cars dataset. Hide the code used and only show the plot. Create a square aspect ratio plot by setting equal figure height and width in the chunk options. Add a caption for the plot using chunk options.
+8. Create a new sub-section, download a random image and include it in the document.
+9. Render the document in RStudio by clicking on the 'Knit' button. 
+10. Render the document to an HTML file using a console command.
+11. You can try to render this document to a PDF. Note that you will need to install additional software for this. For a lightweight latex distribution for knitr, see [here](https://yihui.name/tinytex). Change output type from `html_document` to `pdf_document` and remove all arguments except `toc: true`. Try rendering using 'Knit'.
+
+# Pres • ioslides 
+
+**ioslides** is an HTML and javascript based presentation system. RMarkdown provides a way to use this framework through R purely using R code. Here is an example of an [ioslide presentation](http://pauldijou.fr/ioslides/zenexity/mtfmw).
+
+This is a do-it-yourself challenge to ioslides Presentation using RMarkdown. Have a look at the presentation below and try to recreate it. Instructions and helpful tips are given below.
+
+This is the final result for [challenge ioslide presentation](rr_challenge_ioslides.html).
+
+1. Create a new RMarkdown document.
+3. Set YAML matter output to `output: ioslides_presentation`. See [here](https://rmarkdown.rstudio.com/ioslides_presentation_format.html) for a guide to using ioslides presentation in R. See `?ioslides_presentation()` for the options.
+4. Set theme and highlight as needed.
+5. New slides are defined using `#` with level 1 heading or `----` without a heading. Subtitle can be specified using a pipe symbol, like this `# Title | Subtitle`. Slides starting with `#` contains only the title and/or subtitle. `##` adds a standard content slide with a heading on the top.
+6. Add a title slide
+
+```
+# Title Slide | Subtitle
+```
+
+7. Add a standard slide with a heading and a bulleted list. For example
+
+```
+## Level 2 Heading
+
+- Point one
+- Point two
+```
+
+The bullets can set to show incrementally on click:
+
+```
+## Level 2 Heading
+
+> - Point one
+> - Point two
+```
+
+8. Create a new slide and add some R chunk. For example:
+
+````
+```{r}`r ''`
+data(iris)
+str(cars)
+```
+````
+
+9. Create a new slide and display a table by executing an R chunk. For example:
+
+````
+```{r}`r ''`
+head(cars)
+```
+````
+
+10. Create a new slide and display an R plot. For example:
+
+````
+```{r,fig.height=3,fig.width=5,fig.cap="This is a scatterplot."}`r ''`
+plot(cars$speed,cars$dist)
+```
+````
+
+11. Add an image to a new slide. For example:
+
+```
+![](rr_lab_assets/gotland.jpg){width=60%}
+```
+
+12. When viewing the presentation, press `O` to see an overview of the slides.
+
+# Pres • revealjs
+
+**revealJS** is an HTML and javascript based presentation system. The `revealjs` R package provides a way to use this framework through R purely using R code. Here is an example of an [revealJS presentation](https://revealjs.com/#/).
+
+This is a do-it-yourself challenge to [RevealJS](https://revealjs.com/#/) 2-D Presentation using RMarkdown. Have a look at the presentation below and try to recreate it. Instructions and helpful tips are given below.
+
+This is the [challenge RevealJS presentation](rr_challenge_revealjs.html).
+
+1. Install R package `revealjs` and load the library.
+2. Create a new RMarkdown document.
+3. Set YAML matter output to `output: revealjs_presentation`. See [here](https://rmarkdown.rstudio.com/revealjs_presentation_format.html) for a guide to using RevealJS presentation in R. See `?revealjs_presentation` for options.
+4. Set theme and highlight as needed.
+5. New slides are defined using `#` with level 1 heading,`##` with level 2 heading or `----` without a heading. The best feature of RevealJS is that slides are not restricted to horizontal (linear) flow. Slides can also flow vertical from any of the horizontal slides. A level 2 heading `##` signifies that the content under that flows vertically.
+6. Add a level 1 heading and add some text content.
+8. Create a new slide vertically by adding a level 2 heading and add some R chunk. For example:
+
+````
+## Level 2 Heading
+
+```{r}`r ''`
+data(iris)
+str(cars)
+```
+````
+
+9. Create a new slide vertically using level 2 heading and display a table by executing an R chunk. For example:
+
+````
+## Level 2 Heading
+
+```{r}`r ''`
+head(cars)
+```
+````
+
+10. Create a new slide vertically and display an R plot. For example:
+
+````
+## Level 2 Heading
+
+```{r,fig.height=3,fig.width=5,fig.cap="This is a scatterplot."}`r ''`
+plot(cars$speed,cars$dist)
+```
+````
+
+11. Create a new slide horizontally. Add an image to a new slide. For example:
+
+```
+![](rr_lab_assets/gotland.jpg)
+```
+
+12. When viewing the presentation, press `O` to see an overview of the slides.
+
+# Pres • xaringan
+
+**xaringan** is an R package that provides bindings to remarkjs HTML and javascript based presentation system. Here is an example of a [remarkjs presentation](https://remarkjs.com/#1). [Here](https://slides.yihui.name/xaringan/) is an example that actually uses the xaringan package in R.
+
+The **remarkjs** [repo and wiki pages](https://github.com/gnab/remark/wiki) and the **xaringan** [repo and wiki](https://github.com/yihui/xaringan/wiki) are good sources of documentation.
+
+This is a do-it-yourself challenge to remarkjs presentation system using RMarkdown in xaringan. Have a look at the presentation below and try to recreate it. Instructions and helpful tips are given below.
+
+This is the [challenge Xaringan presentation](rr_challenge_xaringan.html).
+
+1. Install R package `xaringan` and load the library.
+2. Create a new RMarkdown document.
+3. Set YAML matter output to `output: xaringan::moon_reader`. Use `?moon_reader()` for options.
+4. Set theme and highlight as needed.
+5. New slides are defined using `---`. Headings as usual are `#` for level 1 heading,`##` with level 2 heading etc.
+6. Add a level 1 heading and add some bullet points.
+
+```
+# Bullet points
+
+- Point One
+- Point Two
+```
+
+7. Note that Xaringan/remarkjs does not use the regular pandoc markdown, therefore some features may not work or may be different. For example superscript is created using `2<sup>10</sup>` rather than `2^10^`. Subscript is created using `2<sub>10</sub>` rather than `2~10~`.
+
+8. Add some code content. For example;
+
+````
+```{r}`r ''`
+data(iris)
+str(cars)
+```
+````
+
+9. Slides can be named which helps to create links back to this slide. Create a new slide and add a name like this `name: name`. Add a heading and add an R plot on this slide.
+
+````
+---
+name: plots
+
+# Plots
+
+```{r,fig.height=3,fig.width=5,fig.cap="This is a scatterplot."}`r ''`
+plot(cars$speed,cars$dist)
+```
+````
+
+Note that the slide name is added immediately under the new slide creator `---`.
+
+11. Create a new slide with a table and name the slide table.
+
+````
+---
+name: table
+
+# Table
+
+```{r}`r ''`
+head(cars)
+```
+````
+
+From this slide, create a link to go back to plots.
+
+```
+Click [here](#plots) to go to plots.
+```
+
+12. Create a new slide and add an image.
+
+```
+---
+name: image
+
+# Image
+
+![](rr_lab_assets/gotland.jpg)
+```
+
+If this is too big, you can manually set the width using raw HTML `<img src="rr_lab_assets/gotland.jpg" width="250px">`
+
+13. It is possible to highlight parts of code. For example, in this code,
+
+````
+```{r}`r ''`
+ggplot(iris,aes(x=Petal.Length,Sepal.Width,col=Species))+
+  geom_point(size=2)+
+  labs(x="Petal Length",y="Sepal Width")+
+  scale_colour_manual(values=c("#000000","#E69F00","#56B4E9",
+  "#009E73","#F0E442","#006699","#D55E00","#CC79A7"))+
+  theme_bw(base_size=12)+
+  theme(panel.border=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x=element_blank(),
+        axis.ticks=element_blank())
+```
+````
+
+say, we want to highlight `theme_bw(base_size=12)`. We can add `{{}}` around it. Add the below code to a new slide called highlighting.
+
+````
+```{r}`r ''`
+ggplot(iris,aes(x=Petal.Length,Sepal.Width,col=Species))+
+  geom_point(size=2)+
+  labs(x="Petal Length",y="Sepal Width")+
+  scale_colour_manual(values=c("#000000","#E69F00","#56B4E9",
+  "#009E73","#F0E442","#006699","#D55E00","#CC79A7"))+
+  {{theme_bw(base_size=12)}}+
+  theme(panel.border=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x=element_blank(),
+        axis.ticks=element_blank())
+```
+````
+
+14. Try out some math expressions. Paste a few of the line below to your slide.
+
+```
+$e^{i\pi} + 1 = 0$
+$$\frac{E \times X^2 \prod I}{2+7} = 432$$
+$$\sum_{i=1}^n X_i$$
+$$\int_0^{2\pi} \sin x~dx$$
+```
+
+Add a `--` between each line to display them incrementally.
+
+```
+$e^{i\pi} + 1 = 0$
+
+--
+
+$$\frac{E \times X^2 \prod I}{2+7} = 432$$
+
+--
+
+$$\sum_{i=1}^n X_i$$
+
+--
+
+$$\int_0^{2\pi} \sin x~dx$$
+```
+
+15. When viewing the presentation, press `H` to see an overview of keyboard shortcuts during presentation. 
+
+16. remarkjs has a nifty feature where you can press `C` to clone the presentation in a new browser window. Now both these copies are linked. You can change one of them to the presenter mode by pressing `P`. Now changing the slide in one window changes the other. Convenient when a presenter view/audience view is needed.
+
+<!-- --------------------- Do not edit this and below ---------------------- -->
+
+```{r,echo=FALSE,child="assets/footer-lab.Rmd"}
+```
+
+```{r,eval=FALSE,echo=FALSE}
+# manually run this to render this document to HTML
+rmarkdown::render("rr_lab.Rmd")
+# manually run this to convert HTML to PDF
+#pagedown::chrome_print("rr_lab.html",output="rr_lab.pdf")
+```

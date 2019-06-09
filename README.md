@@ -1,4 +1,4 @@
-# RaukR 2019 -- Teaching Materials
+# RaukR 2019 • Teaching Materials
 
 Welcome to the RaukR 2019 Teaching Materials GitHub repository.
 
@@ -6,9 +6,9 @@ Welcome to the RaukR 2019 Teaching Materials GitHub repository.
 
 * Fork this repository to your GitHub.
 * Clone your fork to your computer.
-* If you already have started preparing materials, copy the folders to `/docs/name_of_your_module_Yourname/presentation` and `/docs/name_of_your_module_Yourname/lab`.
-* In the `/docs/name_of_your_module_Yourname/presentation` folder add all files needed to render the presentation and its rendered version in html. Just copy contents of the folder you have rendered in R-studio.
-* In the `/docs/name_of_your_module_Yourname/lab` add all files needed to render the lab and its rendered version in html. Just copy contents of the folder you have rendered in R-studio.
+* If you already have started preparing materials, copy the folders to `/docs/topic/presentation` and `/docs/topic/lab`.
+* In the `/docs/topic/presentation` folder add all files needed to render the presentation and its rendered version in html. Just copy contents of the folder you have rendered in R-studio.
+* In the `/docs/topic/lab` add all files needed to render the lab and its rendered version in html. Just copy contents of the folder you have rendered in R-studio.
 * Add links to your rendered html files to `docs/index.md` so that the content can be seen [here](https://nbisweden.github.io/RaukR-2019/)
 * Once you are happy, create a pull request (online) and assign someone as a reviewer.
 * When you get back your reviewer's comments, address them and push them to your local fork.

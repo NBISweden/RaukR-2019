@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Roy Francis" />
+
+
+<title>Reproducible research</title>
+
+<script src="rr_lab_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="rr_lab_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="rr_lab_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="rr_lab_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="rr_lab_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="rr_lab_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="rr_lab_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="rr_lab_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="rr_lab_files/navigation-1.1/tabsets.js"></script>
+<link href="rr_lab_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="rr_lab_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="rr_lab_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="rr_lab_files/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="rr_lab_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="rr_lab_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="rr_lab_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Reproducible research</h1>
+<h3 class="subtitle">RaukR 2019 • Advanced R for Bioinformatics</h3>
+<h4 class="author">Roy Francis</h4>
+
+</div>
+
+
+<p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<!-- ------------ Only edit title, subtitle & author above this ------------ -->
+<br>
+<div class="spaced abstract">
+<p>This is the hands-on material for <strong>Reproducible Research</strong>. These are series of excercises to help you get started with reproducible research using R. You can consult the <a href="https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf">RMarkdown cheatsheet</a> for quick reference.</p>
+<ul>
+<li>Familiarise yourself with Markdown/RMarkdown syntax and commonly used snippets.</li>
+<li>Set up a project in R</li>
+<li>Prepare an RMarkdown document</li>
+<li>Add content and export to some common formats</li>
+</ul>
+</div>
+<p><br></p>
+<div id="rstudio" class="section level1">
+<h1><span class="header-section-number">1</span> RStudio</h1>
+<p>Create a new project in RStudio by going to <code>File &gt; New Project &gt; New Directory</code>. Select <code>New Project</code> if required. Then label the project name and the directory. An empty project is created. The R session has been refreshed. All variables are removed and the environment is cleared.</p>
+<p>Create a new RMarkdown file by going to <code>File &gt; New File &gt; RMarkdown...</code>. Use the default options.</p>
+</div>
+<div id="rmarkdown" class="section level1">
+<h1><span class="header-section-number">2</span> RMarkdown</h1>
+<div id="yaml" class="section level2">
+<h2><span class="header-section-number">2.1</span> YAML</h2>
+<p>The content on the top of the RMarkdown document in three dashes is the YAML matter. The YAML matter for this page looks something like below:</p>
+<pre class="r"><code>---
+title: &quot;Reproducible research&quot;
+subtitle: &quot;RaukR 2019 • Advanced R for Bioinformatics&quot;
+author: &quot;Roy Francis&quot;
+output:
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    number_sections: true
+    theme: united
+    highlight: textmate
+    df_print: paged
+    code_folding: none
+    self_contained: false
+    keep_md: false
+    encoding: &quot;UTF-8&quot;
+    css: [&quot;assets/lab.css&quot;]
+---</code></pre>
+<p>The title, subtitle, author and date is displayed at the top of the rendered document. Argument <code>output</code> is used to specify output document type and related arguments. <code>rmarkdown::html_document</code> is commonly used to specify the standard HTML output. <code>rmarkdown::pdf_document</code> is used to specify the standard PDF output. This then takes further arguments. Sub arguments differ depending on the output document type.</p>
+<p>Above are some of the arguments that can be supplied to the HTML document type. <code>theme</code> is used to specify the document style such as the font and layout. <code>highlight</code> is used to specify the code highlighting style. <code>toc</code> specifies that a table of contents must be included. <code>toc_float</code> specifies that the TOC must float on the left of the page while scrolling. <code>toc_depth</code> species the maximum level/depth to be displayed in the TOC. <code>number_sections</code> specifies if the headings/sections must be automatically numbered. Use <code>?rmarkdown::html_document</code> for description of all the various options.</p>
+</div>
+<div id="text" class="section level2">
+<h2><span class="header-section-number">2.2</span> Text</h2>
+<p>The above level 2 heading was created by specifying <code>## Text</code>. Other headings can be specified similarily.</p>
+<pre><code>## Level 2 heading  
+### Level 3 heading  
+#### Level 4 heading  
+##### Level 5 heading  
+###### Level 6 heading </code></pre>
+<p>Italic text like this <em>This is italic text</em> can be specified using <code>*This is italic text*</code> or <code>_This is italic text_</code>. Bold text like this <strong>This is bold text</strong> can be specified using <code>**This is italic text**</code> or <code>**This is italic text**</code>. Subscript written like this <code>H~2~O</code> renders as H<sub>2</sub>O. Superscript written like this <code>2^10^</code> renders as 2<sup>10</sup>.</p>
+<p>Bullet points are usually specified using <code>*</code> or <code>+</code> or <code>-</code>.</p>
+<pre><code>+ Point one
++ Point two</code></pre>
+<ul>
+<li>Point one</li>
+<li>Point two</li>
+</ul>
+<p>Block quotes can be specified using <code>&gt;</code>.</p>
+<pre><code>&gt; This is a block quote. This
+&gt; paragraph has two lines.</code></pre>
+<blockquote>
+<p>This is a block quote. This paragraph has two lines.</p>
+</blockquote>
+<p>Lists can also be created inside block quotes.</p>
+<pre><code>&gt; 1. This is a list inside a block quote.
+&gt; 2. Second item.</code></pre>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>This is a list inside a block quote.</li>
+<li>Second item.</li>
+</ol>
+</blockquote>
+<p>Links can be created using <code>[this](https://rmarkdown.rstudio.com/)</code> like <a href="https://rmarkdown.rstudio.com/">this</a>.</p>
+</div>
+<div id="images" class="section level2">
+<h2><span class="header-section-number">2.3</span> Images</h2>
+<p>Images can be displayed from a relative local location using <code>![This is a caption](rr_lab_assets/gotland.jpg)</code>. For example:</p>
+<div class="figure">
+<img src="rr_lab_assets/gotland.jpg" alt="This is a caption" />
+<p class="caption">This is a caption</p>
+</div>
+<p>By default, the image is displayed at full scale or until it fills the display width. The image dimension can be adjusted <code>![This is a caption](rr_lab_assets/gotland.jpg){width=40%}</code>.</p>
+<div class="figure">
+<img src="rr_lab_assets/gotland.jpg" alt="This is a caption" style="width:40.0%" />
+<p class="caption">This is a caption</p>
+</div>
+<p>For finer control, raw HTML can be used. For example;</p>
+<pre><code>&lt;img src=&quot;rr_lab_assets/gotland.jpg&quot; width=&quot;150px&quot;&gt;</code></pre>
+<p><img src="rr_lab_assets/gotland.jpg" width="150px"></p>
+<p>Images can also be displayed using R code. Chunks option <code>out.width</code> in RMarkdown can be used to control image display size.</p>
+<p>This image is displayed at a size of 200 pixels.</p>
+<pre><code>```{r,out.width=200}
+knitr::include_graphics(&#39;rr_lab_assets/gotland.jpg&#39;)
+``` </code></pre>
+<p><img src="rr_lab_assets/gotland.jpg" width="200" style="display: block; margin: auto auto auto 0;" /></p>
+<p>This image is displayed at a size of 75 pixels.</p>
+<pre><code>```{r,out.width=75}
+knitr::include_graphics(&#39;rr_lab_assets/gotland.jpg&#39;)
+``` </code></pre>
+<p><img src="rr_lab_assets/gotland.jpg" width="75" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="code" class="section level2">
+<h2><span class="header-section-number">2.4</span> Code</h2>
+<p>Text can be formatted as code. Code is displayed using monospaced font. Code formatting that stands by itself as a paragraph is called block code. Block codes are specified using three backticks <code>```</code> followed by code and then three more backticks.</p>
+<p>This text below</p>
+<pre><code>```
+This is generic block code.
+```</code></pre>
+<p>renders like this</p>
+<pre><code>This is generic block code.</code></pre>
+<p>Code formatting can also be included in the middle of a sentence. This is called inline code formatting. Using this <code>`This is an inline formatted code.`</code> renders like this: <code>This is an inline formatted code.</code></p>
+<p>The above codes are not actually executed. They are just text formatted in a different font. Code can be executed by specifying the language along with the backticks. Block code formatted as such:</p>
+<pre><code>```{r}
+str(iris)
+```</code></pre>
+<p>renders like this:</p>
+<pre class="r"><code>str(iris)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    150 obs. of  5 variables:
+##  $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+##  $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+##  $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+##  $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+##  $ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<p>Code blocks are called chunks. The chunk is executed when this document is rendered. In the above example, the rendered output has two chunks; input and output chunks. The rendered code output is also given code highlighting based on the language. For example;</p>
+<p>This code chunk</p>
+<pre><code>```{r,eval=FALSE}
+ggplot(dfr4,aes(x=Month,y=fraction,colour=Year,group=Year))+
+  geom_point(size=2)+
+  geom_line()+
+  labs(x=&quot;Month&quot;,y=&quot;Fraction of support issues&quot;)+
+  scale_colour_manual(values=c(&quot;#000000&quot;,&quot;#E69F00&quot;,&quot;#56B4E9&quot;,
+  &quot;#009E73&quot;,&quot;#F0E442&quot;,&quot;#006699&quot;,&quot;#D55E00&quot;,&quot;#CC79A7&quot;))+
+  theme_bw(base_size=12,base_family=&quot;Gidole&quot;)+
+  theme(panel.border=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x=element_blank(),
+        axis.ticks=element_blank())
+```</code></pre>
+<p>when rendered (not evaluated) looks like</p>
+<pre class="r"><code>ggplot(dfr4,aes(x=Month,y=fraction,colour=Year,group=Year))+
+  geom_point(size=2)+
+  geom_line()+
+  labs(x=&quot;Month&quot;,y=&quot;Fraction of support issues&quot;)+
+  scale_colour_manual(values=c(&quot;#000000&quot;,&quot;#E69F00&quot;,&quot;#56B4E9&quot;,
+  &quot;#009E73&quot;,&quot;#F0E442&quot;,&quot;#006699&quot;,&quot;#D55E00&quot;,&quot;#CC79A7&quot;))+
+  theme_bw(base_size=12,base_family=&quot;Gidole&quot;)+
+  theme(panel.border=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x=element_blank(),
+        axis.ticks=element_blank())</code></pre>
+<p>The chunk has several options which can be used to control chunk properties.</p>
+<p>Using <code>`{r,eval=FALSE}`</code> prevents that chunk from being executed. <code>`{r,eval=TRUE}`</code> which is the default, executes the chunk. Using <code>`{r,echo=FALSE}`</code> prevents the code from that chunk from being displayed. Using <code>`{r,results=&quot;hide&quot;}`</code> hides the output from that chunk. There are many other <a href="https://yihui.name/knitr/options/">chunk arguments</a>. Here are some of them:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>eval</td>
+<td>TRUE</td>
+<td>Evaluates the code in this chunk</td>
+</tr>
+<tr class="even">
+<td>echo</td>
+<td>TRUE</td>
+<td>Display the code</td>
+</tr>
+<tr class="odd">
+<td>results</td>
+<td>“markup”</td>
+<td>“markup”,“asis”,“hold” or “hide”</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>TRUE</td>
+<td>Display warnings from code execution</td>
+</tr>
+<tr class="odd">
+<td>error</td>
+<td>FALSE</td>
+<td>Display error from code execution</td>
+</tr>
+<tr class="even">
+<td>message</td>
+<td>TRUE</td>
+<td>Display messages from this chunk</td>
+</tr>
+<tr class="odd">
+<td>tidy</td>
+<td>FALSE</td>
+<td>Reformat code in to be tidy</td>
+</tr>
+<tr class="even">
+<td>cache</td>
+<td>FALSE</td>
+<td>Cache results for future renders</td>
+</tr>
+<tr class="odd">
+<td>comment</td>
+<td>“##”</td>
+<td>Character to prefix result output</td>
+</tr>
+</tbody>
+</table>
+<p>Chunk options are specified like this:</p>
+<pre><code>```{r,eval=FALSE,echo=FALSE,fig.height=6,fig.width=7}
+```</code></pre>
+</div>
+<div id="plots" class="section level2">
+<h2><span class="header-section-number">2.5</span> Plots</h2>
+<p>R Plots can be plotted like below:</p>
+<pre><code>```{r,fig.height=6,fig.width=6}
+plot(x=iris$Petal.Length,y=iris$Petal.Width)
+```</code></pre>
+<p><img src="rr_lab_files/figure-html/unnamed-chunk-10-1.svg" width="576" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Below are some of chunk options relating to plots.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>fig.height</td>
+<td>7</td>
+<td>Figure height in inches</td>
+</tr>
+<tr class="even">
+<td>fig.width</td>
+<td>7</td>
+<td>Figure width in inches</td>
+</tr>
+<tr class="odd">
+<td>fig.cap</td>
+<td>“”</td>
+<td>Figure caption</td>
+</tr>
+<tr class="even">
+<td>fig.align</td>
+<td>“center”</td>
+<td>Figure alignment</td>
+</tr>
+<tr class="odd">
+<td>dev</td>
+<td>“png”</td>
+<td>Change png, jpg, pdf, svg etc</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="export" class="section level2">
+<h2><span class="header-section-number">2.6</span> Export</h2>
+<p>The RMarkdown notebook can be exported into various format. The most common formats are HTML and PDF.</p>
+<div id="html" class="section level3">
+<h3><span class="header-section-number">2.6.1</span> HTML</h3>
+<p>The RMarkdown document can be previewed as an HTML inside RStudio by clicking the ‘Knit’ button.</p>
+<div class="figure">
+<img src="rr_lab_assets/knit-button.png" />
+
+</div>
+<p>The document can also be exported as an HTML file by running the code below:</p>
+<pre class="r"><code>rmarkdown::render(&quot;document.Rmd&quot;)</code></pre>
+<p>HTML documents can be opened and viewed in any standard browser such as Chrome, Safari, Firefox etc.</p>
+</div>
+<div id="pdf" class="section level3">
+<h3><span class="header-section-number">2.6.2</span> PDF</h3>
+<p>An Rmd document can be converted to a PDF. Behind the scenes, the markdown is converted to TeX format. The conversion to PDF needs a tool that understands TeX format and converts to PDF. This can be softwares like ‘MacTeX’, ‘MikTeX’ etc. which needs to be installed on the system beforehand.</p>
+<p>The output argument in the YAML matter must be changed to <code>pdf_document</code>, and the Rmd file can be converted as follows:</p>
+<pre class="r"><code>rmarkdown::render(&quot;document.Rmd&quot;)</code></pre>
+<p>The PDF output can also be specified as such:</p>
+<pre class="r"><code>rmarkdown::render(&quot;document.Rmd&quot;,output_format=pdf_document())</code></pre>
+<p>Sometimes TeX converters may need additional libraries which may need to be installed. And all features of HTML are not supported on TeX which may return errors.</p>
+<p>See <a href="https://rmarkdown.rstudio.com/formats.html">here</a> for other export formats.</p>
+</div>
+</div>
+</div>
+<div id="report" class="section level1">
+<h1><span class="header-section-number">3</span> Report</h1>
+<p>This is a do-it-yourself challenge to RMarkdown Notebook/Report. Have a look at the HTML page below and try to recreate the page. Instructions and helpful tips are given below.</p>
+<p>This is the <a href="rr_challenge_report.html">challenge report</a> to prepare.</p>
+<ol style="list-style-type: decimal">
+<li>Create a new RMarkdown document</li>
+<li>Set YAML matter</li>
+</ol>
+<ul>
+<li>Set title, subtitle, Author name.</li>
+<li>Set date to be automatically computed in this format “25/04/2018”. See <a href="https://www.statmethods.net/input/dates.html">here</a> on how to format dates. Solution: <code>date: &quot;`r format(Sys.Date(),format='%d/%m/%Y')`&quot;</code></li>
+<li>Show a floating table of contents on the top left of the page. See <a href="https://rmarkdown.rstudio.com/html_document_format.html">here</a> on how to do this.</li>
+<li>Set automatic numbering of sections. Check <code>?html_document</code>.</li>
+<li>Set theme to ‘flatly’.</li>
+<li>Set code highlighting to ‘kate’.</li>
+<li>Notice the little buttons on the right to show/hide code. Show this button and set all code to hidden by default. See <a href="https://rmarkdown.rstudio.com/html_document_format.html#code_folding">here</a> on how to do this.</li>
+<li>Set the default data.frame printing option to pageable HTML table. See <a href="https://rmarkdown.rstudio.com/html_document_format.html#data_frame_printing">here</a>.</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li>Add a Level 1 heading</li>
+<li>Add some text and a Level 2 heading</li>
+<li>Create an R chunk to display the structure of cars dataset. Display the code and the results. See <a href="https://yihui.name/knitr/options/#code-chunk">here</a> to read more about chunk options.</li>
+<li>Display the first six rows and all columns of the cars dataset as a table.</li>
+<li>Create a new sub-section and create a scatterplot with the two variables from cars dataset. Hide the code used and only show the plot. Create a square aspect ratio plot by setting equal figure height and width in the chunk options. Add a caption for the plot using chunk options.</li>
+<li>Create a new sub-section, download a random image and include it in the document.</li>
+<li>Render the document in RStudio by clicking on the ‘Knit’ button.</li>
+<li>Render the document to an HTML file using a console command.</li>
+<li>You can try to render this document to a PDF. Note that you will need to install additional software for this. For a lightweight latex distribution for knitr, see <a href="https://yihui.name/tinytex">here</a>. Change output type from <code>html_document</code> to <code>pdf_document</code> and remove all arguments except <code>toc: true</code>. Try rendering using ‘Knit’.</li>
+</ol>
+</div>
+<div id="pres-ioslides" class="section level1">
+<h1><span class="header-section-number">4</span> Pres • ioslides</h1>
+<p><strong>ioslides</strong> is an HTML and javascript based presentation system. RMarkdown provides a way to use this framework through R purely using R code. Here is an example of an <a href="http://pauldijou.fr/ioslides/zenexity/mtfmw">ioslide presentation</a>.</p>
+<p>This is a do-it-yourself challenge to ioslides Presentation using RMarkdown. Have a look at the presentation below and try to recreate it. Instructions and helpful tips are given below.</p>
+<p>This is the final result for <a href="rr_challenge_ioslides.html">challenge ioslide presentation</a>.</p>
+<ol style="list-style-type: decimal">
+<li>Create a new RMarkdown document.</li>
+<li>Set YAML matter output to <code>output: ioslides_presentation</code>. See <a href="https://rmarkdown.rstudio.com/ioslides_presentation_format.html">here</a> for a guide to using ioslides presentation in R. See <code>?ioslides_presentation()</code> for the options.</li>
+<li>Set theme and highlight as needed.</li>
+<li>New slides are defined using <code>#</code> with level 1 heading or <code>----</code> without a heading. Subtitle can be specified using a pipe symbol, like this <code># Title | Subtitle</code>. Slides starting with <code>#</code> contains only the title and/or subtitle. <code>##</code> adds a standard content slide with a heading on the top.</li>
+<li>Add a title slide</li>
+</ol>
+<pre><code># Title Slide | Subtitle</code></pre>
+<ol start="7" style="list-style-type: decimal">
+<li>Add a standard slide with a heading and a bulleted list. For example</li>
+</ol>
+<pre><code>## Level 2 Heading
+
+- Point one
+- Point two</code></pre>
+<p>The bullets can set to show incrementally on click:</p>
+<pre><code>## Level 2 Heading
+
+&gt; - Point one
+&gt; - Point two</code></pre>
+<ol start="8" style="list-style-type: decimal">
+<li>Create a new slide and add some R chunk. For example:</li>
+</ol>
+<pre><code>```{r}
+data(iris)
+str(cars)
+```</code></pre>
+<ol start="9" style="list-style-type: decimal">
+<li>Create a new slide and display a table by executing an R chunk. For example:</li>
+</ol>
+<pre><code>```{r}
+head(cars)
+```</code></pre>
+<ol start="10" style="list-style-type: decimal">
+<li>Create a new slide and display an R plot. For example:</li>
+</ol>
+<pre><code>```{r,fig.height=3,fig.width=5,fig.cap=&quot;This is a scatterplot.&quot;}
+plot(cars$speed,cars$dist)
+```</code></pre>
+<ol start="11" style="list-style-type: decimal">
+<li>Add an image to a new slide. For example:</li>
+</ol>
+<pre><code>![](rr_lab_assets/gotland.jpg){width=60%}</code></pre>
+<ol start="12" style="list-style-type: decimal">
+<li>When viewing the presentation, press <code>O</code> to see an overview of the slides.</li>
+</ol>
+</div>
+<div id="pres-revealjs" class="section level1">
+<h1><span class="header-section-number">5</span> Pres • revealjs</h1>
+<p><strong>revealJS</strong> is an HTML and javascript based presentation system. The <code>revealjs</code> R package provides a way to use this framework through R purely using R code. Here is an example of an <a href="https://revealjs.com/#/">revealJS presentation</a>.</p>
+<p>This is a do-it-yourself challenge to <a href="https://revealjs.com/#/">RevealJS</a> 2-D Presentation using RMarkdown. Have a look at the presentation below and try to recreate it. Instructions and helpful tips are given below.</p>
+<p>This is the <a href="rr_challenge_revealjs.html">challenge RevealJS presentation</a>.</p>
+<ol style="list-style-type: decimal">
+<li>Install R package <code>revealjs</code> and load the library.</li>
+<li>Create a new RMarkdown document.</li>
+<li>Set YAML matter output to <code>output: revealjs_presentation</code>. See <a href="https://rmarkdown.rstudio.com/revealjs_presentation_format.html">here</a> for a guide to using RevealJS presentation in R. See <code>?revealjs_presentation</code> for options.</li>
+<li>Set theme and highlight as needed.</li>
+<li>New slides are defined using <code>#</code> with level 1 heading,<code>##</code> with level 2 heading or <code>----</code> without a heading. The best feature of RevealJS is that slides are not restricted to horizontal (linear) flow. Slides can also flow vertical from any of the horizontal slides. A level 2 heading <code>##</code> signifies that the content under that flows vertically.</li>
+<li>Add a level 1 heading and add some text content.</li>
+<li>Create a new slide vertically by adding a level 2 heading and add some R chunk. For example:</li>
+</ol>
+<pre><code>## Level 2 Heading
+
+```{r}
+data(iris)
+str(cars)
+```</code></pre>
+<ol start="9" style="list-style-type: decimal">
+<li>Create a new slide vertically using level 2 heading and display a table by executing an R chunk. For example:</li>
+</ol>
+<pre><code>## Level 2 Heading
+
+```{r}
+head(cars)
+```</code></pre>
+<ol start="10" style="list-style-type: decimal">
+<li>Create a new slide vertically and display an R plot. For example:</li>
+</ol>
+<pre><code>## Level 2 Heading
+
+```{r,fig.height=3,fig.width=5,fig.cap=&quot;This is a scatterplot.&quot;}
+plot(cars$speed,cars$dist)
+```</code></pre>
+<ol start="11" style="list-style-type: decimal">
+<li>Create a new slide horizontally. Add an image to a new slide. For example:</li>
+</ol>
+<pre><code>![](rr_lab_assets/gotland.jpg)</code></pre>
+<ol start="12" style="list-style-type: decimal">
+<li>When viewing the presentation, press <code>O</code> to see an overview of the slides.</li>
+</ol>
+</div>
+<div id="pres-xaringan" class="section level1">
+<h1><span class="header-section-number">6</span> Pres • xaringan</h1>
+<p><strong>xaringan</strong> is an R package that provides bindings to remarkjs HTML and javascript based presentation system. Here is an example of a <a href="https://remarkjs.com/#1">remarkjs presentation</a>. <a href="https://slides.yihui.name/xaringan/">Here</a> is an example that actually uses the xaringan package in R.</p>
+<p>The <strong>remarkjs</strong> <a href="https://github.com/gnab/remark/wiki">repo and wiki pages</a> and the <strong>xaringan</strong> <a href="https://github.com/yihui/xaringan/wiki">repo and wiki</a> are good sources of documentation.</p>
+<p>This is a do-it-yourself challenge to remarkjs presentation system using RMarkdown in xaringan. Have a look at the presentation below and try to recreate it. Instructions and helpful tips are given below.</p>
+<p>This is the <a href="rr_challenge_xaringan.html">challenge Xaringan presentation</a>.</p>
+<ol style="list-style-type: decimal">
+<li>Install R package <code>xaringan</code> and load the library.</li>
+<li>Create a new RMarkdown document.</li>
+<li>Set YAML matter output to <code>output: xaringan::moon_reader</code>. Use <code>?moon_reader()</code> for options.</li>
+<li>Set theme and highlight as needed.</li>
+<li>New slides are defined using <code>---</code>. Headings as usual are <code>#</code> for level 1 heading,<code>##</code> with level 2 heading etc.</li>
+<li>Add a level 1 heading and add some bullet points.</li>
+</ol>
+<pre><code># Bullet points
+
+- Point One
+- Point Two</code></pre>
+<ol start="7" style="list-style-type: decimal">
+<li><p>Note that Xaringan/remarkjs does not use the regular pandoc markdown, therefore some features may not work or may be different. For example superscript is created using <code>2&lt;sup&gt;10&lt;/sup&gt;</code> rather than <code>2^10^</code>. Subscript is created using <code>2&lt;sub&gt;10&lt;/sub&gt;</code> rather than <code>2~10~</code>.</p></li>
+<li><p>Add some code content. For example;</p></li>
+</ol>
+<pre><code>```{r}
+data(iris)
+str(cars)
+```</code></pre>
+<ol start="9" style="list-style-type: decimal">
+<li>Slides can be named which helps to create links back to this slide. Create a new slide and add a name like this <code>name: name</code>. Add a heading and add an R plot on this slide.</li>
+</ol>
+<pre><code>---
+name: plots
+
+# Plots
+
+```{r,fig.height=3,fig.width=5,fig.cap=&quot;This is a scatterplot.&quot;}
+plot(cars$speed,cars$dist)
+```</code></pre>
+<p>Note that the slide name is added immediately under the new slide creator <code>---</code>.</p>
+<ol start="11" style="list-style-type: decimal">
+<li>Create a new slide with a table and name the slide table.</li>
+</ol>
+<pre><code>---
+name: table
+
+# Table
+
+```{r}
+head(cars)
+```</code></pre>
+<p>From this slide, create a link to go back to plots.</p>
+<pre><code>Click [here](#plots) to go to plots.</code></pre>
+<ol start="12" style="list-style-type: decimal">
+<li>Create a new slide and add an image.</li>
+</ol>
+<pre><code>---
+name: image
+
+# Image
+
+![](rr_lab_assets/gotland.jpg)</code></pre>
+<p>If this is too big, you can manually set the width using raw HTML <code>&lt;img src=&quot;rr_lab_assets/gotland.jpg&quot; width=&quot;250px&quot;&gt;</code></p>
+<ol start="13" style="list-style-type: decimal">
+<li>It is possible to highlight parts of code. For example, in this code,</li>
+</ol>
+<pre><code>```{r}
+ggplot(iris,aes(x=Petal.Length,Sepal.Width,col=Species))+
+  geom_point(size=2)+
+  labs(x=&quot;Petal Length&quot;,y=&quot;Sepal Width&quot;)+
+  scale_colour_manual(values=c(&quot;#000000&quot;,&quot;#E69F00&quot;,&quot;#56B4E9&quot;,
+  &quot;#009E73&quot;,&quot;#F0E442&quot;,&quot;#006699&quot;,&quot;#D55E00&quot;,&quot;#CC79A7&quot;))+
+  theme_bw(base_size=12)+
+  theme(panel.border=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x=element_blank(),
+        axis.ticks=element_blank())
+```</code></pre>
+<p>say, we want to highlight <code>theme_bw(base_size=12)</code>. We can add <code>{{}}</code> around it. Add the below code to a new slide called highlighting.</p>
+<pre><code>```{r}
+ggplot(iris,aes(x=Petal.Length,Sepal.Width,col=Species))+
+  geom_point(size=2)+
+  labs(x=&quot;Petal Length&quot;,y=&quot;Sepal Width&quot;)+
+  scale_colour_manual(values=c(&quot;#000000&quot;,&quot;#E69F00&quot;,&quot;#56B4E9&quot;,
+  &quot;#009E73&quot;,&quot;#F0E442&quot;,&quot;#006699&quot;,&quot;#D55E00&quot;,&quot;#CC79A7&quot;))+
+  {{theme_bw(base_size=12)}}+
+  theme(panel.border=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x=element_blank(),
+        axis.ticks=element_blank())
+```</code></pre>
+<ol start="14" style="list-style-type: decimal">
+<li>Try out some math expressions. Paste a few of the line below to your slide.</li>
+</ol>
+<pre><code>$e^{i\pi} + 1 = 0$
+$$\frac{E \times X^2 \prod I}{2+7} = 432$$
+$$\sum_{i=1}^n X_i$$
+$$\int_0^{2\pi} \sin x~dx$$</code></pre>
+<p>Add a <code>--</code> between each line to display them incrementally.</p>
+<pre><code>$e^{i\pi} + 1 = 0$
+
+--
+
+$$\frac{E \times X^2 \prod I}{2+7} = 432$$
+
+--
+
+$$\sum_{i=1}^n X_i$$
+
+--
+
+$$\int_0^{2\pi} \sin x~dx$$</code></pre>
+<ol start="15" style="list-style-type: decimal">
+<li><p>When viewing the presentation, press <code>H</code> to see an overview of keyboard shortcuts during presentation.</p></li>
+<li><p>remarkjs has a nifty feature where you can press <code>C</code> to clone the presentation in a new browser window. Now both these copies are linked. You can change one of them to the presenter mode by pressing <code>P</code>. Now changing the slide in one window changes the other. Convenient when a presenter view/audience view is needed.</p></li>
+</ol>
+<!-- --------------------- Do not edit this and below ---------------------- -->
+</div>
+<div id="session-info" class="section level1">
+<h1><span class="header-section-number">7</span> Session info</h1>
+<pre><code>## R version 3.5.2 (2018-12-20)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 18.04.2 LTS
+## 
+## Matrix products: default
+## BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+## 
+## locale:
+##  [1] LC_CTYPE=en_GB.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_GB.UTF-8        LC_COLLATE=en_GB.UTF-8    
+##  [5] LC_MONETARY=en_GB.UTF-8    LC_MESSAGES=en_GB.UTF-8   
+##  [7] LC_PAPER=en_GB.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_GB.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     datasets  grDevices utils     graphics  methods   base     
+## 
+## other attached packages:
+##  [1] revealjs_0.9     xaringan_0.9     ggrepel_0.8.0    stringr_1.4.0   
+##  [5] captioner_2.2.3  gdtools_0.1.8    gridExtra_2.3    kableExtra_1.1.0
+##  [9] ggplot2_3.1.1    tidyr_0.8.3      dplyr_0.8.0.1    bookdown_0.9    
+## [13] knitr_1.23      
+## 
+## loaded via a namespace (and not attached):
+##  [1] httr_1.4.0        pkgload_1.0.2     jsonlite_1.6     
+##  [4] viridisLite_0.3.0 shiny_1.3.2       assertthat_0.2.1 
+##  [7] highr_0.8         yaml_2.2.0        remotes_2.0.4    
+## [10] sessioninfo_1.1.1 pillar_1.3.1      backports_1.1.4  
+## [13] glue_1.3.1        digest_0.6.19     promises_1.0.1   
+## [16] rvest_0.3.3       colorspace_1.4-1  cowplot_0.9.4    
+## [19] htmltools_0.3.6   httpuv_1.5.1      plyr_1.8.4       
+## [22] pkgconfig_2.0.2   devtools_2.0.2    rmdshower_2.1.1  
+## [25] purrr_0.3.2       xtable_1.8-3      scales_1.0.0     
+## [28] webshot_0.5.1     processx_3.3.0    later_0.8.0      
+## [31] tibble_2.1.1      usethis_1.5.0     ggpubr_0.2       
+## [34] withr_2.1.2       lazyeval_0.2.2    cli_1.1.0        
+## [37] magrittr_1.5      crayon_1.3.4      mime_0.6         
+## [40] memoise_1.1.0     evaluate_0.14     ps_1.3.0         
+## [43] fs_1.2.7          xml2_1.2.0        pkgbuild_1.0.3   
+## [46] Cairo_1.5-10      rsconnect_0.8.13  tools_3.5.2      
+## [49] data.table_1.12.2 prettyunits_1.0.2 hms_0.4.2        
+## [52] plotly_4.9.0      munsell_0.5.0     callr_3.2.0      
+## [55] compiler_3.5.2    tinytex_0.13      rlang_0.3.4      
+## [58] grid_3.5.2        rstudioapi_0.10   htmlwidgets_1.3  
+## [61] crosstalk_1.0.0   base64enc_0.1-3   labeling_0.3     
+## [64] rmarkdown_1.13    testthat_2.0.1    gtable_0.3.0     
+## [67] curl_3.3          reshape2_1.4.3    R6_2.4.0         
+## [70] ggiraph_0.6.1     rprojroot_1.3-2   readr_1.3.1      
+## [73] desc_1.2.0        stringi_1.4.3     Rcpp_1.0.1       
+## [76] tidyselect_0.2.5  xfun_0.7</code></pre>
+<p style="text-align: left; font-size: small;">
+Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 08-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 19:58:37.
+</p>
+<hr/>
+<div style="padding-bottom: 1.5em">
+<p><span style="float:left; vertical-align:middle"> <b>2019</b> • <a href="https://www.scilifelab.se/">SciLifeLab</a> • <a href="https://nbis.se/">NBIS</a> • <a href="https://nbisweden.github.io/workshop-RaukR-1906/">RaukR</a> </span> <span style="float:right; vertical-align:middle"> <span class="footericon" style="padding-right:4px; padding-left:4px"> <a href="https://nbisweden.github.io/workshop-RaukR-1806/"><img src="assets/icons8-globe-26.png" alt="website" border="0" style="height:15px"></a> </span> <span class="footericon" style="padding-right:4px; padding-left:4px"> <a href="https://twitter.com/hashtag/RaukR?src=hash"><img src="assets/icons8-twitter-26.png" alt="twitter" border="0" style="height:15px"></a> </span> </span></p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

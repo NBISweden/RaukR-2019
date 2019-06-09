@@ -1,0 +1,109 @@
+---
+title: "Fun with Presentations"
+author: "Your Name"
+date: "`r format(Sys.Date(),format='%d/%m/%Y')`"
+output: 
+  xaringan::moon_reader:
+    nature:
+      ratio: '4:3'
+---
+
+```{r setup, include=FALSE}
+library(xaringan)
+```
+
+# Bullet points
+
+- Point One
+- Point Two
+
+# Structure
+
+Below is an R chunk showing the structure.
+
+```{r}
+data(iris)
+str(cars)
+```
+
+---
+name: plots
+
+# Plots
+
+```{r,fig.height=3,fig.width=5}
+plot(cars$speed,cars$dist)
+```
+
+---
+name: table
+
+# Table
+
+Below is an R chunk showing a table.
+
+Below is a table.
+
+```{r}
+head(cars)
+```
+
+Click [here](#plots) to go to plots.
+
+---
+
+# Image
+
+## Adding an Image
+
+The default usage does not work well because the image is too big.
+
+```
+![](rr_lab_assets/gotland.jpg)
+```
+
+So, we use HTML directly like this:
+
+```
+<img src="rr_lab_assets/gotland.jpg" width="250px">
+```
+
+<img src="rr_lab_assets/gotland.jpg" width="250px">
+
+---
+name: highlighting
+
+# Highlighting
+
+```{r}
+ggplot(iris,aes(x=Petal.Length,Sepal.Width,col=Species))+
+  geom_point(size=2)+
+  labs(x="Petal Length",y="Sepal Width")+
+  scale_colour_manual(values=c("#000000","#E69F00","#56B4E9",
+  "#009E73","#F0E442","#006699","#D55E00","#CC79A7"))+
+  {{theme_bw(base_size=12)}}
+```
+
+---
+name: math
+
+# Math
+
+$e^{i\pi} + 1 = 0$
+
+--
+
+$$\frac{E \times X^2 \prod I}{2+7} = 432$$
+
+--
+
+$$\sum_{i=1}^n X_i$$
+
+--
+
+$$\int_0^{2\pi} \sin x~dx$$
+
+---
+
+# Thank you
+

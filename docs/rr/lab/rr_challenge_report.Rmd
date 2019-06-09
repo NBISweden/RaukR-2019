@@ -1,0 +1,52 @@
+---
+title: "A title"
+subtitle: "A subtitle"
+author: "Your Name"
+date: "`r format(Sys.Date(),format='%d/%m/%Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    theme: flatly
+    highlight: kate
+    code_folding: "hide"
+---
+
+# Level 1 Heading
+
+This is some random text here because there is nothing to write about. What do you write about when someone forces you to write about stuff? You have to make up stuff and I am not very good at this. I think this will do.
+
+## Level 2 Heading
+
+Hopefully this section has more interesting stuff. Not really. You are mistaken. This section is even more boring than the previous section. But in this section, we are going to have some R chunks.
+
+```{r}
+data(iris)
+str(cars)
+```
+
+Below is a table. How fascinating!
+
+```{r}
+head(cars)
+```
+
+## Plots
+
+Here is a basic R plot.
+
+```{r,fig.cap="This is a scatterplot."}
+plot(cars$speed,cars$dist)
+```
+
+## Image
+
+So we can include a random image here? Yes, here is an image:
+
+![](rr_lab_assets/gotland.jpg)
+
+This is an aerial view of Gotland (not a real image). But it's cute. Did you notice the Rauks on the top right?
+
+__End of Document__

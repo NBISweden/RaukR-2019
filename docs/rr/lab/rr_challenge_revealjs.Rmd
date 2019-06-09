@@ -1,0 +1,70 @@
+---
+title: "Fun with Presentations"
+author: "Your Name"
+date: "`r format(Sys.Date(),format='%d/%m/%Y')`"
+output: 
+  revealjs::revealjs_presentation:
+      theme: "simple"
+      highlight: "kate"
+      center: true
+      transition: slide
+      background_transition: fade
+---
+
+```{r setup, include=FALSE}
+library(revealjs)
+```
+
+# Level 1 Heading
+
+This content is not displayed
+
+## Level 2 Heading
+
+Below is an R chunk showing the structure.
+
+```{r}
+data(iris)
+str(cars)
+```
+
+## Table
+
+Below is an R chunk showing a table.
+
+Below is a table.
+
+```{r}
+head(cars)
+```
+
+## Plots
+
+Here is a basic R plot.
+
+```{r,fig.height=4,fig.width=6,fig.cap="This is a scatterplot."}
+plot(cars$speed,cars$dist)
+```
+
+# Image
+
+## Image
+
+The default usage does not work well because the image is too big.
+
+```
+![](rr_lab_assets/gotland.jpg)
+```
+
+So, we use HTML directly like this:
+
+```
+<img src="rr_lab_assets/gotland.jpg" width="250px">
+```
+
+<img src="rr_lab_assets/gotland.jpg" width="250px">
+
+# Thank you
+
+
+

@@ -1,0 +1,66 @@
+---
+title: "Fun with Presentations"
+author: "Your Name"
+date: "`r format(Sys.Date(),format='%d/%m/%Y')`"
+output: 
+  ioslides_presentation:
+    logo: assets/logo.svg
+    theme: "simple"
+    highlight: "kate"
+    widescreen: true
+---
+
+# Section 1 | Add a subtitle
+
+## Bullet points
+
+> - Point One
+> - Point two
+
+## Structure
+
+Below is an R chunk showing the structure.
+
+```{r}
+data(iris)
+str(cars)
+```
+
+## Table
+
+Below is an R chunk showing a table.
+
+Below is a table.
+
+```{r}
+head(cars)
+```
+
+## Plots
+
+Here is a basic R plot.
+
+```{r,fig.height=3,fig.width=5,fig.cap="This is a scatterplot."}
+plot(cars$speed,cars$dist)
+```
+
+# Image
+
+## Adding an Image
+
+The default usage does not work well because the image is too big.
+
+```
+![](rr_lab_assets/gotland.jpg)
+```
+
+So, we use HTML directly like this:
+
+```
+<img src="rr_lab_assets/gotland.jpg" width="250px">
+```
+
+<img src="rr_lab_assets/gotland.jpg" width="250px">
+
+# Thank you
+

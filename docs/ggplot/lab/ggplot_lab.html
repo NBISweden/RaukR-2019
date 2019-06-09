@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Roy Francis" />
+
+
+<title>Introduction to ggplot2</title>
+
+<script src="ggplot_lab_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="ggplot_lab_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="ggplot_lab_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="ggplot_lab_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="ggplot_lab_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="ggplot_lab_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="ggplot_lab_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="ggplot_lab_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="ggplot_lab_files/navigation-1.1/tabsets.js"></script>
+<link href="ggplot_lab_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="ggplot_lab_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="ggplot_lab_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="ggplot_lab_files/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="ggplot_lab_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="ggplot_lab_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="ggplot_lab_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Introduction to ggplot2</h1>
+<h3 class="subtitle">RaukR 2019 • Advanced R for Bioinformatics</h3>
+<h4 class="author">Roy Francis</h4>
+
+</div>
+
+
+<p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<!-- ------------ Only edit title, subtitle & author above this ------------ -->
+<br>
+<div class="spaced abstract">
+<p>This is the hands-on material for <strong>Introduction to <code>ggplot2</code></strong>. These are series of excercises to help you get started and familiarise yourself with ggplot2 syntax, plot building logic and fine modification of plots. Practice using the Basics section. Then there are tutorials for two complex plots: a scatterplot and a heatmap.</p>
+<div class="pull-left-50">
+<p><img src="ggplot_lab_assets/economist-scatterplot.png"></p>
+</div>
+<div class="pull-right-50">
+<p><img src="ggplot_lab_assets/wsj-heatmap.png"></p>
+</div>
+</div>
+<p><br></p>
+<div id="basics" class="section level1">
+<h1><span class="header-section-number">1</span> Basics</h1>
+<p>First step is to make sure that <code>ggplot2</code> is installed and the package is loaded.</p>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<p>We use the <code>iris</code> data to get started. This dataset has four continuous variables and one categorical variable. It is important to remember about the data type when plotting graphs.</p>
+<pre class="r"><code>data(&quot;iris&quot;)
+head(iris)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Sepal.Length"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Sepal.Width"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Petal.Length"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Petal.Width"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Species"],"name":[5],"type":["fctr"],"align":["left"]}],"data":[{"1":"5.1","2":"3.5","3":"1.4","4":"0.2","5":"setosa","_rn_":"1"},{"1":"4.9","2":"3.0","3":"1.4","4":"0.2","5":"setosa","_rn_":"2"},{"1":"4.7","2":"3.2","3":"1.3","4":"0.2","5":"setosa","_rn_":"3"},{"1":"4.6","2":"3.1","3":"1.5","4":"0.2","5":"setosa","_rn_":"4"},{"1":"5.0","2":"3.6","3":"1.4","4":"0.2","5":"setosa","_rn_":"5"},{"1":"5.4","2":"3.9","3":"1.7","4":"0.4","5":"setosa","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="building-a-plot" class="section level2">
+<h2><span class="header-section-number">1.1</span> Building a plot</h2>
+<p>ggplot2 plots are initialised by specifying the dataset. This can be saved to a variable or it draws a blank plot.</p>
+<pre class="r"><code>ggplot(data=iris)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-5-1.svg" width="384" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Now we can specify what we want on the x and y axes using aethetic mapping. And we specify the geometric using geoms. Note that the variable names do not have double quotes <code>&quot;&quot;</code> like in base plots.</p>
+<pre class="r"><code>ggplot(data=iris)+
+  geom_point(mapping=aes(x=Petal.Length,y=Petal.Width))</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-6-1.svg" width="384" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="multiple-geoms" class="section level2">
+<h2><span class="header-section-number">1.2</span> Multiple geoms</h2>
+<p>Further geoms can be added. For example let’s add a regression line. When multiple geoms with the same aesthetics are used, they can be specified as a common mapping. Note that the order in which geoms are plotted depends on the order in which the geoms are supplied in the code. In the code below, the points are plotted first and then the regression line.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point()+
+  geom_smooth(method=&quot;lm&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-7-1.svg" width="384" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="using-colors" class="section level2">
+<h2><span class="header-section-number">1.3</span> Using colors</h2>
+<p>We can use the categorical column <code>Species</code> to color the points. The color aesthetic is used by <code>geom_point</code> and <code>geom_smooth</code>. Three different regression lines are now drawn. Notice that a legend is automatically created.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width,color=Species))+
+  geom_point()+
+  geom_smooth(method=&quot;lm&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-8-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+<p>If we wanted to keep a common regression line while keeping the colors for the points, we could specify color aesthetic only for <code>geom_point</code>.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species))+
+  geom_smooth(method=&quot;lm&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-9-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="aesthetic-parameter" class="section level2">
+<h2><span class="header-section-number">1.4</span> Aesthetic parameter</h2>
+<p>We can change the size of all points by a fixed amount by specifying size outside the aesthetic parameter.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species),size=3)+
+  geom_smooth(method=&quot;lm&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-10-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="aesthetic-mapping" class="section level2">
+<h2><span class="header-section-number">1.5</span> Aesthetic mapping</h2>
+<p>We can map another variable as size of the points. This is done by specifying size inside the aesthetic mapping. Now the size of the points denote <code>Sepal.Width</code>. A new legend group is created to show this new aesthetic.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species,size=Sepal.Width))+
+  geom_smooth(method=&quot;lm&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-11-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="discrete-colors" class="section level2">
+<h2><span class="header-section-number">1.6</span> Discrete colors</h2>
+<p>We can change the default colors by specifying new values inside a scale.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species,size=Sepal.Width))+
+  geom_smooth(method=&quot;lm&quot;)+
+  scale_color_manual(values=c(&quot;red&quot;,&quot;blue&quot;,&quot;green&quot;))</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-12-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="continuous-colors" class="section level2">
+<h2><span class="header-section-number">1.7</span> Continuous colors</h2>
+<p>We can also map the colors to a continuous variable. This creates a color bar legend item.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Sepal.Width))+
+  geom_smooth(method=&quot;lm&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-13-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="titles" class="section level2">
+<h2><span class="header-section-number">1.8</span> Titles</h2>
+<p>Now let’s rename the axis labels, change the legend title and add a title, a subtitle and a caption. We change the legend title using <code>scale_color_continuous()</code>. All other labels are changed using <code>labs()</code>.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Sepal.Width))+
+  geom_smooth(method=&quot;lm&quot;)+
+  scale_color_continuous(name=&quot;New Legend Title&quot;)+
+  labs(title=&quot;This Is A Title&quot;,subtitle=&quot;This is a subtitle&quot;,x=&quot; Petal Length&quot;, 
+       y=&quot;Petal Width&quot;, caption=&quot;This is a little caption.&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-14-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="axes-modification" class="section level2">
+<h2><span class="header-section-number">1.9</span> Axes modification</h2>
+<p>Let’s say we are not happy with the x-axis breaks 2,4,6 etc. We would like to have 1,2,3… We change this using <code>scale_x_continuous()</code>.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Sepal.Width))+
+  geom_smooth(method=&quot;lm&quot;)+
+  scale_color_continuous(name=&quot;New Legend Title&quot;)+
+  scale_x_continuous(breaks=1:8)+
+  labs(title=&quot;This Is A Title&quot;,subtitle=&quot;This is a subtitle&quot;,x=&quot; Petal Length&quot;, 
+       y=&quot;Petal Width&quot;, caption=&quot;This is a little caption.&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-15-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="facetting" class="section level2">
+<h2><span class="header-section-number">1.10</span> Facetting</h2>
+<p>We can create subplots using the facetting functionality. Let’s create three subplots for the three levels of Species.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Sepal.Width))+
+  geom_smooth(method=&quot;lm&quot;)+
+  scale_color_continuous(name=&quot;New Legend Title&quot;)+
+  scale_x_continuous(breaks=1:8)+
+  labs(title=&quot;This Is A Title&quot;,subtitle=&quot;This is a subtitle&quot;,x=&quot; Petal Length&quot;, 
+       y=&quot;Petal Width&quot;, caption=&quot;This is a little caption.&quot;)+
+  facet_wrap(~Species)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-16-1.svg" width="576" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="themes" class="section level2">
+<h2><span class="header-section-number">1.11</span> Themes</h2>
+<p>The look of the plot can be changed using themes. Let’s can the default <code>theme_grey()</code> to <code>theme_bw()</code>.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Sepal.Width))+
+  geom_smooth(method=&quot;lm&quot;)+
+  scale_color_continuous(name=&quot;New Legend Title&quot;)+
+  scale_x_continuous(breaks=1:8)+
+  labs(title=&quot;This Is A Title&quot;,subtitle=&quot;This is a subtitle&quot;,x=&quot; Petal Length&quot;, 
+       y=&quot;Petal Width&quot;, caption=&quot;This is a little caption.&quot;)+
+  facet_wrap(~Species)+
+  theme_bw()</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-17-1.svg" width="576" style="display: block; margin: auto auto auto 0;" /></p>
+<p>All non-data related aspects of the plot can be modified through themes. Let’s modify the colors of the title labels and turn off the gridlines. The various parameters for theme ca be found using <code>?theme</code>.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Sepal.Width))+
+  geom_smooth(method=&quot;lm&quot;)+
+  scale_color_continuous(name=&quot;New Legend Title&quot;)+
+  scale_x_continuous(breaks=1:8)+
+  labs(title=&quot;This Is A Title&quot;,subtitle=&quot;This is a subtitle&quot;,x=&quot; Petal Length&quot;, 
+       y=&quot;Petal Width&quot;, caption=&quot;This is a little caption.&quot;)+
+  facet_wrap(~Species)+
+  theme_bw()+
+  theme(
+    axis.title=element_text(color=&quot;Blue&quot;,face=&quot;bold&quot;),
+    plot.title=element_text(color=&quot;Green&quot;,face=&quot;bold&quot;),
+    plot.subtitle=element_text(color=&quot;Pink&quot;),
+    panel.grid=element_blank()
+  )</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-18-1.svg" width="576" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Themes can be saved and reused.</p>
+<pre class="r"><code>newtheme &lt;- theme(
+    axis.title=element_text(color=&quot;Blue&quot;,face=&quot;bold&quot;),
+    plot.title=element_text(color=&quot;Green&quot;,face=&quot;bold&quot;),
+    plot.subtitle=element_text(color=&quot;Pink&quot;),
+    panel.grid=element_blank())
+
+ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Sepal.Width))+
+  geom_smooth(method=&quot;lm&quot;)+
+  scale_color_continuous(name=&quot;New Legend Title&quot;)+
+  scale_x_continuous(breaks=1:8)+
+  labs(title=&quot;This Is A Title&quot;,subtitle=&quot;This is a subtitle&quot;,x=&quot; Petal Length&quot;, 
+       y=&quot;Petal Width&quot;, caption=&quot;This is a little caption.&quot;)+
+  facet_wrap(~Species)+
+  theme_bw()+
+  newtheme</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-19-1.svg" width="576" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="controlling-legends" class="section level2">
+<h2><span class="header-section-number">1.12</span> Controlling legends</h2>
+<p>Here we see two legends based on the two aesthetic mappings.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species,size=Sepal.Width))</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-20-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+<p>If we don’t want to have the extra legend, we can turn off legends individually by aesthetic.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species,size=Sepal.Width))+
+  guides(size=&quot;none&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-21-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+<p>We can also turn off legends by geom.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species,size=Sepal.Width),show.legend=FALSE)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-22-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Legends can be moved around using theme.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species,size=Sepal.Width))+
+  theme(legend.position=&quot;top&quot;,
+        legend.justification=&quot;right&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-23-1.svg" width="576" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Legend rows can be controlled in a finer manner.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species,size=Sepal.Width))+
+  guides(size=guide_legend(nrow=2,byrow=TRUE),
+         color=guide_legend(nrow=3,byrow=T))+
+  theme(legend.position=&quot;top&quot;,
+        legend.justification=&quot;right&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-24-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="labelling" class="section level2">
+<h2><span class="header-section-number">1.13</span> Labelling</h2>
+<p>Items on the plot can be labelled using the <code>geom_text</code> or <code>geom_label</code> geoms.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species))+
+  geom_text(aes(label=Species,hjust=0),nudge_x=0.5,size=3)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-25-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species))+
+  geom_label(aes(label=Species,hjust=0),nudge_x=0.5,size=3)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-26-1.svg" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+<p>The R package <code>ggrepel</code> allows for non-overlapping labels.</p>
+<pre class="r"><code>library(ggrepel)
+ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species))+
+  geom_text_repel(aes(label=Species),size=3)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-27-1.svg" width="576" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="annotations" class="section level2">
+<h2><span class="header-section-number">1.14</span> Annotations</h2>
+<p>Custom annotations of any geom can be added arbitrarly anywhere on the plot.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Species))+
+  annotate(&quot;text&quot;,x=2.5,y=2.1,label=&quot;There is a random line here&quot;)+
+  annotate(&quot;segment&quot;,x=2,xend=4,y=1.5,yend=2)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-28-1.svg" width="576" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="barplots" class="section level2">
+<h2><span class="header-section-number">1.15</span> Barplots</h2>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Species,y=Petal.Width))+
+  geom_bar(stat=&quot;identity&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-29-1.svg" width="576" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="flip-axes" class="section level2">
+<h2><span class="header-section-number">1.16</span> Flip axes</h2>
+<p>x and y axes can be flipped using <code>coord_flip</code>.</p>
+<pre class="r"><code>ggplot(data=iris,mapping=aes(x=Species,y=Petal.Width))+
+  geom_bar(stat=&quot;identity&quot;)+
+  coord_flip()</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-30-1.svg" width="576" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="error-bars" class="section level2">
+<h2><span class="header-section-number">1.17</span> Error Bars</h2>
+<p>An example of using error bars with points. The mean and standard deviation is computed. This is used to create upper and lower bounds for the error bars.</p>
+<pre class="r"><code>dfr &lt;- iris %&gt;% group_by(Species) %&gt;% 
+  summarise(mean=mean(Sepal.Length),sd=sd(Sepal.Length)) %&gt;%
+  mutate(high=mean+sd,low=mean-sd)
+
+ggplot(data=dfr,mapping=aes(x=Species,y=mean,color=Species))+
+  geom_point(size=4)+
+  geom_errorbar(aes(ymax=high,ymin=low),width=0.2)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-31-1.svg" width="576" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+</div>
+<div id="economist-scatterplot" class="section level1">
+<h1><span class="header-section-number">2</span> Economist Scatterplot</h1>
+<p>The aim of this challenge is to recreate the plot below originally published in <a href="https://www.economist.com/blogs/dailychart/2011/12/corruption-and-development">The Economist</a>. The graph is a scatterplot showing the relationship between <em>Corruption Index</em> and <em>Human Development Index</em> for various countries.</p>
+<div class="figure">
+<img src="ggplot_lab_assets/economist-scatterplot.png" />
+
+</div>
+<div id="data" class="section level2">
+<h2><span class="header-section-number">2.1</span> Data</h2>
+<p>Start by reading in the <a href="https://www.dropbox.com/s/7imn0eoey9ckxh5/data_economist.csv?dl=1">data</a>.</p>
+<pre class="r"><code>ec &lt;- read.csv(&quot;ggplot_lab_assets/data_economist.csv&quot;,header=T)
+head(ec)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["X"],"name":[1],"type":["int"],"align":["right"]},{"label":["Country"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["HDI.Rank"],"name":[3],"type":["int"],"align":["right"]},{"label":["HDI"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["CPI"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Region"],"name":[6],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"Afghanistan","3":"172","4":"0.398","5":"1.5","6":"Asia Pacific","_rn_":"1"},{"1":"2","2":"Albania","3":"70","4":"0.739","5":"3.1","6":"East EU Cemt Asia","_rn_":"2"},{"1":"3","2":"Algeria","3":"96","4":"0.698","5":"2.9","6":"MENA","_rn_":"3"},{"1":"4","2":"Angola","3":"148","4":"0.486","5":"2.0","6":"SSA","_rn_":"4"},{"1":"5","2":"Argentina","3":"45","4":"0.797","5":"3.0","6":"Americas","_rn_":"5"},{"1":"6","2":"Armenia","3":"86","4":"0.716","5":"2.6","6":"East EU Cemt Asia","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Make sure that the fields are of the correct type. The x-axis field ‘CPI’ and the y-axis field ‘HDI’ must be of numeric type. The categorical field ‘Region’ must be of Factor type.</p>
+<pre class="r"><code>str(ec)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    173 obs. of  6 variables:
+##  $ X       : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ Country : Factor w/ 173 levels &quot;Afghanistan&quot;,..: 1 2 3 4 5 6 7 8 9 10 ...
+##  $ HDI.Rank: int  172 70 96 148 45 86 2 19 91 53 ...
+##  $ HDI     : num  0.398 0.739 0.698 0.486 0.797 0.716 0.929 0.885 0.7 0.771 ...
+##  $ CPI     : num  1.5 3.1 2.9 2 3 2.6 8.8 7.8 2.4 7.3 ...
+##  $ Region  : Factor w/ 6 levels &quot;Americas&quot;,&quot;Asia Pacific&quot;,..: 2 3 5 6 1 3 2 4 3 1 ...</code></pre>
+<p>We need to first modify the region column. The current levels in the ‘Region’ field are:</p>
+<pre class="r"><code>levels(ec$Region)</code></pre>
+<pre><code>## [1] &quot;Americas&quot;          &quot;Asia Pacific&quot;      &quot;East EU Cemt Asia&quot;
+## [4] &quot;EU W. Europe&quot;      &quot;MENA&quot;              &quot;SSA&quot;</code></pre>
+<p>But, the categories on the plot are different and need to be changed as follows:</p>
+<pre><code>From                  To
+EU W. Europe          OECD
+Americas              Americas
+Asia Pacific          Asia &amp; Oceania
+East EU Cemt Asia     Central &amp; Eastern Europe
+MENA                  Middle East &amp; North Africa
+SSA                   Sub-Saharan Africa</code></pre>
+<p>Since the ‘To’ strings are a bit too long to be in one line on the legend, use <code>\n</code> to break a line into two lines. &gt; <code>\n</code> is the newline character in R.</p>
+<pre><code>From                  To
+EU W. Europe          OECD
+Americas              Americas
+Asia Pacific          Asia &amp;\nOceania
+East EU Cemt Asia     Central &amp;\nEastern Europe
+MENA                  Middle East &amp;\nNorth Africa
+SSA                   Sub-Saharan\nAfrica</code></pre>
+<p>The strings can be renamed using string replacement or substitution. But a easier way to do it is to use <code>factor()</code>. The arguments <code>levels</code> and <code>labels</code> in function <code>factor()</code> can be used to rename factors.</p>
+<pre class="r"><code>ec$Region &lt;- factor(ec$Region,levels = c(&quot;EU W. Europe&quot;,
+                                &quot;Americas&quot;,
+                                &quot;Asia Pacific&quot;,
+                                &quot;East EU Cemt Asia&quot;,
+                                &quot;MENA&quot;,
+                                &quot;SSA&quot;),
+                     labels = c(&quot;OECD&quot;,
+                                &quot;Americas&quot;,
+                                &quot;Asia &amp;\nOceania&quot;,
+                                &quot;Central &amp;\nEastern Europe&quot;,
+                                &quot;Middle East &amp;\nNorth Africa&quot;,
+                                &quot;Sub-Saharan\nAfrica&quot;))</code></pre>
+<p>Our new Regions should look like:</p>
+<pre class="r"><code>levels(ec$Region)</code></pre>
+<pre><code>## [1] &quot;OECD&quot;                        &quot;Americas&quot;                   
+## [3] &quot;Asia &amp;\nOceania&quot;             &quot;Central &amp;\nEastern Europe&quot;  
+## [5] &quot;Middle East &amp;\nNorth Africa&quot; &quot;Sub-Saharan\nAfrica&quot;</code></pre>
+</div>
+<div id="points" class="section level2">
+<h2><span class="header-section-number">2.2</span> Points</h2>
+<p>Start building up the basic plot. &gt; Provide data.frame ‘ec’ as the data and map field ‘CPI’ to the x-axis and ‘HDI’ to the y-axis. Use <code>geom_point()</code> to draw point geometry. To select shapes, see <a href="https://www.google.se/search?q=r+pch&amp;oq=R+pch">here</a>. Circular shape can be drawn using 1, 16, 19, 20 and 21. Using shape ‘21’ allows us to control stroke color, fill color and stroke thickness for the points. Check out <code>?geom_point</code> and look under ‘Aesthetics’ for the various possible aesthetic options. Set shape to 21, size to 3, stroke to 0.8 and fill to white.</p>
+<pre class="r"><code>ggplot(ec,aes(x=CPI,y=HDI,color=Region))+
+    geom_point(shape=21,size=3,stroke=0.8,fill=&quot;white&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-37-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Notice how ‘’ has created newlines in the Legend.</p>
+</div>
+<div id="trendline" class="section level2">
+<h2><span class="header-section-number">2.3</span> Trendline</h2>
+<p>Now, we add the trend line using <code>geom_smooth</code>. Check out <code>?geom_smooth</code> and look under ‘Arguments’ for argument options and ‘Aesthetics’ for the aesthetic options. &gt; Use method ‘lm’ and use a custom formula of <code>y~poly(x,2)</code> to approximate the curve seen on the plot. Turn off confidence interval shading. Set line thickness to 0.6 and line color to red.</p>
+<pre class="r"><code>ggplot(ec,aes(x=CPI,y=HDI,color=Region))+
+  geom_point(shape=21,size=3,stroke=0.8,fill=&quot;white&quot;)+
+  geom_smooth(method=&quot;lm&quot;,formula=y~poly(x,2),se=F,size=0.6,color=&quot;red&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-38-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Notice that the line in drawn over the points due to the plotting order. We want the points to be over the line. So reorder the geoms. Since we provided no aesthetic mappings to <code>geom_smooth</code>, there is no legend entry for the trendline. We can fake a legend entry by providing an aesthetic, for example; <code>aes(fill=&quot;red&quot;)</code>. We do not use the color aesthetic because it is already in use and would give us reduced control later on to modify this legend entry.</p>
+<pre class="r"><code>p &lt;- ggplot(ec,aes(x=CPI,y=HDI,color=Region))+
+      geom_smooth(aes(fill=&quot;red&quot;),method=&quot;lm&quot;,formula=y~poly(x,2),se=F,color=&quot;red&quot;,size=0.6)+
+      geom_point(shape=21,size=3,stroke=0.8,fill=&quot;white&quot;)
+p</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-39-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="text-labels" class="section level2">
+<h2><span class="header-section-number">2.4</span> Text Labels</h2>
+<p>Now we add the text labels. Only a subset of countries are plotted. The list of countries to label is shown below.</p>
+<pre><code>&quot;Congo&quot;,&quot;Afghanistan&quot;,&quot;Sudan&quot;,&quot;Myanmar&quot;,&quot;Iraq&quot;,&quot;Venezuela&quot;,&quot;Russia&quot;,&quot;Argentina&quot;,&quot;Brazil&quot;,&quot;Italy&quot;,&quot;South Africa&quot;,&quot;Cape Verde&quot;,&quot;Bhutan&quot;,&quot;Botswana&quot;,&quot;Britian&quot;,&quot;New Zealand&quot;,&quot;Greece&quot;,&quot;China&quot;,&quot;India&quot;,&quot;Rwanda&quot;,&quot;Spain&quot;,&quot;France&quot;,&quot;United States&quot;,&quot;Japan&quot;,&quot;Norway&quot;,&quot;Singapore&quot;,&quot;Barbados&quot;,&quot;Germany&quot;</code></pre>
+<blockquote>
+<p>Use <code>geom_text</code> to subset the original data.frame to the reduced set above and plot the labels as text. See <code>?geom_text</code>.</p>
+</blockquote>
+<pre class="r"><code>labels &lt;- c(&quot;Congo&quot;,&quot;Afghanistan&quot;,&quot;Sudan&quot;,&quot;Myanmar&quot;,&quot;Iraq&quot;,&quot;Venezuela&quot;,&quot;Russia&quot;,&quot;Argentina&quot;,&quot;Brazil&quot;,&quot;Italy&quot;,&quot;South Africa&quot;,&quot;Cape Verde&quot;,&quot;Bhutan&quot;,&quot;Botswana&quot;,&quot;Britian&quot;,&quot;New Zealand&quot;,&quot;Greece&quot;,&quot;China&quot;,&quot;India&quot;,&quot;Rwanda&quot;,&quot;Spain&quot;,&quot;France&quot;,&quot;United States&quot;,&quot;Japan&quot;,&quot;Norway&quot;,&quot;Singapore&quot;,&quot;Barbados&quot;,&quot;Germany&quot;)
+
+p+geom_text(data=subset(ec,Country %in% labels),aes(label=Country),color=&quot;black&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-40-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="custom-font" class="section level2">
+<h2><span class="header-section-number">2.5</span> Custom Font</h2>
+<p>Custom font can be used for the labels by providing the font name to argument <code>family</code> like so <code>geom_text(family=&quot;fontname&quot;)</code>. If you do not want to bother with fonts, just avoid the <code>family</code> argument in <code>geom_text</code> and skip this part.</p>
+<p>Using custom fonts can be tricky business. To use a font name, it must be installed on your system and it should be imported into the R environment. This can be done using the <code>extrafont</code> package. Try importing one of the fonts available on your system. Not all fonts work. <code>extrafont</code> prefers ‘.ttf’ fonts. If a font doesn’t work, try another.</p>
+<pre class="r"><code>library(extrafont)
+font_import(pattern=&quot;Gidole&quot;,prompt=FALSE)
+# load fonts for pdf
+loadfonts()
+# list available fonts in R
+fonts()</code></pre>
+<p>The actual font used on the Economist graph is something close to <a href="https://www.fontshop.com/families/itc-itc-officina-sans">ITC Officina Sans</a>. Since this is not a free font, I am using a free font called <a href="https://gidole.github.io/">Gidole</a>.</p>
+<pre class="r"><code>p+geom_text(data=subset(ec,Country %in% labels),aes(label=Country),
+            color=&quot;black&quot;,family=&quot;Gidole&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-42-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="label-overlap" class="section level2">
+<h2><span class="header-section-number">2.6</span> Label Overlap</h2>
+<p>To avoid overlapping of labels, we can use a <code>ggplot2</code> extension package <code>ggrepel</code>. We can use function <code>geom_text_repel()</code> from the <code>ggrepel</code> package. <code>geom_text_repel()</code> has the same arguments/aesthetics as <code>geom_text</code> and a few more. Skip the <code>family=Gidole</code> part if you do not want to change the font.</p>
+<pre class="r"><code>library(ggrepel)
+p &lt;- p+geom_text_repel(data=subset(ec,Country %in% labels),aes(label=Country),
+                       color=&quot;black&quot;,box.padding=unit(1,&#39;lines&#39;),segment.size=0.25,
+                       size=3,family=&quot;Gidole&quot;)
+p</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-43-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="axes" class="section level2">
+<h2><span class="header-section-number">2.7</span> Axes</h2>
+<p>Next step is to adjust the axes breaks, axes labels, point colors and relabelling the trendline legend text. &gt; Change axes labels to ‘Corruption Perceptions Index, 2011 (10=least corrupt)’ on the x-axis and ‘Human Development Index, 2011 (1=best)’ on the y-axis. Set breaks on the x-axis from 1 to 10 by 1 increment and y-axis from 0.2 to 1.0 by 0.1 increments.</p>
+<pre class="r"><code>p &lt;- p+scale_x_continuous(name=&quot;Corruption Perceptions Index, 2011 (10=least corrupt)&quot;,
+                          breaks=1:10,limits=c(1,10))+
+      scale_y_continuous(name=&quot;Human Development Index, 2011 (1=best)&quot;,
+                         breaks=seq(from=0,to=1,by=0.1),limits=c(0.2,1))
+p</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-44-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="scale-colors" class="section level2">
+<h2><span class="header-section-number">2.8</span> Scale Colors</h2>
+<p>Now we want to change the color palette for the points and modify the legend text for the trendline.</p>
+<blockquote>
+<p>Use <code>scale_color_manual()</code> to provide custom colors. These are the colors to use for the points: <code>&quot;#23576E&quot;,&quot;#099FDB&quot;,&quot;#29B00E&quot;, &quot;#208F84&quot;,&quot;#F55840&quot;,&quot;#924F3E&quot;</code>. Use <code>scale_fill_manual</code> to change the trendline label since it’s a fill scale. The legend entry for the trendline should read ‘R^2=52%’.</p>
+</blockquote>
+<pre class="r"><code>p &lt;- p+scale_color_manual(values=c(&quot;#23576E&quot;,&quot;#099FDB&quot;,&quot;#29B00E&quot;, &quot;#208F84&quot;,&quot;#F55840&quot;,&quot;#924F3E&quot;))+
+       scale_fill_manual(name=&quot;trend&quot;,values=&quot;red&quot;,labels=expression(paste(R^2,&quot;=52%&quot;)))
+p</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-45-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="title" class="section level2">
+<h2><span class="header-section-number">2.9</span> Title</h2>
+<p>Title and caption can be added with <code>labs</code>.</p>
+<blockquote>
+<p>Set the title to ‘Corruption and human development’. Set the caption to ‘Sources: Transparency International; UN Human Development Report’.</p>
+</blockquote>
+<pre class="r"><code>p &lt;- p+labs(title=&quot;Corruption and human development&quot;,
+            caption=&quot;Sources: Transparency International; UN Human Development Report&quot;)
+p</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-46-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="theme" class="section level2">
+<h2><span class="header-section-number">2.10</span> Theme</h2>
+<p>We want to move the legend to the top and as a single row. This can be done using <code>theme()</code> option <code>legend.position</code>. See <code>?theme</code>. <code>guides()</code> is used to set the number of rows to 1. We also set a custom font for all text elements using <code>base_family=&quot;Gidole&quot;</code>. This can be skipped if a font change is not required.</p>
+<pre class="r"><code>p &lt;- p+guides(color=guide_legend(nrow=1))+
+       theme_bw(base_family=&quot;Gidole&quot;)+
+       theme(legend.position=&quot;top&quot;)
+p</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-47-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Now we do some careful refining with themes.</p>
+<blockquote>
+<ul>
+<li>Turn off minor gridlines</li>
+<li>Turn off major gridlines on x-axis</li>
+<li>Remove the grey background</li>
+<li>Remove panel border</li>
+<li>Remove legend titles</li>
+<li>Make axes titles italic</li>
+<li>Turn off y-axis ticks</li>
+<li>Change x-axis ticks to color grey60</li>
+<li>Make plot title bold</li>
+<li>Decrease size of caption to size 8</li>
+</ul>
+</blockquote>
+<pre class="r"><code>p+theme(panel.grid.minor=element_blank(),
+          panel.grid.major.x=element_blank(),
+          panel.background=element_blank(),
+          panel.border=element_blank(),
+          legend.title=element_blank(),
+          axis.title=element_text(face=&quot;italic&quot;),
+          axis.ticks.y=element_blank(),
+          axis.ticks.x=element_line(color=&quot;grey60&quot;),
+          plot.title=element_text(face=&quot;bold&quot;),
+          plot.caption=element_text(hjust=0,size=8))</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-48-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>And now our plot is ready and we can compare with the original. Close? Close enough?</p>
+<div class="figure">
+<img src="ggplot_lab_assets/economist-scatterplot.png" />
+
+</div>
+<p>The full script for this challenge is summarised here:</p>
+<pre class="r"><code># read data
+ec &lt;- read.csv(&quot;ggplot_lab_assets/data_economist.csv&quot;,header=T)
+# refactor
+ec$Region &lt;- factor(ec$Region,
+                    levels = c(&quot;EU W. Europe&quot;,&quot;Americas&quot;,&quot;Asia Pacific&quot;,
+                                &quot;East EU Cemt Asia&quot;,&quot;MENA&quot;,&quot;SSA&quot;),
+                     labels = c(&quot;OECD&quot;,&quot;Americas&quot;,&quot;Asia &amp;\nOceania&quot;,
+                                &quot;Central &amp;\nEastern Europe&quot;,
+                                &quot;Middle East &amp;\nNorth Africa&quot;,
+                                &quot;Sub-Saharan\nAfrica&quot;))
+
+# labels
+labels &lt;- c(&quot;Congo&quot;,&quot;Afghanistan&quot;,&quot;Sudan&quot;,&quot;Myanmar&quot;,&quot;Iraq&quot;,&quot;Venezuela&quot;,&quot;Russia&quot;,&quot;Argentina&quot;,&quot;Brazil&quot;,&quot;Italy&quot;,&quot;South Africa&quot;,&quot;Cape Verde&quot;,&quot;Bhutan&quot;,&quot;Botswana&quot;,&quot;Britian&quot;,&quot;New Zealand&quot;,&quot;Greece&quot;,&quot;China&quot;,&quot;India&quot;,&quot;Rwanda&quot;,&quot;Spain&quot;,&quot;France&quot;,&quot;United States&quot;,&quot;Japan&quot;,&quot;Norway&quot;,&quot;Singapore&quot;,&quot;Barbados&quot;,&quot;Germany&quot;)
+
+# plotting
+p1 &lt;- ggplot(ec,aes(x=CPI,y=HDI,color=Region))+
+      geom_smooth(aes(fill=&quot;red&quot;),method=&quot;lm&quot;,formula=y~poly(x,2),se=F,color=&quot;red&quot;,size=0.6)+
+      geom_point(shape=21,size=3,stroke=0.8,fill=&quot;white&quot;)+
+      geom_text_repel(data=subset(ec,Country %in% labels),aes(label=Country),
+                       color=&quot;black&quot;,box.padding=unit(1,&#39;lines&#39;),segment.size=0.25,
+                       size=3,family=&quot;Gidole&quot;)+
+      scale_x_continuous(name=&quot;Corruption Perceptions Index, 2011 (10=least corrupt)&quot;,
+                          breaks=1:10,limits=c(1,10))+
+      scale_y_continuous(name=&quot;Human Development Index, 2011 (1=best)&quot;,
+                         breaks=seq(from=0,to=1,by=0.1),limits=c(0.2,1))+
+      scale_color_manual(values=c(&quot;#23576E&quot;,&quot;#099FDB&quot;,&quot;#29B00E&quot;, &quot;#208F84&quot;,&quot;#F55840&quot;,&quot;#924F3E&quot;))+
+           scale_fill_manual(name=&quot;trend&quot;,values=&quot;red&quot;,labels=expression(paste(R^2,&quot;=52%&quot;)))+
+      labs(title=&quot;Corruption and human development&quot;,
+           caption=&quot;Sources: Transparency International; UN Human Development Report&quot;)+
+      guides(color=guide_legend(nrow=1))+
+      theme_bw(base_family=&quot;Gidole&quot;)+
+      theme(legend.position=&quot;top&quot;,
+            panel.grid.minor=element_blank(),
+            panel.grid.major.x=element_blank(),
+            panel.background=element_blank(),
+            panel.border=element_blank(),
+            legend.title=element_blank(),
+            axis.title=element_text(face=&quot;italic&quot;),
+            axis.ticks.y=element_blank(),
+            axis.ticks.x=element_line(color=&quot;grey60&quot;),
+            plot.title=element_text(face=&quot;bold&quot;),
+            plot.caption=element_text(hjust=0,size=8))
+p1</code></pre>
+</div>
+</div>
+<div id="wsj-heatmap" class="section level1">
+<h1><span class="header-section-number">3</span> WSJ Heatmap</h1>
+<p>The aim of this challenge is to recreate the plot below originally published in <a href="http://graphics.wsj.com/infectious-diseases-and-vaccines/">The Wall Street Journal</a>. The plot is a heatmap showing the normalised number of cases of measles across 51 US states from 1928 to 2003. X-axis shows years and y-axis shows the names of states. The color of the tiles denote the number of measles cases per 100,000 people. Introduction of the measles vaccine is shown as the black line in 1963.</p>
+<div class="figure">
+<img src="ggplot_lab_assets/wsj-heatmap.png" />
+
+</div>
+<div id="data-1" class="section level2">
+<h2><span class="header-section-number">3.1</span> Data</h2>
+<p>Start by reading in the <a href="https://www.dropbox.com/s/19p8vku0i9np26b/data_wsj.csv?dl=1">data</a>. This .csv file has two lines of comments so we need to skip 2 lines while reading in the data. We also add <code>stringsAsFactors=F</code> to avoid the automatic conversion of character fields to factor type.</p>
+<pre class="r"><code>me &lt;- read.csv(&quot;ggplot_lab_assets/data_wsj.csv&quot;,header=T,stringsAsFactors=F,skip=2)
+head(me)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["YEAR"],"name":[1],"type":["int"],"align":["right"]},{"label":["WEEK"],"name":[2],"type":["int"],"align":["right"]},{"label":["ALABAMA"],"name":[3],"type":["chr"],"align":["left"]},{"label":["ALASKA"],"name":[4],"type":["chr"],"align":["left"]},{"label":["ARIZONA"],"name":[5],"type":["chr"],"align":["left"]},{"label":["ARKANSAS"],"name":[6],"type":["chr"],"align":["left"]},{"label":["CALIFORNIA"],"name":[7],"type":["chr"],"align":["left"]},{"label":["COLORADO"],"name":[8],"type":["chr"],"align":["left"]},{"label":["CONNECTICUT"],"name":[9],"type":["chr"],"align":["left"]},{"label":["DELAWARE"],"name":[10],"type":["chr"],"align":["left"]},{"label":["DISTRICT.OF.COLUMBIA"],"name":[11],"type":["chr"],"align":["left"]},{"label":["FLORIDA"],"name":[12],"type":["chr"],"align":["left"]},{"label":["GEORGIA"],"name":[13],"type":["chr"],"align":["left"]},{"label":["HAWAII"],"name":[14],"type":["chr"],"align":["left"]},{"label":["IDAHO"],"name":[15],"type":["chr"],"align":["left"]},{"label":["ILLINOIS"],"name":[16],"type":["chr"],"align":["left"]},{"label":["INDIANA"],"name":[17],"type":["chr"],"align":["left"]},{"label":["IOWA"],"name":[18],"type":["chr"],"align":["left"]},{"label":["KANSAS"],"name":[19],"type":["chr"],"align":["left"]},{"label":["KENTUCKY"],"name":[20],"type":["chr"],"align":["left"]},{"label":["LOUISIANA"],"name":[21],"type":["chr"],"align":["left"]},{"label":["MAINE"],"name":[22],"type":["chr"],"align":["left"]},{"label":["MARYLAND"],"name":[23],"type":["chr"],"align":["left"]},{"label":["MASSACHUSETTS"],"name":[24],"type":["chr"],"align":["left"]},{"label":["MICHIGAN"],"name":[25],"type":["chr"],"align":["left"]},{"label":["MINNESOTA"],"name":[26],"type":["chr"],"align":["left"]},{"label":["MISSISSIPPI"],"name":[27],"type":["chr"],"align":["left"]},{"label":["MISSOURI"],"name":[28],"type":["chr"],"align":["left"]},{"label":["MONTANA"],"name":[29],"type":["chr"],"align":["left"]},{"label":["NEBRASKA"],"name":[30],"type":["chr"],"align":["left"]},{"label":["NEVADA"],"name":[31],"type":["chr"],"align":["left"]},{"label":["NEW.HAMPSHIRE"],"name":[32],"type":["chr"],"align":["left"]},{"label":["NEW.JERSEY"],"name":[33],"type":["chr"],"align":["left"]},{"label":["NEW.MEXICO"],"name":[34],"type":["chr"],"align":["left"]},{"label":["NEW.YORK"],"name":[35],"type":["chr"],"align":["left"]},{"label":["NORTH.CAROLINA"],"name":[36],"type":["chr"],"align":["left"]},{"label":["NORTH.DAKOTA"],"name":[37],"type":["chr"],"align":["left"]},{"label":["OHIO"],"name":[38],"type":["chr"],"align":["left"]},{"label":["OKLAHOMA"],"name":[39],"type":["chr"],"align":["left"]},{"label":["OREGON"],"name":[40],"type":["chr"],"align":["left"]},{"label":["PENNSYLVANIA"],"name":[41],"type":["chr"],"align":["left"]},{"label":["RHODE.ISLAND"],"name":[42],"type":["chr"],"align":["left"]},{"label":["SOUTH.CAROLINA"],"name":[43],"type":["chr"],"align":["left"]},{"label":["SOUTH.DAKOTA"],"name":[44],"type":["chr"],"align":["left"]},{"label":["TENNESSEE"],"name":[45],"type":["chr"],"align":["left"]},{"label":["TEXAS"],"name":[46],"type":["chr"],"align":["left"]},{"label":["UTAH"],"name":[47],"type":["chr"],"align":["left"]},{"label":["VERMONT"],"name":[48],"type":["chr"],"align":["left"]},{"label":["VIRGINIA"],"name":[49],"type":["chr"],"align":["left"]},{"label":["WASHINGTON"],"name":[50],"type":["chr"],"align":["left"]},{"label":["WEST.VIRGINIA"],"name":[51],"type":["chr"],"align":["left"]},{"label":["WISCONSIN"],"name":[52],"type":["chr"],"align":["left"]},{"label":["WYOMING"],"name":[53],"type":["chr"],"align":["left"]}],"data":[{"1":"1928","2":"1","3":"3.67","4":"-","5":"1.90","6":"4.11","7":"1.38","8":"8.38","9":"4.50","10":"8.58","11":"-","12":"0.21","13":"1.17","14":"-","15":"-","16":"0.50","17":"1.34","18":"0.16","19":"0.81","20":"3.08","21":"1.89","22":"4.52","23":"10.87","24":"25.66","25":"5.68","26":"0.31","27":"-","28":"1.19","29":"0.18","30":"1.60","31":"-","32":"-","33":"3.55","34":"14.90","35":"7.60","36":"47.86","37":"-","38":"2.51","39":"4.86","40":"4.91","41":"6.97","42":"1.18","43":"42.04","44":"5.69","45":"22.03","46":"1.18","47":"0.40","48":"0.28","49":"-","50":"14.83","51":"3.36","52":"1.54","53":"0.91","_rn_":"1"},{"1":"1928","2":"2","3":"6.25","4":"-","5":"6.40","6":"9.91","7":"1.80","8":"6.02","9":"9.00","10":"7.30","11":"-","12":"0.49","13":"5.96","14":"-","15":"0.45","16":"0.77","17":"2.71","18":"-","19":"1.35","20":"1.99","21":"3.00","22":"7.40","23":"15.47","24":"28.50","25":"7.59","26":"0.23","27":"-","28":"0.83","29":"0.18","30":"0.29","31":"-","32":"-","33":"4.74","34":"11.06","35":"9.65","36":"119.70","37":"0.15","38":"-","39":"2.56","40":"4.91","41":"8.74","42":"0.74","43":"83.90","44":"6.57","45":"16.96","46":"0.63","47":"-","48":"0.56","49":"-","50":"17.34","51":"4.19","52":"0.96","53":"-","_rn_":"2"},{"1":"1928","2":"3","3":"7.95","4":"-","5":"4.50","6":"11.15","7":"1.31","8":"2.86","9":"8.81","10":"15.88","11":"-","12":"0.42","13":"-","14":"-","15":"0.45","16":"0.61","17":"1.71","18":"-","19":"1.41","20":"5.26","21":"2.33","22":"6.78","23":"21.43","24":"34.76","25":"9.39","26":"0.15","27":"-","28":"1.69","29":"0.74","30":"0.36","31":"-","32":"-","33":"6.68","34":"14.90","35":"8.54","36":"110.90","37":"1.20","38":"4.86","39":"6.27","40":"3.63","41":"8.12","42":"2.65","43":"77.46","44":"2.04","45":"24.66","46":"0.62","47":"0.20","48":"1.12","49":"-","50":"15.67","51":"4.19","52":"4.79","53":"1.36","_rn_":"3"},{"1":"1928","2":"4","3":"12.58","4":"-","5":"1.90","6":"13.75","7":"1.87","8":"13.71","9":"10.40","10":"4.29","11":"4.18","12":"0.91","13":"8.65","14":"-","15":"-","16":"0.81","17":"4.11","18":"3.51","19":"1.14","20":"5.49","21":"4.02","22":"9.41","23":"22.67","24":"31.28","25":"8.66","26":"0.12","27":"-","28":"1.58","29":"-","30":"0.44","31":"-","32":"14.53","33":"6.78","34":"27.64","35":"9.32","36":"131.60","37":"3.91","38":"4.40","39":"4.74","40":"2.24","41":"8.39","42":"0.15","43":"64.75","44":"2.19","45":"18.86","46":"0.37","47":"0.20","48":"6.70","49":"-","50":"12.77","51":"4.66","52":"1.64","53":"3.64","_rn_":"4"},{"1":"1928","2":"5","3":"8.03","4":"-","5":"0.47","6":"20.79","7":"2.38","8":"5.13","9":"16.80","10":"5.58","11":"4.59","12":"0.49","13":"10.82","14":"-","15":"0.22","16":"1.11","17":"2.49","18":"3.06","19":"1.51","20":"7.99","21":"10.27","22":"7.90","23":"31.30","24":"35.24","25":"9.84","26":"0.31","27":"-","28":"2.22","29":"-","30":"0.22","31":"-","32":"3.42","33":"9.25","34":"37.74","35":"10.64","36":"119.01","37":"0.90","38":"6.13","39":"4.61","40":"4.59","41":"15.17","42":"1.03","43":"74.99","44":"3.94","45":"20.05","46":"1.57","47":"0.40","48":"6.70","49":"-","50":"18.83","51":"7.37","52":"2.91","53":"0.91","_rn_":"5"},{"1":"1928","2":"6","3":"7.27","4":"-","5":"6.40","6":"26.58","7":"2.79","8":"8.09","9":"17.76","10":"3.43","11":"7.52","12":"1.67","13":"6.75","14":"-","15":"-","16":"1.33","17":"5.04","18":"2.65","19":"1.19","20":"11.53","21":"9.54","22":"5.52","23":"34.97","24":"37.89","25":"4.09","26":"0.08","27":"-","28":"2.69","29":"0.55","30":"0.22","31":"-","32":"15.60","33":"10.66","34":"36.30","35":"12.60","36":"153.60","37":"2.56","38":"5.33","39":"5.72","40":"4.91","41":"11.52","42":"0.74","43":"82.12","44":"2.04","45":"12.54","46":"3.44","47":"0.60","48":"1.12","49":"-","50":"17.73","51":"5.01","52":"3.25","53":"10.45","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Check the data type for the fields.</p>
+<pre class="r"><code>str(me)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    3952 obs. of  53 variables:
+##  $ YEAR                : int  1928 1928 1928 1928 1928 1928 1928 1928 1928 1928 ...
+##  $ WEEK                : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ ALABAMA             : chr  &quot;3.67&quot; &quot;6.25&quot; &quot;7.95&quot; &quot;12.58&quot; ...
+##  $ ALASKA              : chr  &quot;-&quot; &quot;-&quot; &quot;-&quot; &quot;-&quot; ...
+##  $ ARIZONA             : chr  &quot;1.90&quot; &quot;6.40&quot; &quot;4.50&quot; &quot;1.90&quot; ...
+##  $ ARKANSAS            : chr  &quot;4.11&quot; &quot;9.91&quot; &quot;11.15&quot; &quot;13.75&quot; ...
+##  $ CALIFORNIA          : chr  &quot;1.38&quot; &quot;1.80&quot; &quot;1.31&quot; &quot;1.87&quot; ...
+##  $ COLORADO            : chr  &quot;8.38&quot; &quot;6.02&quot; &quot;2.86&quot; &quot;13.71&quot; ...
+##  $ CONNECTICUT         : chr  &quot;4.50&quot; &quot;9.00&quot; &quot;8.81&quot; &quot;10.40&quot; ...
+##  $ DELAWARE            : chr  &quot;8.58&quot; &quot;7.30&quot; &quot;15.88&quot; &quot;4.29&quot; ...
+##  $ DISTRICT.OF.COLUMBIA: chr  &quot;-&quot; &quot;-&quot; &quot;-&quot; &quot;4.18&quot; ...
+##  $ FLORIDA             : chr  &quot;0.21&quot; &quot;0.49&quot; &quot;0.42&quot; &quot;0.91&quot; ...
+##  $ GEORGIA             : chr  &quot;1.17&quot; &quot;5.96&quot; &quot;-&quot; &quot;8.65&quot; ...
+##  $ HAWAII              : chr  &quot;-&quot; &quot;-&quot; &quot;-&quot; &quot;-&quot; ...
+##  $ IDAHO               : chr  &quot;-&quot; &quot;0.45&quot; &quot;0.45&quot; &quot;-&quot; ...
+##  $ ILLINOIS            : chr  &quot;0.50&quot; &quot;0.77&quot; &quot;0.61&quot; &quot;0.81&quot; ...
+##  $ INDIANA             : chr  &quot;1.34&quot; &quot;2.71&quot; &quot;1.71&quot; &quot;4.11&quot; ...
+##  $ IOWA                : chr  &quot;0.16&quot; &quot;-&quot; &quot;-&quot; &quot;3.51&quot; ...
+##  $ KANSAS              : chr  &quot;0.81&quot; &quot;1.35&quot; &quot;1.41&quot; &quot;1.14&quot; ...
+##  $ KENTUCKY            : chr  &quot;3.08&quot; &quot;1.99&quot; &quot;5.26&quot; &quot;5.49&quot; ...
+##  $ LOUISIANA           : chr  &quot;1.89&quot; &quot;3.00&quot; &quot;2.33&quot; &quot;4.02&quot; ...
+##  $ MAINE               : chr  &quot;4.52&quot; &quot;7.40&quot; &quot;6.78&quot; &quot;9.41&quot; ...
+##  $ MARYLAND            : chr  &quot;10.87&quot; &quot;15.47&quot; &quot;21.43&quot; &quot;22.67&quot; ...
+##  $ MASSACHUSETTS       : chr  &quot;25.66&quot; &quot;28.50&quot; &quot;34.76&quot; &quot;31.28&quot; ...
+##  $ MICHIGAN            : chr  &quot;5.68&quot; &quot;7.59&quot; &quot;9.39&quot; &quot;8.66&quot; ...
+##  $ MINNESOTA           : chr  &quot;0.31&quot; &quot;0.23&quot; &quot;0.15&quot; &quot;0.12&quot; ...
+##  $ MISSISSIPPI         : chr  &quot;-&quot; &quot;-&quot; &quot;-&quot; &quot;-&quot; ...
+##  $ MISSOURI            : chr  &quot;1.19&quot; &quot;0.83&quot; &quot;1.69&quot; &quot;1.58&quot; ...
+##  $ MONTANA             : chr  &quot;0.18&quot; &quot;0.18&quot; &quot;0.74&quot; &quot;-&quot; ...
+##  $ NEBRASKA            : chr  &quot;1.60&quot; &quot;0.29&quot; &quot;0.36&quot; &quot;0.44&quot; ...
+##  $ NEVADA              : chr  &quot;-&quot; &quot;-&quot; &quot;-&quot; &quot;-&quot; ...
+##  $ NEW.HAMPSHIRE       : chr  &quot;-&quot; &quot;-&quot; &quot;-&quot; &quot;14.53&quot; ...
+##  $ NEW.JERSEY          : chr  &quot;3.55&quot; &quot;4.74&quot; &quot;6.68&quot; &quot;6.78&quot; ...
+##  $ NEW.MEXICO          : chr  &quot;14.90&quot; &quot;11.06&quot; &quot;14.90&quot; &quot;27.64&quot; ...
+##  $ NEW.YORK            : chr  &quot;7.60&quot; &quot;9.65&quot; &quot;8.54&quot; &quot;9.32&quot; ...
+##  $ NORTH.CAROLINA      : chr  &quot;47.86&quot; &quot;119.70&quot; &quot;110.90&quot; &quot;131.60&quot; ...
+##  $ NORTH.DAKOTA        : chr  &quot;-&quot; &quot;0.15&quot; &quot;1.20&quot; &quot;3.91&quot; ...
+##  $ OHIO                : chr  &quot;2.51&quot; &quot;-&quot; &quot;4.86&quot; &quot;4.40&quot; ...
+##  $ OKLAHOMA            : chr  &quot;4.86&quot; &quot;2.56&quot; &quot;6.27&quot; &quot;4.74&quot; ...
+##  $ OREGON              : chr  &quot;4.91&quot; &quot;4.91&quot; &quot;3.63&quot; &quot;2.24&quot; ...
+##  $ PENNSYLVANIA        : chr  &quot;6.97&quot; &quot;8.74&quot; &quot;8.12&quot; &quot;8.39&quot; ...
+##  $ RHODE.ISLAND        : chr  &quot;1.18&quot; &quot;0.74&quot; &quot;2.65&quot; &quot;0.15&quot; ...
+##  $ SOUTH.CAROLINA      : chr  &quot;42.04&quot; &quot;83.90&quot; &quot;77.46&quot; &quot;64.75&quot; ...
+##  $ SOUTH.DAKOTA        : chr  &quot;5.69&quot; &quot;6.57&quot; &quot;2.04&quot; &quot;2.19&quot; ...
+##  $ TENNESSEE           : chr  &quot;22.03&quot; &quot;16.96&quot; &quot;24.66&quot; &quot;18.86&quot; ...
+##  $ TEXAS               : chr  &quot;1.18&quot; &quot;0.63&quot; &quot;0.62&quot; &quot;0.37&quot; ...
+##  $ UTAH                : chr  &quot;0.40&quot; &quot;-&quot; &quot;0.20&quot; &quot;0.20&quot; ...
+##  $ VERMONT             : chr  &quot;0.28&quot; &quot;0.56&quot; &quot;1.12&quot; &quot;6.70&quot; ...
+##  $ VIRGINIA            : chr  &quot;-&quot; &quot;-&quot; &quot;-&quot; &quot;-&quot; ...
+##  $ WASHINGTON          : chr  &quot;14.83&quot; &quot;17.34&quot; &quot;15.67&quot; &quot;12.77&quot; ...
+##  $ WEST.VIRGINIA       : chr  &quot;3.36&quot; &quot;4.19&quot; &quot;4.19&quot; &quot;4.66&quot; ...
+##  $ WISCONSIN           : chr  &quot;1.54&quot; &quot;0.96&quot; &quot;4.79&quot; &quot;1.64&quot; ...
+##  $ WYOMING             : chr  &quot;0.91&quot; &quot;-&quot; &quot;1.36&quot; &quot;3.64&quot; ...</code></pre>
+<p>Looking at this dataset, there is going to be quite a bit of data clean-up and tidying before we can plot it. Here are the steps we need to take:</p>
+<blockquote>
+<ul>
+<li>The data needs to be transformed to long format.</li>
+<li>Replace all “-” with NAs</li>
+<li>The number of cases across each state is a character and needs to be converted to numeric</li>
+<li>Collapse (sum) week-level data to year.</li>
+<li>Abbreviate state names</li>
+</ul>
+</blockquote>
+</div>
+<div id="tidy-data" class="section level2">
+<h2><span class="header-section-number">3.2</span> Tidy Data</h2>
+<p>Convert the wide format to long format using the function <code>gather()</code> from package <code>dplyr</code>.</p>
+<pre class="r"><code>me1 &lt;- me %&gt;% gather(key=state,value=value,-YEAR,-WEEK)
+head(me1)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["YEAR"],"name":[1],"type":["int"],"align":["right"]},{"label":["WEEK"],"name":[2],"type":["int"],"align":["right"]},{"label":["state"],"name":[3],"type":["chr"],"align":["left"]},{"label":["value"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"1928","2":"1","3":"ALABAMA","4":"3.67","_rn_":"1"},{"1":"1928","2":"2","3":"ALABAMA","4":"6.25","_rn_":"2"},{"1":"1928","2":"3","3":"ALABAMA","4":"7.95","_rn_":"3"},{"1":"1928","2":"4","3":"ALABAMA","4":"12.58","_rn_":"4"},{"1":"1928","2":"5","3":"ALABAMA","4":"8.03","_rn_":"5"},{"1":"1928","2":"6","3":"ALABAMA","4":"7.27","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Now, replace all ‘-’ with NA in the field value. We use the function <code>str_replace()</code> from R package <code>stringr</code>. Then convert the value field to numeric.</p>
+<pre class="r"><code>me2 &lt;- me1 %&gt;% mutate(value=str_replace(value,&quot;^-$&quot;,NA_character_),
+                      value=as.numeric(value))
+head(me2)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["YEAR"],"name":[1],"type":["int"],"align":["right"]},{"label":["WEEK"],"name":[2],"type":["int"],"align":["right"]},{"label":["state"],"name":[3],"type":["chr"],"align":["left"]},{"label":["value"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"1928","2":"1","3":"ALABAMA","4":"3.67","_rn_":"1"},{"1":"1928","2":"2","3":"ALABAMA","4":"6.25","_rn_":"2"},{"1":"1928","2":"3","3":"ALABAMA","4":"7.95","_rn_":"3"},{"1":"1928","2":"4","3":"ALABAMA","4":"12.58","_rn_":"4"},{"1":"1928","2":"5","3":"ALABAMA","4":"8.03","_rn_":"5"},{"1":"1928","2":"6","3":"ALABAMA","4":"7.27","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Sum up the week-level information to year-level information. This means rather than having</p>
+<pre><code>  YEAR WEEK   state value
+1 1928    1 ALABAMA  3.67
+2 1928    2 ALABAMA  6.25
+3 1928    3 ALABAMA  7.95
+...
+5501 1957   41 ALASKA  2.16
+5502 1957   42 ALASKA  0.43
+5503 1957   43 ALASKA  1.30
+...</code></pre>
+<p>we should have one value per year per state.</p>
+<pre><code>  YEAR    state value
+1 1928  ALABAMA  3.67
+2 1929  ALABAMA  3.20
+...
+5501 1957  ALASKA  2.16
+5502 1958  ALASKA  2.05
+...</code></pre>
+<p>The solution is to sum up all the cases for a state for all weeks within a year into one value for that year. This can be done using the <code>summarise()</code> function from package <code>dplyr</code>.</p>
+<blockquote>
+<ul>
+<li>A custom function is used to sum over weeks. If all values are NA, then result is NA. If some values are NA, the NAs are removed and the remaining numbers are summed.</li>
+<li>The dots in state names are replaced by spaces and the words are converted to title case (First letter capital and rest lowercase).</li>
+<li>We also convert the column names to lowercase for consistency.</li>
+</ul>
+</blockquote>
+<pre class="r"><code>fun1 &lt;- function(x) ifelse(all(is.na(x)),NA,sum(x,na.rm=TRUE))
+
+me3 &lt;- me2 %&gt;% group_by(YEAR,state) %&gt;% 
+                summarise(total=fun1(value)) %&gt;%
+                mutate(state=str_replace_all(state,&quot;[.]&quot;,&quot; &quot;),
+                       state=str_to_title(state))
+colnames(me3) &lt;- tolower(colnames(me3))
+head(me3)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["year"],"name":[1],"type":["int"],"align":["right"]},{"label":["state"],"name":[2],"type":["chr"],"align":["left"]},{"label":["total"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1928","2":"Alabama","3":"334.99"},{"1":"1928","2":"Alaska","3":"NA"},{"1":"1928","2":"Arizona","3":"200.75"},{"1":"1928","2":"Arkansas","3":"481.77"},{"1":"1928","2":"California","3":"69.22"},{"1":"1928","2":"Colorado","3":"206.98"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>str(me3)</code></pre>
+<pre><code>## Classes &#39;grouped_df&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:  3876 obs. of  3 variables:
+##  $ year : int  1928 1928 1928 1928 1928 1928 1928 1928 1928 1928 ...
+##  $ state: chr  &quot;Alabama&quot; &quot;Alaska&quot; &quot;Arizona&quot; &quot;Arkansas&quot; ...
+##  $ total: num  335 NA 200.8 481.8 69.2 ...
+##  - attr(*, &quot;groups&quot;)=Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:   76 obs. of  2 variables:
+##   ..$ YEAR : int  1928 1929 1930 1931 1932 1933 1934 1935 1936 1937 ...
+##   ..$ .rows:List of 76
+##   .. ..$ : int  1 2 3 4 5 6 7 8 9 10 ...
+##   .. ..$ : int  52 53 54 55 56 57 58 59 60 61 ...
+##   .. ..$ : int  103 104 105 106 107 108 109 110 111 112 ...
+##   .. ..$ : int  154 155 156 157 158 159 160 161 162 163 ...
+##   .. ..$ : int  205 206 207 208 209 210 211 212 213 214 ...
+##   .. ..$ : int  256 257 258 259 260 261 262 263 264 265 ...
+##   .. ..$ : int  307 308 309 310 311 312 313 314 315 316 ...
+##   .. ..$ : int  358 359 360 361 362 363 364 365 366 367 ...
+##   .. ..$ : int  409 410 411 412 413 414 415 416 417 418 ...
+##   .. ..$ : int  460 461 462 463 464 465 466 467 468 469 ...
+##   .. ..$ : int  511 512 513 514 515 516 517 518 519 520 ...
+##   .. ..$ : int  562 563 564 565 566 567 568 569 570 571 ...
+##   .. ..$ : int  613 614 615 616 617 618 619 620 621 622 ...
+##   .. ..$ : int  664 665 666 667 668 669 670 671 672 673 ...
+##   .. ..$ : int  715 716 717 718 719 720 721 722 723 724 ...
+##   .. ..$ : int  766 767 768 769 770 771 772 773 774 775 ...
+##   .. ..$ : int  817 818 819 820 821 822 823 824 825 826 ...
+##   .. ..$ : int  868 869 870 871 872 873 874 875 876 877 ...
+##   .. ..$ : int  919 920 921 922 923 924 925 926 927 928 ...
+##   .. ..$ : int  970 971 972 973 974 975 976 977 978 979 ...
+##   .. ..$ : int  1021 1022 1023 1024 1025 1026 1027 1028 1029 1030 ...
+##   .. ..$ : int  1072 1073 1074 1075 1076 1077 1078 1079 1080 1081 ...
+##   .. ..$ : int  1123 1124 1125 1126 1127 1128 1129 1130 1131 1132 ...
+##   .. ..$ : int  1174 1175 1176 1177 1178 1179 1180 1181 1182 1183 ...
+##   .. ..$ : int  1225 1226 1227 1228 1229 1230 1231 1232 1233 1234 ...
+##   .. ..$ : int  1276 1277 1278 1279 1280 1281 1282 1283 1284 1285 ...
+##   .. ..$ : int  1327 1328 1329 1330 1331 1332 1333 1334 1335 1336 ...
+##   .. ..$ : int  1378 1379 1380 1381 1382 1383 1384 1385 1386 1387 ...
+##   .. ..$ : int  1429 1430 1431 1432 1433 1434 1435 1436 1437 1438 ...
+##   .. ..$ : int  1480 1481 1482 1483 1484 1485 1486 1487 1488 1489 ...
+##   .. ..$ : int  1531 1532 1533 1534 1535 1536 1537 1538 1539 1540 ...
+##   .. ..$ : int  1582 1583 1584 1585 1586 1587 1588 1589 1590 1591 ...
+##   .. ..$ : int  1633 1634 1635 1636 1637 1638 1639 1640 1641 1642 ...
+##   .. ..$ : int  1684 1685 1686 1687 1688 1689 1690 1691 1692 1693 ...
+##   .. ..$ : int  1735 1736 1737 1738 1739 1740 1741 1742 1743 1744 ...
+##   .. ..$ : int  1786 1787 1788 1789 1790 1791 1792 1793 1794 1795 ...
+##   .. ..$ : int  1837 1838 1839 1840 1841 1842 1843 1844 1845 1846 ...
+##   .. ..$ : int  1888 1889 1890 1891 1892 1893 1894 1895 1896 1897 ...
+##   .. ..$ : int  1939 1940 1941 1942 1943 1944 1945 1946 1947 1948 ...
+##   .. ..$ : int  1990 1991 1992 1993 1994 1995 1996 1997 1998 1999 ...
+##   .. ..$ : int  2041 2042 2043 2044 2045 2046 2047 2048 2049 2050 ...
+##   .. ..$ : int  2092 2093 2094 2095 2096 2097 2098 2099 2100 2101 ...
+##   .. ..$ : int  2143 2144 2145 2146 2147 2148 2149 2150 2151 2152 ...
+##   .. ..$ : int  2194 2195 2196 2197 2198 2199 2200 2201 2202 2203 ...
+##   .. ..$ : int  2245 2246 2247 2248 2249 2250 2251 2252 2253 2254 ...
+##   .. ..$ : int  2296 2297 2298 2299 2300 2301 2302 2303 2304 2305 ...
+##   .. ..$ : int  2347 2348 2349 2350 2351 2352 2353 2354 2355 2356 ...
+##   .. ..$ : int  2398 2399 2400 2401 2402 2403 2404 2405 2406 2407 ...
+##   .. ..$ : int  2449 2450 2451 2452 2453 2454 2455 2456 2457 2458 ...
+##   .. ..$ : int  2500 2501 2502 2503 2504 2505 2506 2507 2508 2509 ...
+##   .. ..$ : int  2551 2552 2553 2554 2555 2556 2557 2558 2559 2560 ...
+##   .. ..$ : int  2602 2603 2604 2605 2606 2607 2608 2609 2610 2611 ...
+##   .. ..$ : int  2653 2654 2655 2656 2657 2658 2659 2660 2661 2662 ...
+##   .. ..$ : int  2704 2705 2706 2707 2708 2709 2710 2711 2712 2713 ...
+##   .. ..$ : int  2755 2756 2757 2758 2759 2760 2761 2762 2763 2764 ...
+##   .. ..$ : int  2806 2807 2808 2809 2810 2811 2812 2813 2814 2815 ...
+##   .. ..$ : int  2857 2858 2859 2860 2861 2862 2863 2864 2865 2866 ...
+##   .. ..$ : int  2908 2909 2910 2911 2912 2913 2914 2915 2916 2917 ...
+##   .. ..$ : int  2959 2960 2961 2962 2963 2964 2965 2966 2967 2968 ...
+##   .. ..$ : int  3010 3011 3012 3013 3014 3015 3016 3017 3018 3019 ...
+##   .. ..$ : int  3061 3062 3063 3064 3065 3066 3067 3068 3069 3070 ...
+##   .. ..$ : int  3112 3113 3114 3115 3116 3117 3118 3119 3120 3121 ...
+##   .. ..$ : int  3163 3164 3165 3166 3167 3168 3169 3170 3171 3172 ...
+##   .. ..$ : int  3214 3215 3216 3217 3218 3219 3220 3221 3222 3223 ...
+##   .. ..$ : int  3265 3266 3267 3268 3269 3270 3271 3272 3273 3274 ...
+##   .. ..$ : int  3316 3317 3318 3319 3320 3321 3322 3323 3324 3325 ...
+##   .. ..$ : int  3367 3368 3369 3370 3371 3372 3373 3374 3375 3376 ...
+##   .. ..$ : int  3418 3419 3420 3421 3422 3423 3424 3425 3426 3427 ...
+##   .. ..$ : int  3469 3470 3471 3472 3473 3474 3475 3476 3477 3478 ...
+##   .. ..$ : int  3520 3521 3522 3523 3524 3525 3526 3527 3528 3529 ...
+##   .. ..$ : int  3571 3572 3573 3574 3575 3576 3577 3578 3579 3580 ...
+##   .. ..$ : int  3622 3623 3624 3625 3626 3627 3628 3629 3630 3631 ...
+##   .. ..$ : int  3673 3674 3675 3676 3677 3678 3679 3680 3681 3682 ...
+##   .. ..$ : int  3724 3725 3726 3727 3728 3729 3730 3731 3732 3733 ...
+##   .. ..$ : int  3775 3776 3777 3778 3779 3780 3781 3782 3783 3784 ...
+##   .. ..$ : int  3826 3827 3828 3829 3830 3831 3832 3833 3834 3835 ...
+##   ..- attr(*, &quot;.drop&quot;)= logi TRUE</code></pre>
+<p>The data is now ready for plotting.</p>
+</div>
+<div id="tile" class="section level2">
+<h2><span class="header-section-number">3.3</span> Tile</h2>
+<p>We can build up a basic ggplot and heatmap tiles can be plotted using the geom <code>geom_tile</code>. ‘year’ is mapped to the x-axis, ‘state’ to the y-axis and fill color for the tiles is the ‘total’ value.</p>
+<pre class="r"><code>ggplot(me3,aes(x=year,y=state,fill=total))+
+       geom_tile()</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-56-1.svg" width="864" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Add borders around the tiles. We use <code>reorder(state,desc(state))</code> to reverse the order of states so that it reads A-Z from top to bottom.</p>
+<pre class="r"><code>p &lt;- ggplot(me3,aes(x=year,y=reorder(state,desc(state)),fill=total))+
+      geom_tile(color=&quot;white&quot;,size=0.25)
+p</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-57-1.svg" width="864" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="scales" class="section level2">
+<h2><span class="header-section-number">3.4</span> Scales</h2>
+<p>The extra space on left and right (grey) of the plot is removed using argument <code>expand</code> in <code>scales</code>. X-axis breaks are redefined at 10 year intervals from 1930 to 2010. Custom colors are used for the tiles: <code>&quot;#e7f0fa&quot;,&quot;#c9e2f6&quot;,&quot;#95cbee&quot;,&quot;#0099dc&quot;,&quot;#4ab04a&quot;, &quot;#ffd73e&quot;,&quot;#eec73a&quot;,&quot;#e29421&quot;,&quot;#f05336&quot;,&quot;#ce472e&quot;</code>. Since the color scale is a fill color on a continuous value and we want to supply n new colors, we use <code>scale_fill_gradientn</code>. Tiles with missing value is set to the color <code>&quot;grey90&quot;</code>.</p>
+<pre class="r"><code>cols &lt;- c(&quot;#e7f0fa&quot;,&quot;#c9e2f6&quot;,&quot;#95cbee&quot;,&quot;#0099dc&quot;,&quot;#4ab04a&quot;, &quot;#ffd73e&quot;,&quot;#eec73a&quot;,&quot;#e29421&quot;,&quot;#f05336&quot;,&quot;#ce472e&quot;)
+
+p + scale_y_discrete(expand=c(0,0))+
+    scale_x_continuous(expand=c(0,0),breaks=seq(1930,2010,by=10))+
+    scale_fill_gradientn(colors=cols,na.value=&quot;grey95&quot;)</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-58-1.svg" width="864" style="display: block; margin: auto auto auto 0;" /></p>
+<p>The fill scale can be further refined to resemble that of the original plot.</p>
+<pre class="r"><code>cols &lt;- c(&quot;#e7f0fa&quot;,&quot;#c9e2f6&quot;,&quot;#95cbee&quot;,&quot;#0099dc&quot;,&quot;#4ab04a&quot;, &quot;#ffd73e&quot;,&quot;#eec73a&quot;,&quot;#e29421&quot;,&quot;#f05336&quot;,&quot;#ce472e&quot;)
+
+p &lt;- p+ scale_y_discrete(expand=c(0,0))+
+        scale_x_continuous(expand=c(0,0),breaks=seq(1930,2010,by=10))+
+        scale_fill_gradientn(colors=cols,na.value=&quot;grey95&quot;,
+                             limits=c(0,4000),
+                             values=c(0,0.01,0.02,0.03,0.09,0.1,0.15,0.25,0.4,0.5,1),
+                             labels=c(&quot;0k&quot;,&quot;1k&quot;,&quot;2k&quot;,&quot;3k&quot;,&quot;4k&quot;),
+                             guide=guide_colourbar(ticks=T,nbin=50,
+                                                 barheight=.5,label=T, 
+                                                 barwidth=10))
+p</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-59-1.svg" width="864" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="title-1" class="section level2">
+<h2><span class="header-section-number">3.5</span> Title</h2>
+<p>We can remove the x and y axes titles and add a plot title.</p>
+<pre class="r"><code>p &lt;- p+labs(x=&quot;&quot;,y=&quot;&quot;,fill=&quot;&quot;,title=&quot;Measles&quot;)
+p</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-60-1.svg" width="864" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="fixed-coords" class="section level2">
+<h2><span class="header-section-number">3.6</span> Fixed Coords</h2>
+<p>We can use <code>coord_fixed()</code> to fix the coordinates for equal values in x and y direction. This should render perfectly square tiles.</p>
+<pre class="r"><code>p &lt;- p+coord_fixed()
+p</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-61-1.svg" width="864" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="annotation" class="section level2">
+<h2><span class="header-section-number">3.7</span> Annotation</h2>
+<p>Add the annotation line and text to denote the introduction of the vaccine. The line is at the position 1963. Custom font ‘Gidole’ is used here. This can be skipped.</p>
+<pre class="r"><code>p &lt;- p+geom_segment(x=1963,xend=1963,y=0,yend=51.5,size=.6,alpha=0.7) +
+        annotate(&quot;text&quot;,label=&quot;Vaccine introduced&quot;,x=1963,y=53, 
+                   vjust=1,hjust=0,size=I(3),family=&quot;Gidole&quot;)
+p</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-62-1.svg" width="864" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="theme-1" class="section level2">
+<h2><span class="header-section-number">3.8</span> Theme</h2>
+<p>Here we change the following aspects of the plot using <code>theme</code>:</p>
+<blockquote>
+<ul>
+<li>Change theme to <code>theme_minimal</code> to remove unnecessary plot elements.</li>
+<li>Optional custom font. See ‘Custom font’ section under ‘Economist Scatterplot’.</li>
+<li>Position the legend to bottom center.</li>
+<li>Set legend font to color grey20.</li>
+<li>Adjust size and justification of x and y axes text</li>
+<li>Adjust title justification</li>
+<li>Remove all gridlines</li>
+</ul>
+</blockquote>
+<pre class="r"><code>  p+theme_minimal(base_family=&quot;Gidole&quot;)+
+  theme(legend.position=&quot;bottom&quot;,
+        legend.justification=&quot;center&quot;,
+        legend.direction=&quot;horizontal&quot;,
+        legend.text=element_text(color=&quot;grey20&quot;),
+        axis.text.y=element_text(size=6,hjust=1,vjust=0.5),
+        axis.text.x=element_text(size=8),
+        axis.ticks.y=element_blank(),
+        title=element_text(hjust=-.07,vjust=1),
+        panel.grid=element_blank())</code></pre>
+<p><img src="ggplot_lab_files/figure-html/unnamed-chunk-63-1.svg" width="864" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Our plot is ready and we can compare it to the original version.</p>
+<div class="figure">
+<img src="ggplot_lab_assets/wsj-heatmap.png" />
+
+</div>
+<p>The full code for this challenge is here:</p>
+<pre class="r"><code># custom summing function
+fun1 &lt;- function(x) ifelse(all(is.na(x)),NA,sum(x,na.rm=TRUE))
+
+# read data
+me3 &lt;- read.csv(&quot;ggplot_lab_assets/data_wsj.csv&quot;,header=T,
+               stringsAsFactors=F,skip=2) %&gt;%
+        gather(key=state,value=value,-YEAR,-WEEK) %&gt;%
+        mutate(value=str_replace(value,&quot;^-$&quot;,NA_character_),
+                            value=as.numeric(value)) %&gt;%
+        group_by(YEAR,state) %&gt;% 
+                      summarise(total=fun1(value)) %&gt;%
+                      mutate(state=str_replace_all(state,&quot;[.]&quot;,&quot; &quot;),
+                             state=str_to_title(state))
+
+colnames(me3) &lt;- tolower(colnames(me3))
+
+# custom colors
+cols &lt;- c(&quot;#e7f0fa&quot;,&quot;#c9e2f6&quot;,&quot;#95cbee&quot;,&quot;#0099dc&quot;,&quot;#4ab04a&quot;, &quot;#ffd73e&quot;,&quot;#eec73a&quot;,&quot;#e29421&quot;,&quot;#f05336&quot;,&quot;#ce472e&quot;)
+
+# plotting
+p &lt;- ggplot(me3,aes(x=year,y=reorder(state,desc(state)),fill=total))+
+      geom_tile(color=&quot;white&quot;,size=0.25)+
+      scale_y_discrete(expand=c(0,0))+
+      scale_x_continuous(expand=c(0,0),breaks=seq(1930,2010,by=10))+
+      scale_fill_gradientn(colors=cols,na.value=&quot;grey95&quot;,
+                           limits=c(0,4000),
+                           values=c(0,0.01,0.02,0.03,0.09,0.1,0.15,0.25,0.4,0.5,1),
+                           labels=c(&quot;0k&quot;,&quot;1k&quot;,&quot;2k&quot;,&quot;3k&quot;,&quot;4k&quot;),
+                           guide=guide_colourbar(ticks=T,nbin=50,
+                                               barheight=.5,label=T, 
+                                               barwidth=10))+
+      labs(x=&quot;&quot;,y=&quot;&quot;,fill=&quot;&quot;,title=&quot;Measles&quot;)+
+      coord_fixed()+
+      geom_segment(x=1963,xend=1963,y=0,yend=51.5,size=.9) +
+      annotate(&quot;text&quot;,label=&quot;Vaccine introduced&quot;,x=1963,y=53, 
+               vjust=1,hjust=0,size=I(3),family=&quot;Gidole&quot;)+
+      theme_minimal(base_family=&quot;Gidole&quot;)+
+      theme(legend.position=c(.5,-.13),
+        legend.direction=&quot;horizontal&quot;,
+        legend.text=element_text(color=&quot;grey20&quot;),
+        plot.margin=grid::unit(c(.5,0,1.5,0),&quot;cm&quot;),
+        axis.text.y=element_text(size=6,hjust=1,vjust=0.5),
+        axis.text.x=element_text(size=8),
+        axis.ticks.y=element_blank(),
+        panel.grid=element_blank(),
+        title=element_text(hjust=-.07,vjust=1),
+        panel.grid=element_blank())</code></pre>
+<!-- --------------------- Do not edit this and below ---------------------- -->
+</div>
+</div>
+<div id="session-info" class="section level1">
+<h1><span class="header-section-number">4</span> Session info</h1>
+<pre><code>## R version 3.5.2 (2018-12-20)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 18.04.2 LTS
+## 
+## Matrix products: default
+## BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+## 
+## locale:
+##  [1] LC_CTYPE=en_GB.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_GB.UTF-8        LC_COLLATE=en_GB.UTF-8    
+##  [5] LC_MONETARY=en_GB.UTF-8    LC_MESSAGES=en_GB.UTF-8   
+##  [7] LC_PAPER=en_GB.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_GB.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     datasets  grDevices utils     graphics  methods   base     
+## 
+## other attached packages:
+## [1] ggrepel_0.8.0   ggplot2_3.1.1   stringr_1.4.0   tidyr_0.8.3    
+## [5] dplyr_0.8.0.1   captioner_2.2.3 bookdown_0.9    knitr_1.23     
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_1.0.1       magrittr_1.5     munsell_0.5.0    tidyselect_0.2.5
+##  [5] colorspace_1.4-1 R6_2.4.0         rlang_0.3.4      plyr_1.8.4      
+##  [9] tools_3.5.2      grid_3.5.2       gtable_0.3.0     xfun_0.7        
+## [13] withr_2.1.2      htmltools_0.3.6  lazyeval_0.2.2   yaml_2.2.0      
+## [17] digest_0.6.19    assertthat_0.2.1 tibble_2.1.1     crayon_1.3.4    
+## [21] purrr_0.3.2      glue_1.3.1       evaluate_0.14    rmarkdown_1.13  
+## [25] labeling_0.3     stringi_1.4.3    compiler_3.5.2   pillar_1.3.1    
+## [29] scales_1.0.0     jsonlite_1.6     pkgconfig_2.0.2</code></pre>
+<p style="text-align: left; font-size: small;">
+Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 08-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 20:00:10.
+</p>
+<hr/>
+<div style="padding-bottom: 1.5em">
+<p><span style="float:left; vertical-align:middle"> <b>2019</b> • <a href="https://www.scilifelab.se/">SciLifeLab</a> • <a href="https://nbis.se/">NBIS</a> • <a href="https://nbisweden.github.io/workshop-RaukR-1906/">RaukR</a> </span> <span style="float:right; vertical-align:middle"> <span class="footericon" style="padding-right:4px; padding-left:4px"> <a href="https://nbisweden.github.io/workshop-RaukR-1806/"><img src="assets/icons8-globe-26.png" alt="website" border="0" style="height:15px"></a> </span> <span class="footericon" style="padding-right:4px; padding-left:4px"> <a href="https://twitter.com/hashtag/RaukR?src=hash"><img src="assets/icons8-twitter-26.png" alt="twitter" border="0" style="height:15px"></a> </span> </span></p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
