@@ -1,0 +1,2 @@
+sample.interval=10000
+"close.connection" "close" "readRDS" "FUN" "lapply" "find.package" "system.file" "FUN" "vapply" ".rs.isPackageInstalled" "<Anonymous>" 

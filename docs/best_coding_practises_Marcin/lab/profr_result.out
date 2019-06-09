@@ -1,0 +1,7 @@
+sample.interval=10000
+"<Anonymous>" 
+"as.list" "lapply" "unlist" "unique" "findLocalsList1" "unique" "FUN" "lapply" "unlist" "unique" "findLocalsList1" "FUN" "lapply" "unlist" "unique" "findLocalsList1" "findLocalsList" "funEnv" "make.functionContext" "cmpfun" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "compiler:::tryCmpfun" "fill_noloop" 
+"constantFoldCall" "constantFold" "cmp" "cmpComplexAssign" "h" "tryInline" "cmpCall" "cmp" "h" "tryInline" "cmpCall" "cmp" "cmpForBody" "h" "tryInline" "cmpCall" "cmp" "h" "tryInline" "cmpCall" "cmp" "genCode" "cmpfun" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "compiler:::tryCmpfun" "fill_noloop" 
+"<Anonymous>" 
+"parse" "parse_only" "eval" "withCallingHandlers" "knitr:::parse_params" "eval" "eval" ".rs.mergeLists" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "<Anonymous>" 
+"getExportedValue" "::" "<Anonymous>" 
