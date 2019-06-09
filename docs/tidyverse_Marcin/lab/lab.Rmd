@@ -1,0 +1,904 @@
+---
+title: "Tidy Work in Tidyverse"
+subtitle: "Hands-on"
+author: "Marcin Kierczak"
+date: "`r format(Sys.Date(),format='%d-%b-%Y')`"
+output:
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    number_sections: true
+    theme: united
+    highlight: tango
+    df_print: paged
+    code_folding: hide
+    self_contained: false
+    keep_md: false
+    encoding: "UTF-8"
+    css: ["assets/course.css"]
+---
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,results='hide'}
+# run setup code
+source("assets/setup.R")
+library(magrittr)
+```
+
+```{r,echo=FALSE,results='hide'}
+## LIBRARIES AND VARIABLES
+# load the packages you need for this document
+
+#library(ggplot2)
+#library(tidyverse)
+
+# variables needed in this document
+# raukr colours
+#rv_col_dark <- "#125687"
+#rv_col_light <- "#e7eef3"
+```
+
+<img src="assets/logo.svg" alt="logo_raukr" class="trlogo">
+
+---
+
+<p class="abstract">
+This is the Tidyverse course work material for RaukR 2018.
+</p>
+
+---
+
+# Introduction
+
+Welcome to the hands-on workshop "Tidy Work in Tidyverse". Most of the things necessary to complete the tutorials and challenges were covered in the lecture. However, sometimes the tasks require that you check the docs or search online. Not all our solutions are optimal. Let us know if you can do better or solve things in a different way. If stuck, look at hints, next google and if still stuck, turn to TA. It is a lot of material, do not fee bad if you do not solve all tasks. If you completed Challenge 3 you are good and have used the most important features of tidyverse! Good luck!
+
+# General excercises
+
+## Pipes
+
+Rewrite the following code chunks as pipes (`magrittr`):
+
+### Chunk 1
+
+```
+my_cars <- mtcars[, c(1:4, 10)]
+my_cars <- my_cars[my_cars$disp > mean(my_cars$disp), ]
+my_cars <- colMeans(my_cars)
+```
+```{r echo=TRUE, eval=FALSE}
+mtcars %>%
+  select(c(1:4, 10)) %>%
+  filter(disp > mean(disp)) %>%
+  colMeans() -> my_cars
+```
+What is wrong with our solution?
+```{r echo=T, eval=F}
+# It is better to have the result assigned on the left hand side: result <- expression. In this case the expression is the **whole** pipe.
+# Our 'expression -> result' is correct but can easily be missed when reading the code.
+```
+
+### Chunk 2
+
+The `summary(x)` function is a bit special: when you type `summary(x)` in the console, `print` is called in an implicite way. Pipe call does not do, so you will have to invoke `print` in an explicite way. But the `%T>%` does unbranch for one call only, you will have to make printing of the `summary` a one single composed call using `{}`.
+
+```
+summary(cars)
+colSums(cars)
+```
+
+```{r echo=TRUE, eval=FALSE}
+cars %T>% {print(summary(.))} %>% colSums()
+```
+
+### Chunk 3
+Rewrite correlations to pipes.
+```
+cor(mtcars$gear, mtcars$mpg)
+```
+
+```{r echo=TRUE, eval=FALSE}
+mtcars %$% cor(gear, mpg)
+```
+
+```
+cor(mtcars)
+```
+
+```{r echo=TRUE, eval=FALSE}
+mtcars %>% cor()
+```
+
+### Chunk 4
+
+Given is the `dim_summary(nrows, ncols)` function which takes matrix `nrows` and `ncols` as arguments and prints this info about its dimensions:
+
+```
+dim_summary <- function(nrows, ncols) {
+  print(
+    paste0('Matrix M has: ', nrows, ' rows and ', ncols, ' columns.')
+  )
+}
+```
+
+Rewrite the code chunks below as pipes:
+```
+distr1 <- rnorm(16)
+M <- matrix(distr1, ncol = 4)
+plot(M)
+M <- M + sample(M)
+dim_summary(nrows = nrow(M), ncols = ncol(M))
+distr2 <- rnorm(16)
+```
+
+```
+N <- matrix(distr2, ncol = 4)
+colnames(N, letters[1:4])
+summary(N)
+```
+
+```
+P <- M %x% t(N)
+heatmap(P)
+names(P) <- letters[1:dim(P)[2]]
+cor(P[ ,'a'], P[ ,'i'])
+```
+
+A class of functions, called the *replacement functions* are of the form `function(arguments)<-value` and `rownames(x) <- c('a', 'b', 'c')` is a good example of a replacement function. When writing pipes, we have bear in mind that whole `function<-` is the name of the replacement function and thus we have to use it as such in the pipe.
+
+**Note.** Not always one can put everything into one single pipe, sometimes the results of running two or more pipes have to be used in the final pipe.
+
+```{r echo=TRUE, eval=FALSE}
+dim_summary <- function(nrows, ncols) {
+  print(paste0('Matrix M has: ', nrows, ' rows and ', ncols, ' columns.'))
+}
+
+M <- rnorm(16) %>%
+  matrix(ncol = 4) %T>%
+  plot() %>%
+  `+`(., sample(.)) %T>%
+  {dim_summary(nrow(.), ncol(.))}
+
+N <- rnorm(16) %>%
+  matrix(ncol = 4) %>%
+  `colnames<-`(letters[1:4]) %>%
+  t()
+
+P <- M %>%
+  `%x%`(., N) %T>%
+  heatmap() %>%
+  `colnames<-`(letters[1:dim(.)[2]]) %>%
+  as_data_frame() %$%
+  cor(a, i)
+```
+
+## Tibbles
+### Task 1
+* Convert the `mtcars` dataset to a tibble `vehicles`.
+* Select the number of cylinders (`cyl`) variable using:
+    - the `[[index]]` accessor,
+    - the `[[string]]` accessor,
+    - the `$` accessor.
+* Do the same selection as above, but using pipe and placeholders (use all three ways of accessing a variable).
+* Print the tibble.
+* Print the 30 first rows of the tibble.
+* Change the default behaviour of printing a tibble so that at least 15 and at most 30 rows are printed.
+* What is the difference between the `tibble.print_max` and `dplyr.print_min`? Is there any? Test it.
+* Convert `vehicles` back to a `data.frame` called `automobiles`.
+
+```{r echo=TRUE, eval=FALSE}
+# 1
+vehicles <- mtcars %>% as_tibble()
+
+# 2
+vehicles[['cyl']]
+vehicles[[2]]
+vehicles$cyl
+
+# 3
+vehicles %T>%
+  {print(.[['cyl']])} %T>%
+  {print(.[[2]])} %>%
+  .$cyl
+
+# 4
+vehicles
+
+# 5
+vehicles %>% head(n = 30)
+
+# 6
+options(tibble.print_min = 15, tibble.print_max = 30)
+
+# 7
+# In theory there should be no difference. dplyr imports tibble from the tibble package
+# and dplyr.width, dplyr.print_min and dplyr.print_min are passed down to the tibble.
+# But test both behaviours. First with only the tibble package loaded, later with dplyr # loaded.
+
+# 8
+automobiles <- as.data.frame(vehicles)
+```
+
+### Task 2
+
+Create the following tibble using `tribble()`:
+```{r echo=FALSE}
+tab <- tribble(
+  ~id, ~event, ~date,
+  1, 'success', '24-04-2017',
+  2, 'failed', '25-04-2017',
+  3, 'failed', '25-04-2017',
+  4, 'success', '27-04-2017'
+)
+```
+```{r echo=FALSE}
+knitr::kable(tab)
+```
+```{r eval=F}
+tab <- tribble(
+  ~id, ~event, ~date,
+  1, 'success', '24-04-2017',
+  2, 'failed', '25-04-2017',
+  3, 'failed', '25-04-2017',
+  4, 'success', '27-04-2017'
+)
+```
+
+### Task 3
+
+Compare the performance of `as.data.frame()`, `as_data_frame()` and `as_tibble()` on a
+100 x 30 matrix filled with random integers. Use package `microbenchmark`. Fill in your result [here](https://docs.google.com/spreadsheets/d/1_2tDeEkDVS06RkB437yBI1XEB5SUebtHWyxAf_aRJu4/edit#gid=99106509) in the Tidyverse Lab sheet, Tibbles -- performance.
+
+```{r, eval=FALSE}
+tst <- replicate(30, sample(100), simplify = TRUE)
+names(tst) = paste0(rep('col', times = dim(tst)[2]), 1:dim(tst)[2])
+microbenchmark::microbenchmark(
+  as.data.frame(tst),
+  as_data_frame(tst),
+  as_tibble(tst)
+)
+```
+
+### Task 4
+Do you think tibbles are lazy? Try to create a tibble that tests whether *lazy evaluation* applies to tibbles too.
+
+```{r eval=FALSE}
+tibble(x = sample(1:10, size = 10, replace = T), y = log10(x))
+```
+
+## Parsing
+
+Parse the following vectors:
+
+* `vec1 <- c(1, 7.2, 3.84, -5.23)` -- parse it as double.
+* now parse the same vector `c(1, 7.2, 3.84, -5.23)` as integer. What happens?
+* Can you still parse it as integer somehow?
+* Parse as double `vec2 <- c('2', '3,45', '?', '-7,28')`
+* Parse correctly `vec3 <- c('2', '3,45', '?', '-7.28')`
+* Parse the following guessing the parser: `vec4 <- c('barrel: 432.7$', 'liter: 15.42PLN', 'gallon costs approx 32.1SEK', 'sunny, wind gusts up till 55m/s')`
+* Can you parse `vec4` as number? Do it if you can.
+* Parse `vec5 <- "25 Dec 2015"` as date (hint: `?parse_date()`).
+* Parse `10_Jul_1410` as date.
+
+```{r echo=TRUE, eval=FALSE}
+vec1 <- c(1, 7.2, 3.84, -5.23)
+vec2 <- c('2', '3,45', '?', '-7,28')
+vec3 <- c('2', '3,45', '?', '-7.28')
+vec4 <- c('barrel: 432.7$', 'liter: 15.42PLN', 'gallon costs approx 32.1SEK', 'sunny, wind gusts up till 55m/s')
+vec5 <- "25 Dec 2015"
+parse_double(vec1)
+parse_integer(vec1)
+parse_integer(as.integer(vec1)) # Is it the best way? Hint: rounding.
+parse_double(vec2, na = '?', locale = locale(decimal_mark = ','))
+parse_number(vec2, na = '?', locale = locale(decimal_mark = ','))
+guess_parser(vec4)
+parse_guess(vec4)
+# Yes, you can:
+parse_number(vec4)
+parse_date(vec5, format="%d %b %Y")
+parse_date("10_Jul_1410", format="%d%.%b%.%Y")
+```
+
+# NYC flights Challenge
+The `nycflights13` package contains information about all flights that departed from NYC (i.e., EWR, JFK and LGA) in 2013: 336,776 flights with 16 variables. To help understand what causes delays, it also includes a number of other useful datasets: weather, planes, airports, airlines. We will use it to train working with tibbles and `dplyr`.
+
+## Task 1 -- selecting column
+* load the `nycflights13` package (install if necessary),
+* read about the data in the package docs,
+* inspect the `flights` tibble.
+* select all columns but `carrier` and `arr_time`,
+* select `carrier`, `tailnum` and `origin`,
+* hide columns from `day` through `carrier`,
+* select all columns that have to do with `arr`ival (hint: `?tidyselect`),
+* select columns based on a vector `v <- c("arr_time", "sched_arr_time", "arr_delay")`,
+* rename column `dest` to `destination` using:
+    - `select()` and
+    - `rename()`  
+What is the difference between the two approaches?
+
+```{r eval=F}
+install.packages('nycflights13')
+
+library('nycflights13')
+
+?nycflights13
+
+flights
+
+flights %>% select(-carrier, -arr_time)
+
+flights %>% select(carrier, tailnum, origin)
+
+flights %>% select(-(day:carrier))
+
+flights %>% select(contains('arr_')) # or
+
+v <- c("arr_time", "sched_arr_time", "arr_delay")
+flights %>% select(v) # or
+flights %>% select(one_of(v))
+
+flights %>% select(destination = dest)
+flights %>% rename(destination = dest)
+# select keeps only the renamed column while rename returns the whole dataset
+# with the column renamed
+```
+
+## Task 2 -- filtering rows
+
+* filter only the flights that arrived ahead of schedule,
+* filter the flights that had departure delay between 10 and 33,
+* fish out all flights with unknown arrival time,
+* retrieve rows 1234:1258 (hint: `?slice`),
+* sample (`?sample_n()`) 3 random flights per day in March,
+* show 5 most departure-delayed flights in January per carrier,
+* retrieve all `unique()` routes and sort them by origin,
+* retrieve all `distinct()` routes and sort them by origin,
+* is `unique()` more efficient than `distinct()`?
+
+```{r eval=F}
+flights %>% filter(arr_delay < 0)
+
+flights %>% filter(dep_delay >= 10, dep_delay <= 33) # or
+flights %>% filter(between(dep_delay, 10, 33))
+
+flights %>% filter(is.na(arr_time))
+
+flights %>% slice(1234:1258)
+
+flights %>% filter(month == 3) %>%
+  group_by(day) %>%
+  sample_n(3)
+
+flights %>%
+  filter(month == 1) %>%
+  group_by(carrier) %>%
+  top_n(5, dep_delay)
+```
+
+## Task 3 -- Trans(mutations)
+
+* `air_time` is the amount of time in minutes spent in the air. Add a new column `air_spd` that will contain aircraft's airspeed in mph,
+
+* as above, but keep only the new `air_spd` variable,
+
+* use `rownames_to_column()` on `mtcars` to add car model as an extra column,
+
+```{r eval=F}
+flights %>% mutate(air_spd = distance/(air_time / 60))
+
+flights %>% transmute(air_spd = distance/(air_time / 60))
+
+mtcars %>% rownames_to_column('model')
+```
+
+## Task 4 -- groups and counts
+
+* use `group_by()`, `summarise()` and `n()` to see how many planes were delayed (departure) every month,
+
+```{r eval = FALSE}
+flights %>%
+  filter(dep_delay > 0) %>%
+  group_by(month) %>%
+  summarise(num_dep_delayed = n())
+```
+
+* do the same but using `tally()` and `count()`,
+
+```{r eval = FALSE}
+flights %>%
+  filter(dep_delay > 0) %>%
+  group_by(month) %>%
+  tally()
+
+flights %>%
+  filter(dep_delay > 0) %>%
+  count(month)
+```
+
+* what was the mean `dep_delay` per month?
+
+```{r eval=F}
+flights %>%
+  group_by(month) %>%
+  summarise(mean_dep_delay = mean(dep_delay, na.rm = T))
+```
+
+* count the number of incoming delayed flights from each unique origin and sort origins by this count (descending),
+
+```{r eval=F}
+flights %>%
+  filter(arr_delay > 0) %>%
+  group_by(origin) %>%
+  summarise(cnt = n()) %>%
+  arrange(desc(cnt))
+```
+
+* do the same using `tally()`
+
+```{r eval=F}
+flights %>%
+  filter(arr_delay > 0) %>%
+  group_by(origin) %>%
+  tally(sort = T)
+ ```
+
+* use `summarise()` to sum total `dep_delay` per month in hours,
+
+```{r eval = F}
+ flights %>%
+   group_by(month) %>%
+   summarize(tot_dep_delay = sum(dep_delay/60, na.rm = T))
+```
+
+* use the `wt` parameter of `count()` (works with `tally()` too) to achieve the same,
+
+```{r eval = F}
+ flights %>%
+   group_by(month) %>%
+   count(wt = dep_delay/60)
+```
+
+* run `group_size()` on `carrier` what does it return?
+
+```{r eval = F}
+flights %>%
+    group_by(carrier) %>%
+    group_size()
+```
+
+* use `n_groups()` to check the number of unique origin-carrier pairs,
+
+```{r eval = F}
+flights %>%
+    group_by(carrier) %>%
+    n_groups()
+```
+
+**Note on `ungroup`** Depending on the version of `dplyr` you may or may need to use the `ungroup()` if you want to group your data on some other variables:
+```
+flights %>%
+  group_by(origin) %>%
+  mutate(mean_delay_orig = (mean(dep_delay, na.rm = T) + mean(arr_delay, na.rm = T)) / 2) %>%
+  ungroup() %>%
+  group_by(carrier) %>%
+  mutate(mean_delay_carr = (mean(dep_delay, na.rm = T) + mean(arr_delay, na.rm = T)) / 2) %>%
+  select(origin, carrier, mean_delay_orig, mean_delay_carr)
+```
+may or may need ungroup depending on your `dplyr` version. In the newer versions, `summarise` and `mutate` drop one aggregation level.
+
+## Task 5 -- joins
+Given the following tibbles:
+```{r include=FALSE}
+set1 <- tribble(
+  ~id, ~color,
+  'id1', 'grey',
+  'id1', 'red',
+  'id2', 'green',
+  'id3', 'blue'
+)
+
+set2 <- tribble(
+  ~id, ~size,
+  'id2', 'XL',
+  'id3', 'M',
+  'id4', 'M'
+)
+```
+
+`set1`:
+
+```{r}
+knitr::kable(set1)
+```
+
+and `set2`:
+
+```{r}
+knitr::kable(set2)
+```
+
+Perform joins on `id` that result in the grey area from the Venn diagrams below:
+
+```{r echo=FALSE, fig.align='left', fig.height=1.5}
+library(eulerr)
+combo <- c(A = 2, B = 2, "A&B" = 1)
+fit1 <- euler(combo)
+plot(fit1, fills=c('grey', 'white', 'grey'), labels=c('set1', 'set2'))
+```
+```{r eval=F}
+left_join(set1, set2)
+```
+```{r echo=FALSE, fig.align='left', fig.height=1.5}
+plot(fit1, fills=c('white', 'grey', 'grey'), labels=c('set1', 'set2'))
+```
+```{r eval=F}
+right_join(set1, set2)
+```
+```{r echo=FALSE, fig.align='left', fig.height=1.5}
+plot(fit1, fills=c('white', 'white', 'grey'), labels=c('set1', 'set2'))
+```
+```{r eval=F}
+inner_join(set1, set2) # or
+semi_join(set1, set2) # semi_join removes duplicates in x
+# and also returns only columns from x.
+```
+```{r echo=FALSE, fig.align='left', fig.height=1.5}
+plot(fit1, fills=c('grey', 'grey', 'grey'), labels=c('set1', 'set2'))
+```
+```{r eval=F}
+full_join(set1, set2) # or
+```
+```{r echo=FALSE, fig.align='left', fig.height=1.5}
+plot(fit1, fills=c('grey', 'white', 'white'), labels=c('set1', 'set2'))
+```
+```{r eval=F}
+anti_join(set1, set2) # or
+```
+
+# Tidying data
+Now time to do some data tidying. First install a package with some untidy data:
+```
+devtools::install_github("rstudio/EDAWR")
+library(EDAWR)
+```
+* tidy `cases` so that years are not in separate columns, but in the column called `year` containing a value per each year.
+```{r eval=F}
+tidy_cases <- cases %>% gather(key = 'year', value = 'count', 2:4)
+```
+
+* now time for the `pollution` dataset. Tidy it so that there separate columns for `large` and `small` pollution values.
+```{r eval=F}
+tidy_pollution <- pollution %>% spread(size, amount)
+```
+
+* the `storms` dataset contains the `date` column. Make it into 3 columns: `year`, `month` and `day`. Store the result as `tidy_storms`
+```{r eval = F}
+tidy_storms <- storms %>%
+                          separate(col = date,
+                                   into = c('year', 'month', 'day'),
+                                   sep = '-')
+```
+
+* now, merge `year`, `month` and `day` in `tidy_storms` into a `date` column again but in the "DD/MM/YYYY" format.
+```{r eval = F}
+tidy_storms %>% unite(col = "date", 4:6, sep = "/")
+```
+
+# Nanopore Channel Activity Challenge
+
+## Introduction
+You will be given a `fastq` file coming from MinION sequencer (Oxford Nanopore). This file contains test reads from the chicken genome. The flow-cell used here has 512 channels, each channel consists of 4 pores and only one pore is active at a time. Once your sequence gets stuck for some reason, the device will attempt to remove it from the pore by playing with reversing polarity on that pore. If this was successful, the pore will be re-used. Your task will be to visualise reading events from the meta-data in the `fastq` dataset and to see how each and every channel behaved. Also, you will plot the distribution of reading times.
+
+## Preparations
+First, we will need to load the necessary libraries. I will give you a hint -- you need the following libraries:
+
+* `here` -- not necessary, but it is an elegant way of reading the data locally from the project folder,
+* `tidyverse` -- well, quite obvious why,
+* `ShortRead` from Bioconductor -- to deal with short reads in `fastq`,
+* `lubridate` -- to figure out reading times.
+
+```{r loading_libraries, message=FALSE}
+library(here)
+library(tidyverse)
+library(ShortRead)
+library(lubridate)
+```
+
+## Reading data
+Now, let's read the fastq data. Check `ShortRead` documentation to see how to read our `fastq` file. Also, try to use package `here`. If you write: `data <- here::here('data/my.fastq')`, the `my.fastq` file will be read from the `data` folder which is a subfolder of your project root, i.e. the folder where your r script is. It is a good practise and also prevents [Jenny Brian from coming to your office and setting your computer on fire](https://www.tidyverse.org/articles/2017/12/workflow-vs-script/).
+
+Now think a bit, to plot reading events, do we need al the data in the file or only some specific part? You may want to see some few first lines of the `fastq` to learn about the data structure.
+
+```{r read_data_fastq}
+raw_data <- here::here('docs/tidyverse_Marcin/lab/lab_assets/FUL1_fastqs_GRID2.fastq')
+f <- FastqFile(raw_data)
+rfq <- readFastq(f)
+headers <- rfq@id
+close(f)
+```
+
+## Extracting information you need
+In this step, we are extracting data from fastq headers of each and every read in the fastq file. Not super efficient and perhaps the slowest step of the whole analyses. Can you do it better than our example solution?
+
+Desired output: a table (tibble/data.frame) with reads as rows and meta-data as columns.
+
+Hint: use `strsplit()` to explode string data into columns and `str_remove_all()` to get rid of unwanted characters. Since we did not talk much about regular expressions and the `stringr` package:
+
+* To split string on a particular character, group of characters use `strsplit`. Here we split on comma.
+```
+text <- "This text is long, or not?"
+strsplit(text, ',')
+```
+* To remove everything following a given character, e.g. comma:
+```
+str_remove_all(text, ",.*")
+```
+
+```{r extract_headers}
+data <- dplyr::as_tibble(matrix(NA_character_, ncol = 6, nrow = length(headers)))
+colnames(data) <- c('id', 'run_id', 'sample_id', 'read', 'channel', 'start_time')
+for (i in 1:length(headers)) {
+  tmp <- toString(headers[[i]])
+  tmp_flat <- unlist(strsplit(tmp, ' ')) %>%
+    str_remove_all(".*=")
+  data[i,] <- tmp_flat
+}
+```
+
+## Preparing tidy dataset
+Now, the fun part begins:
+
+* add column `start_dttm` that represents start time for a given read as proper `datetime` object (read `lubridate` docs) and
+* add column `chan` that is the proper numeric representation of the channel,
+* group reads by channel,
+* arrange them by time,
+* add time to next read (NA if this was the last read) and
+* sort by channel again.
+
+Hint: read about `lead()`
+
+```{r process_data_1}
+data2 <- data %>%
+  mutate(start_dttm = as_datetime(start_time)) %>%
+  mutate(chan=as.numeric(channel)) %>%
+  group_by(chan) %>%
+  arrange(start_dttm) %>%
+  mutate(time_diff = lead(start_dttm) - start_dttm) %>%
+  arrange(chan)
+```
+
+## Plotting events per channel
+
+**Important!** If you are not familiar with `ggplot` either:
+
+* wait until tomorrow,
+* use base-R plotting, or
+* see our `ggplot2` solution.
+
+Here, we want to see what was happening in each channel over time. Plot the data you have just prepared so that:
+
+* each point is the start of a new read,
+* colour corresponds to the lag to the next read.
+
+Can you visualise this in a better way? Different geometry?
+
+```{r plot_events}
+ggplot(data2, mapping = aes(x = start_dttm,
+                            y = as.factor(chan),
+                            col = as.numeric(time_diff)
+                            )
+       ) +
+  geom_point(size = .5) +
+  theme_bw()
+```
+
+## Distribution of time intervals
+Now, we want to see how time-to-next-read is distributed. Since it has a veeeeery long right tail, I am cutting off everything above 200 seconds (just by eyeballing).
+
+* plot time-to-next-read is distribution (you can use base-R `histogram`),
+* can you find a better cutoff value?
+
+```{r time_to_next_1}
+# Show time-to-next read distribution
+# thr <- mean(data2$time_diff, na.rm = T) + 3 * sd(data2$time_diff, na.rm = T)
+tmp <- data2 %>%
+  ungroup() %>%
+  filter(time_diff < 200) %>%
+  select(time_diff)
+
+hist(as.numeric(tmp$time_diff), breaks = 1000, las=1)
+```
+
+# Species Identification Challenge
+In this challenge, your task will be to analyse species composition of some samples. The samples, were actual products containing parts of plants. DNA has been isolated form the samples and an amplicon metabarcoding was performed using two sets of primers: for the ITS1 and the ITS2 region. Each sample had 3 technical replicates. Your task will be to transform BLAST output to a tidy form suitable for further analyses or visualisation.
+
+## Load necessary libraries
+We will obviously need `tidyverse`, we will also do some string manipulations with `stringr` also `here` package is good to have.
+
+```{r}
+library(tidyverse)
+library(stringr)
+library(here)
+```
+
+## Input variables
+Here, we will define our input variables. We need:
+
+* `file` that contains the path to the dataset,
+* `sample_name` is a string, the name of the sample you want to analyse,
+* `threshold` is an intiger saying what is a the minimal number of replicates that have to contain an OTU in order to call it a true positive (TP),
+* `strict` a logical. If set to TRUE, only the OTUs deemed TP will be shown.
+
+Below we set some examle values:
+```{r params, echo=F}
+file <- here::here("docs/tidyverse_Marcin/lab/lab_assets/blast_result.csv")
+sample_name <- 'SAMPLE12'
+threshold <- 1
+strict <- F
+```
+```
+# Change the path to your project path, where your data is
+file <- here::here("docs/tidyverse_Marcin/lab/lab_assets/blast_result.csv")
+sample_name <- 'SAMPLE12'
+threshold <- 1
+strict <- F
+```
+
+## Reading the data
+Now, you should read the data:
+```{r}
+species_orig <- read_csv(file, col_names = c("sample","its","replicate","OTU","size","hit","perc_ident","score","family","species")) %>% select(-score)
+```
+
+`r knitr::kable(species_orig %>% head(n = 10))`
+
+ As you see, the following information are included in the data:
+
+ * `sample` is simply the name of the sample,
+ * `its` is either ITS1 or ITS2 and tells which set of PCR primers has been used,
+ * `replicate` contains information on which replicate the sequences come from,
+ * `OTU` is a unique identifier of the so-called Operational Taxonomic Unit, an OTU often corresponds to one species but not always. Sometimes 2 OTUs represent the same species, sometimes 1 OTU consists of more than one species,
+ * `size` is the number of reads that support that particular OTU,
+ * `hit` is the BLAST hit identifier. The 4 top BLAST hits are reported per OTU,
+ * `perc_identity` is the percentage identity of the sequence to the BLAST hit,
+ * `family` is the identified plant family,
+ * `species` is the identified plant species.
+
+## Number of replicates per species
+Create a new dataset `species` that contains an extra column `n_replicates`. The column contains number of replicates this particular species is present in. Do it per sample and its.
+```{r}
+species <- species_orig %>%
+  group_by(sample, its, species) %>%
+  mutate(n_replicates = n_distinct(replicate)) %>%
+  ungroup()
+```
+
+`r knitr::kable(species %>% head(n = 10))`
+
+## Filter out unwanted samples
+Now, your task is to filter out all but your `sample_name` samples from the dataset.
+Call the resulting dataset `my_sample`.
+
+```{r, eval=T}
+my_sample <- species %>%
+  filter(sample == sample_name)
+```
+
+## Missing observations
+What happens if a set of primers failed to amplify or if one replicate was lost?
+Use `complete()` to make sure you have `NA` values in such cases.
+
+```{r, eval=T}
+my_sample <- my_sample %>%
+  complete(its = c("ITS1", "ITS2"),
+           replicate = c("R1","R2","R3")
+           )
+```
+
+## Sorting issue
+Look, the first sample in the table is `SAMPLE10`. Why not `SAMPLE1`?
+Thats a sorting issue: if sorted as character, 10 will come before 1. WE have to fix this by adding trailing zero to the values in `OTU`. We do not expect more than 99 OTUs in a sample, so it is ok with only one trailing 0 (otherwise the 100-th sample will spoil our sorting and come out like: SAMPLE100, SAMPLE01, SAMPLE10). We will need to use regular expression:
+
+* all values in the `OTU` column that follow pattern "OTU*digit*" we need to change to "OTU0*digit*". Regular expression that matches this is `OTU([0-9]$)` and it should be replaced by: `OTU0\\1`. Ask your TAs to explain this if you do not know much about regular expressions and pattern matching.
+
+```{r, eval=T}
+my_sample <- my_sample %>% mutate(OTU = str_replace(OTU,
+                                  pattern = "OTU([0-9]$)",
+                                  replacement = "OTU0\\1"
+                                )
+                          )
+```
+
+`r knitr::kable(my_sample %>% head(n = 10))`
+
+## Supporting reads
+Sometimes, an OTU generates two or more top BLAST hits that come from the same species. We have decided to sum reads in such cases. Do it!
+
+```{r, eval=T}
+  my_sample <- my_sample %>%
+    ungroup() %>%
+    group_by(sample, its, replicate, OTU, species, n_replicates) %>%
+    summarise(n_reads = sum(size)) %>%
+    ungroup() %>%
+    group_by(its, species, OTU)
+```
+
+`r knitr::kable(my_sample %>% head(n = 10))`
+
+## Within-OTU species diversity
+Now, we want to see how many identifications an OTU got. Implement this. Store the result in a new tibble `diversity`.
+
+```{r, eval=T}
+diversity <- my_sample %>%
+  ungroup() %>%
+  group_by(its, replicate, OTU) %>%
+  summarise(n_species = n())
+```
+
+`r knitr::kable(diversity %>% head(n = 10))`
+
+## Adding diversity data
+Add the `diversity` data to `my_sample` using appropriate `join` function.
+Also, remove the column with sample names since we are dealing with only one sample.
+```{r, eval=T}
+my_sample <- my_sample %>%
+  left_join(diversity) %>%
+  select(-sample)
+```
+
+`r knitr::kable(my_sample %>% head(n = 10))`
+
+* what columns did we join on in our example solution?
+
+## Visualising the data
+
+Can you think of a good way of visualising the data? Think of:
+
+* Type of plot you want. The simpler the better?
+* Which variables you would like to visualise? We have chosen `ITS`, `replicate`, `n_reads`, `n_replicates`, `OTU`, `threshold`, `n_species` and `specie`. Well, pretty much all of them :-)
+* How do you represent variables: colours, shapes, separate plots, sizes?
+* What transformations do you need to apply before visualising the data?
+
+Our example solution involves some `ggplot2` magics. But would base-R be good enough for this type of plot?
+
+```{r echo=FALSE, fig.width=9, fig.cap='Red -- only one species in the current OTU, blue -- identification above the threshold, grey -- identification below the threshold'}
+strict <- F
+
+if (strict) {
+  my_sample <- my_sample %>% filter(n_replicates > threshold)
+}
+
+if (dim(my_sample)[1] > 0) {
+  sc <- scale_color_manual(values = c('tomato','slateblue'),
+                           limits=c(0, 1),
+                           labels=c('No', 'Yes')
+                           )
+  pl <- ggplot(my_sample,
+               mapping = aes(x = OTU, y = species, size = log(n_reads))) +
+               geom_point(data = (my_sample %>%
+                                    filter(n_replicates <= threshold & n_reads !=0)
+                                  ), color='lightgrey') +
+      geom_point(data=(my_sample %>% filter(n_replicates > threshold & n_reads !=0 & n_species > 1)), color='slateblue') +
+      geom_point(data=(my_sample %>% filter(n_replicates > threshold & n_reads !=0 & n_species<=1)), color='red') +
+      facet_wrap(facets = ~its + replicate, ncol = 6) +
+      scale_y_discrete(limits = rev(levels(as.factor(my_sample$species)))) +
+      theme_bw() +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))
+} else {
+    pl <- NULL
+}
+pl
+```
+
+# Wildlife Aircraft Strikes Challenge
+
+Use the [FAA report](https://www.kaggle.com/faa/wildlife-strikes) and `tidyverse` to learn more about aircraft incidents with wildlife. Use your imagination and [NYC data science blog](https://nycdatascience.com/blog/student-works/exploring-aviation-accidents-from-1908-through-the-present/) for inspiration!
+
+
+```{r, echo=FALSE, child="assets/session.Rmd"}
+```
+
+```{r, echo=FALSE, child="assets/build.Rmd"}
+```
+
+```{r, echo=FALSE, child="assets/footer.Rmd"}
+```
