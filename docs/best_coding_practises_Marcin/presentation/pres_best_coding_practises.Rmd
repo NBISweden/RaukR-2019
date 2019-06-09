@@ -111,7 +111,7 @@ A syntactically valid name:
 
 name: naming-styles
 ## Naming Style
-Variable names that are legal are not necesserily a good style and they may be dangerous:
+Variable names that are legal are not necessarily a good style and they may be dangerous:
 
 ```{r the_TF_trap, echo=TRUE}
 F + T  
@@ -155,7 +155,7 @@ Sometimes these are domain-specific:
 ---
 
 ## Different Notations
-People use different notation styles hroughout their code:
+People use different notation styles throughout their code:
 * `snake_notation_looks_like_this`,
 * `camelNotationLooksLikeThis`,
 * `period.notation.looks.like.this`,
@@ -172,7 +172,7 @@ It is also important to maintain code readability by having your variable names:
 
 * not too long, e.g. - `weight` vs. `phenotype.weight.measured`,
 
-* in the period notation and the snake notation avoid `my.var.2` or `my_var_2`, use `my.var2` and `my_var2` instead,
+* in the period notation and the snake notation avoid `my.var.2` or `my_var_2`, use `my.var2` and `my_var2` instead
 ---
 
 ## Special Variable Names
