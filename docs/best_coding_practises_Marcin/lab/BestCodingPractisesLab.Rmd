@@ -11,7 +11,7 @@ output:
     theme: united
     highlight: textmate
     df_print: paged
-    code_folding: none
+    code_folding: hide
     self_contained: false
     keep_md: false
     encoding: "UTF-8"

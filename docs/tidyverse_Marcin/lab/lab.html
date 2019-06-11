@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Marcin Kierczak" />
+
+
+<title>Tidy Work in Tidyverse</title>
+
+<script src="lab_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lab_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="lab_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lab_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lab_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="lab_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="lab_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="lab_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="lab_files/navigation-1.1/tabsets.js"></script>
+<script src="lab_files/navigation-1.1/codefolding.js"></script>
+<link href="lab_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="lab_files/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { background-color: #f8f8f8; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+div.sourceCode {
+  overflow-x: visible;
+}
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/course.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Tidy Work in Tidyverse</h1>
+<h3 class="subtitle"><em>Hands-on</em></h3>
+<h4 class="author"><em>Marcin Kierczak</em></h4>
+<h4 class="date"><em>13-Jun-2018</em></h4>
+
+</div>
+
+
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<hr />
+<p class="abstract">
+This is the Tidyverse course work material for RaukR 2018.
+</p>
+<hr />
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>Welcome to the hands-on workshop “Tidy Work in Tidyverse”. Most of the things necessary to complete the tutorials and challenges were covered in the lecture. However, sometimes the tasks require that you check the docs or search online. Not all our solutions are optimal. Let us know if you can do better or solve things in a different way. If stuck, look at hints, next google and if still stuck, turn to TA. It is a lot of material, do not fee bad if you do not solve all tasks. If you completed Challenge 3 you are good and have used the most important features of tidyverse! Good luck!</p>
+</div>
+<div id="general-excercises" class="section level1">
+<h1><span class="header-section-number">2</span> General excercises</h1>
+<div id="pipes" class="section level2">
+<h2><span class="header-section-number">2.1</span> Pipes</h2>
+<p>Rewrite the following code chunks as pipes (<code>magrittr</code>):</p>
+<div id="chunk-1" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> Chunk 1</h3>
+<pre><code>my_cars &lt;- mtcars[, c(1:4, 10)]
+my_cars &lt;- my_cars[my_cars$disp &gt; mean(my_cars$disp), ]
+my_cars &lt;- colMeans(my_cars)</code></pre>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">mtcars <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="st">  </span><span class="kw">select</span>(<span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dv">10</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="st">  </span><span class="kw">filter</span>(disp <span class="op">&gt;</span><span class="st"> </span><span class="kw">mean</span>(disp)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="st">  </span><span class="kw">colMeans</span>() -&gt;<span class="st"> </span>my_cars</a></code></pre></div>
+<p>What is wrong with our solution?</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># It is better to have the result assigned on the left hand side: result &lt;- expression. In this case the expression is the **whole** pipe.</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co"># Our &#39;expression -&gt; result&#39; is correct but can easily be missed when reading the code.</span></a></code></pre></div>
+</div>
+<div id="chunk-2" class="section level3">
+<h3><span class="header-section-number">2.1.2</span> Chunk 2</h3>
+<p>The <code>summary(x)</code> function is a bit special: when you type <code>summary(x)</code> in the console, <code>print</code> is called in an implicite way. Pipe call does not do, so you will have to invoke <code>print</code> in an explicite way. But the <code>%T&gt;%</code> does unbranch for one call only, you will have to make printing of the <code>summary</code> a one single composed call using <code>{}</code>.</p>
+<pre><code>summary(cars)
+colSums(cars)</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">cars <span class="op">%T&gt;%</span><span class="st"> </span>{<span class="kw">print</span>(<span class="kw">summary</span>(.))} <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">colSums</span>()</a></code></pre></div>
+</div>
+<div id="chunk-3" class="section level3">
+<h3><span class="header-section-number">2.1.3</span> Chunk 3</h3>
+<p>Rewrite correlations to pipes.</p>
+<pre><code>cor(mtcars$gear, mtcars$mpg)</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">mtcars <span class="op">%$%</span><span class="st"> </span><span class="kw">cor</span>(gear, mpg)</a></code></pre></div>
+<pre><code>cor(mtcars)</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">mtcars <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">cor</span>()</a></code></pre></div>
+</div>
+<div id="chunk-4" class="section level3">
+<h3><span class="header-section-number">2.1.4</span> Chunk 4</h3>
+<p>Given is the <code>dim_summary(nrows, ncols)</code> function which takes matrix <code>nrows</code> and <code>ncols</code> as arguments and prints this info about its dimensions:</p>
+<pre><code>dim_summary &lt;- function(nrows, ncols) {
+  print(
+    paste0(&#39;Matrix M has: &#39;, nrows, &#39; rows and &#39;, ncols, &#39; columns.&#39;)
+  )
+}</code></pre>
+<p>Rewrite the code chunks below as pipes:</p>
+<pre><code>distr1 &lt;- rnorm(16)
+M &lt;- matrix(distr1, ncol = 4)
+plot(M)
+M &lt;- M + sample(M)
+dim_summary(nrows = nrow(M), ncols = ncol(M))
+distr2 &lt;- rnorm(16)</code></pre>
+<pre><code>N &lt;- matrix(distr2, ncol = 4)
+colnames(N, letters[1:4])
+summary(N)</code></pre>
+<pre><code>P &lt;- M %x% t(N)
+heatmap(P)
+names(P) &lt;- letters[1:dim(P)[2]]
+cor(P[ ,&#39;a&#39;], P[ ,&#39;i&#39;])</code></pre>
+<p>A class of functions, called the <em>replacement functions</em> are of the form <code>function(arguments)&lt;-value</code> and <code>rownames(x) &lt;- c('a', 'b', 'c')</code> is a good example of a replacement function. When writing pipes, we have bear in mind that whole <code>function&lt;-</code> is the name of the replacement function and thus we have to use it as such in the pipe.</p>
+<p><strong>Note.</strong> Not always one can put everything into one single pipe, sometimes the results of running two or more pipes have to be used in the final pipe.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">dim_summary &lt;-<span class="st"> </span><span class="cf">function</span>(nrows, ncols) {</a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">  <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&#39;Matrix M has: &#39;</span>, nrows, <span class="st">&#39; rows and &#39;</span>, ncols, <span class="st">&#39; columns.&#39;</span>))</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb14-5" data-line-number="5">M &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">16</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-6" data-line-number="6"><span class="st">  </span><span class="kw">matrix</span>(<span class="dt">ncol =</span> <span class="dv">4</span>) <span class="op">%T&gt;%</span></a>
+<a class="sourceLine" id="cb14-7" data-line-number="7"><span class="st">  </span><span class="kw">plot</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="st">  `</span><span class="dt">+</span><span class="st">`</span>(., <span class="kw">sample</span>(.)) <span class="op">%T&gt;%</span></a>
+<a class="sourceLine" id="cb14-9" data-line-number="9"><span class="st">  </span>{<span class="kw">dim_summary</span>(<span class="kw">nrow</span>(.), <span class="kw">ncol</span>(.))}</a>
+<a class="sourceLine" id="cb14-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb14-11" data-line-number="11">N &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">16</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-12" data-line-number="12"><span class="st">  </span><span class="kw">matrix</span>(<span class="dt">ncol =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="st">  `</span><span class="dt">colnames&lt;-</span><span class="st">`</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-14" data-line-number="14"><span class="st">  </span><span class="kw">t</span>()</a>
+<a class="sourceLine" id="cb14-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb14-16" data-line-number="16">P &lt;-<span class="st"> </span>M <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-17" data-line-number="17"><span class="st">  `</span><span class="dt">%x%</span><span class="st">`</span>(., N) <span class="op">%T&gt;%</span></a>
+<a class="sourceLine" id="cb14-18" data-line-number="18"><span class="st">  </span><span class="kw">heatmap</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-19" data-line-number="19"><span class="st">  `</span><span class="dt">colnames&lt;-</span><span class="st">`</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="kw">dim</span>(.)[<span class="dv">2</span>]]) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-20" data-line-number="20"><span class="st">  </span><span class="kw">as_data_frame</span>() <span class="op">%$%</span></a>
+<a class="sourceLine" id="cb14-21" data-line-number="21"><span class="st">  </span><span class="kw">cor</span>(a, i)</a></code></pre></div>
+</div>
+</div>
+<div id="tibbles" class="section level2">
+<h2><span class="header-section-number">2.2</span> Tibbles</h2>
+<div id="task-1" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Task 1</h3>
+<ul>
+<li>Convert the <code>mtcars</code> dataset to a tibble <code>vehicles</code>.</li>
+<li>Select the number of cylinders (<code>cyl</code>) variable using:
+<ul>
+<li>the <code>[[index]]</code> accessor,</li>
+<li>the <code>[[string]]</code> accessor,</li>
+<li>the <code>$</code> accessor.</li>
+</ul></li>
+<li>Do the same selection as above, but using pipe and placeholders (use all thre ways of accessing a variable).</li>
+<li>Print the tibble.</li>
+<li>Print the 30 first rows of the tibble.</li>
+<li>Change the default behaviour of printing a tibble so that at least 15 and at most 30 rows are printed.</li>
+<li>What is the difference between the <code>tibble.print_max</code> and <code>dplyr.print_min</code>? Is there any? Test it.</li>
+<li>Convert <code>vehicles</code> back to a <code>data.frame</code> called <code>automobiles</code>.</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co"># 1</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">vehicles &lt;-<span class="st"> </span>mtcars <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_tibble</span>()</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="co"># 2</span></a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">vehicles[[<span class="st">&#39;cyl&#39;</span>]]</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">vehicles[[<span class="dv">2</span>]]</a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">vehicles<span class="op">$</span>cyl</a>
+<a class="sourceLine" id="cb15-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb15-9" data-line-number="9"><span class="co"># 3</span></a>
+<a class="sourceLine" id="cb15-10" data-line-number="10"><span class="co"># Here we used pipe, you do not have to...</span></a>
+<a class="sourceLine" id="cb15-11" data-line-number="11">vehicles <span class="op">%T&gt;%</span></a>
+<a class="sourceLine" id="cb15-12" data-line-number="12"><span class="st">  </span>{<span class="kw">print</span>(.[[<span class="st">&#39;cyl&#39;</span>]])} <span class="op">%T&gt;%</span></a>
+<a class="sourceLine" id="cb15-13" data-line-number="13"><span class="st">  </span>{<span class="kw">print</span>(.[[<span class="dv">2</span>]])} <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-14" data-line-number="14"><span class="st">  </span>.<span class="op">$</span>cyl</a>
+<a class="sourceLine" id="cb15-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb15-16" data-line-number="16"><span class="co"># 4</span></a>
+<a class="sourceLine" id="cb15-17" data-line-number="17">vehicles</a>
+<a class="sourceLine" id="cb15-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb15-19" data-line-number="19"><span class="co"># 5</span></a>
+<a class="sourceLine" id="cb15-20" data-line-number="20">vehicles <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dt">n =</span> <span class="dv">30</span>)</a>
+<a class="sourceLine" id="cb15-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb15-22" data-line-number="22"><span class="co"># 6</span></a>
+<a class="sourceLine" id="cb15-23" data-line-number="23"><span class="kw">options</span>(<span class="dt">tibble.print_min =</span> <span class="dv">15</span>, <span class="dt">tibble.print_max =</span> <span class="dv">30</span>)</a>
+<a class="sourceLine" id="cb15-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb15-25" data-line-number="25"><span class="co"># 7</span></a>
+<a class="sourceLine" id="cb15-26" data-line-number="26"><span class="co"># In theory there should be no difference. dplyr imports tibble from the tibble package</span></a>
+<a class="sourceLine" id="cb15-27" data-line-number="27"><span class="co"># and dplyr.width, dplyr.print_min and dplyr.print_min are passed down to the tibble.</span></a>
+<a class="sourceLine" id="cb15-28" data-line-number="28"><span class="co"># But test both behaviours. First with only the tibble package loaded, later with dplyr # loaded.</span></a>
+<a class="sourceLine" id="cb15-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb15-30" data-line-number="30"><span class="co"># 8</span></a>
+<a class="sourceLine" id="cb15-31" data-line-number="31">automobiles &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(vehicles)</a></code></pre></div>
+</div>
+<div id="task-2" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Task 2</h3>
+<p>Create the following tibble using <code>tribble()</code>:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="right">id</th>
+<th align="left">event</th>
+<th align="left">date</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">success</td>
+<td align="left">24-04-2017</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">failed</td>
+<td align="left">25-04-2017</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">failed</td>
+<td align="left">25-04-2017</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">success</td>
+<td align="left">27-04-2017</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">tab &lt;-<span class="st"> </span><span class="kw">tribble</span>(</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">  <span class="op">~</span>id, <span class="op">~</span>event, <span class="op">~</span>date,</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">  <span class="dv">1</span>, <span class="st">&#39;success&#39;</span>, <span class="st">&#39;24-04-2017&#39;</span>,</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">  <span class="dv">2</span>, <span class="st">&#39;failed&#39;</span>, <span class="st">&#39;25-04-2017&#39;</span>,</a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">  <span class="dv">3</span>, <span class="st">&#39;failed&#39;</span>, <span class="st">&#39;25-04-2017&#39;</span>,</a>
+<a class="sourceLine" id="cb16-6" data-line-number="6">  <span class="dv">4</span>, <span class="st">&#39;success&#39;</span>, <span class="st">&#39;27-04-2017&#39;</span></a>
+<a class="sourceLine" id="cb16-7" data-line-number="7">)</a></code></pre></div>
+</div>
+<div id="task-3" class="section level3">
+<h3><span class="header-section-number">2.2.3</span> Task 3</h3>
+<p>Compare the performance of <code>as.data.frame()</code>, <code>as_data_frame()</code> and <code>as_tibble()</code> on a
+100 x 30 matrix filled with random integers. Use package <code>microbenchmark</code>. Fill in your result <a href="https://docs.google.com/spreadsheets/d/1_2tDeEkDVS06RkB437yBI1XEB5SUebtHWyxAf_aRJu4/edit#gid=99106509">here</a> in the Tidyverse Lab sheet, Tibbles – performance.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">tst &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">30</span>, <span class="kw">sample</span>(<span class="dv">100</span>), <span class="dt">simplify =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">names</span>(tst) =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">rep</span>(<span class="st">&#39;col&#39;</span>, <span class="dt">times =</span> <span class="kw">dim</span>(tst)[<span class="dv">2</span>]), <span class="dv">1</span><span class="op">:</span><span class="kw">dim</span>(tst)[<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">microbenchmark<span class="op">::</span><span class="kw">microbenchmark</span>(</a>
+<a class="sourceLine" id="cb17-4" data-line-number="4">  <span class="kw">as.data.frame</span>(tst),</a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">  <span class="kw">as_data_frame</span>(tst),</a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">  <span class="kw">as_tibble</span>(tst)</a>
+<a class="sourceLine" id="cb17-7" data-line-number="7">)</a></code></pre></div>
+</div>
+<div id="task-4" class="section level3">
+<h3><span class="header-section-number">2.2.4</span> Task 4</h3>
+<p>Do you think tibbles are lazy? Try to create a tibble that tests whether <em>lazy evaluation</em> applies to tibbles too.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">tibble</span>(<span class="dt">x =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">replace =</span> T), <span class="dt">y =</span> <span class="kw">log10</span>(x))</a></code></pre></div>
+</div>
+</div>
+<div id="parsing" class="section level2">
+<h2><span class="header-section-number">2.3</span> Parsing</h2>
+<p>Parse the following vectors:</p>
+<ul>
+<li><code>vec1 &lt;- c(1, 7.2, 3.84, -5.23)</code> – parse it as double.</li>
+<li>now parse the same vector <code>c(1, 7.2, 3.84, -5.23)</code> as integer. What happens?</li>
+<li>Can you still parse it as integer somehow?</li>
+<li>Parse as double <code>vec2 &lt;- c('2', '3,45', '?', '-7,28')</code></li>
+<li>Parse correctly <code>vec3 &lt;- c('2', '3,45', '?', '-7.28')</code></li>
+<li>Parse the following guessing the parser: <code>vec4 &lt;- c('barrel: 432.7$', 'liter: 15.42PLN', 'gallon costs approx 32.1SEK', 'sunny, wind gusts up till 55m/s')</code></li>
+<li>Can you parse <code>vec4</code> as number? Do it if you can.</li>
+<li>Parse <code>vec5 &lt;- &quot;25 Dec 2015&quot;</code> as date (hint: <code>?parse_date()</code>).</li>
+<li>Parse <code>10_Jul_1410</code> as date.</li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">vec1 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">7.2</span>, <span class="fl">3.84</span>, <span class="fl">-5.23</span>)</a>
+<a class="sourceLine" id="cb19-2" data-line-number="2">vec2 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;2&#39;</span>, <span class="st">&#39;3,45&#39;</span>, <span class="st">&#39;?&#39;</span>, <span class="st">&#39;-7,28&#39;</span>)</a>
+<a class="sourceLine" id="cb19-3" data-line-number="3">vec3 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;2&#39;</span>, <span class="st">&#39;3,45&#39;</span>, <span class="st">&#39;?&#39;</span>, <span class="st">&#39;-7.28&#39;</span>)</a>
+<a class="sourceLine" id="cb19-4" data-line-number="4">vec4 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;barrel: 432.7$&#39;</span>, <span class="st">&#39;liter: 15.42PLN&#39;</span>, <span class="st">&#39;gallon costs approx 32.1SEK&#39;</span>, <span class="st">&#39;sunny, wind gusts up till 55m/s&#39;</span>)</a>
+<a class="sourceLine" id="cb19-5" data-line-number="5">vec5 &lt;-<span class="st"> &quot;25 Dec 2015&quot;</span></a>
+<a class="sourceLine" id="cb19-6" data-line-number="6"><span class="kw">parse_double</span>(vec1)</a>
+<a class="sourceLine" id="cb19-7" data-line-number="7"><span class="kw">parse_integer</span>(vec1)</a>
+<a class="sourceLine" id="cb19-8" data-line-number="8"><span class="kw">parse_integer</span>(<span class="kw">as.integer</span>(vec1)) <span class="co"># Is it the best way? Hint: rounding.</span></a>
+<a class="sourceLine" id="cb19-9" data-line-number="9"><span class="kw">parse_double</span>(vec2, <span class="dt">na =</span> <span class="st">&#39;?&#39;</span>, <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">decimal_mark =</span> <span class="st">&#39;,&#39;</span>))</a>
+<a class="sourceLine" id="cb19-10" data-line-number="10"><span class="kw">parse_number</span>(vec2, <span class="dt">na =</span> <span class="st">&#39;?&#39;</span>, <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">decimal_mark =</span> <span class="st">&#39;,&#39;</span>))</a>
+<a class="sourceLine" id="cb19-11" data-line-number="11"><span class="kw">guess_parser</span>(vec4)</a>
+<a class="sourceLine" id="cb19-12" data-line-number="12"><span class="kw">parse_guess</span>(vec4)</a>
+<a class="sourceLine" id="cb19-13" data-line-number="13"><span class="co"># Yes, you can:</span></a>
+<a class="sourceLine" id="cb19-14" data-line-number="14"><span class="kw">parse_number</span>(vec4)</a>
+<a class="sourceLine" id="cb19-15" data-line-number="15"><span class="kw">parse_date</span>(vec5, <span class="dt">format=</span><span class="st">&quot;%d %b %Y&quot;</span>)</a>
+<a class="sourceLine" id="cb19-16" data-line-number="16"><span class="kw">parse_date</span>(<span class="st">&quot;10_Jul_1410&quot;</span>, <span class="dt">format=</span><span class="st">&quot;%d%.%b%.%Y&quot;</span>)</a></code></pre></div>
+</div>
+</div>
+<div id="nyc-flights-challenge" class="section level1">
+<h1><span class="header-section-number">3</span> NYC flights Challenge</h1>
+<p>The <code>nycflights13</code> package contains information about all flights that departed from NYC (i.e., EWR, JFK and LGA) in 2013: 336,776 flights with 16 variables. To help understand what causes delays, it also includes a number of other useful datasets: weather, planes, airports, airlines. We will use it to train working with tibbles and <code>dplyr</code>.</p>
+<div id="task-1-selecting-column" class="section level2">
+<h2><span class="header-section-number">3.1</span> Task 1 – selecting column</h2>
+<ul>
+<li>load the <code>nycflights13</code> package (install if necessary),</li>
+<li>read about the data in the package docs,</li>
+<li>inspect the <code>flights</code> tibble.</li>
+<li>select all columns but <code>carrier</code> and <code>arr_time</code>,</li>
+<li>select <code>carrier</code>, <code>tailnum</code> and <code>origin</code>,</li>
+<li>hide columns from <code>day</code> through <code>carrier</code>,</li>
+<li>select all columns that have to do with <code>arr</code>ival (hint: <code>?tidyselect</code>),</li>
+<li>select columns based on a vector <code>v &lt;- c(&quot;arr_time&quot;, &quot;sched_arr_time&quot;, &quot;arr_delay&quot;)</code>,</li>
+<li>rename column <code>dest</code> to <code>destination</code> using:
+<ul>
+<li><code>select()</code> and</li>
+<li><code>rename()</code><br />
+What is the difference between the two approaches?</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&#39;nycflights13&#39;</span>)</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="kw">library</span>(<span class="st">&#39;nycflights13&#39;</span>)</a>
+<a class="sourceLine" id="cb20-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb20-5" data-line-number="5">?nycflights13</a>
+<a class="sourceLine" id="cb20-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb20-7" data-line-number="7">flights</a>
+<a class="sourceLine" id="cb20-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb20-9" data-line-number="9">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>carrier, <span class="op">-</span>arr_time)</a>
+<a class="sourceLine" id="cb20-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb20-11" data-line-number="11">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(carrier, tailnum, origin)</a>
+<a class="sourceLine" id="cb20-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb20-13" data-line-number="13">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>(day<span class="op">:</span>carrier))</a>
+<a class="sourceLine" id="cb20-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb20-15" data-line-number="15">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="kw">contains</span>(<span class="st">&#39;arr_&#39;</span>)) <span class="co"># or</span></a>
+<a class="sourceLine" id="cb20-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb20-17" data-line-number="17">v &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;arr_time&quot;</span>, <span class="st">&quot;sched_arr_time&quot;</span>, <span class="st">&quot;arr_delay&quot;</span>)</a>
+<a class="sourceLine" id="cb20-18" data-line-number="18">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(v) <span class="co"># or</span></a>
+<a class="sourceLine" id="cb20-19" data-line-number="19">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="kw">one_of</span>(v))</a>
+<a class="sourceLine" id="cb20-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb20-21" data-line-number="21">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="dt">destination =</span> dest)</a>
+<a class="sourceLine" id="cb20-22" data-line-number="22">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">rename</span>(<span class="dt">destination =</span> dest)</a>
+<a class="sourceLine" id="cb20-23" data-line-number="23"><span class="co"># select keeps only the renamed column while rename returns the whole dataset</span></a>
+<a class="sourceLine" id="cb20-24" data-line-number="24"><span class="co"># with the column renamed</span></a></code></pre></div>
+</div>
+<div id="task-2-filtering-rows" class="section level2">
+<h2><span class="header-section-number">3.2</span> Task 2 – filtering rows</h2>
+<ul>
+<li>filter only the flights that arrived ahead of schedule,</li>
+<li>filter the flights that had departure delay between 10 and 33,</li>
+<li>fish out all flights with unknown arrival time,</li>
+<li>retrieve rows 1234:1258 (hint: <code>?slice</code>),</li>
+<li>sample (<code>?sample_n()</code>) 3 random flights per day in March,</li>
+<li>show 5 most departure-delayed flights in January per carrier,</li>
+<li>retrieve all <code>unique()</code> routes and sort them by origin,</li>
+<li>retrieve all <code>distinct()</code> routes and sort them by origin,</li>
+<li>is <code>unique()</code> more efficient than <code>distinct()</code>?</li>
+</ul>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(arr_delay <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(dep_delay <span class="op">&gt;=</span><span class="st"> </span><span class="dv">10</span>, dep_delay <span class="op">&lt;=</span><span class="st"> </span><span class="dv">33</span>) <span class="co"># or</span></a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="kw">between</span>(dep_delay, <span class="dv">10</span>, <span class="dv">33</span>))</a>
+<a class="sourceLine" id="cb21-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="kw">is.na</span>(arr_time))</a>
+<a class="sourceLine" id="cb21-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb21-8" data-line-number="8">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1234</span><span class="op">:</span><span class="dv">1258</span>)</a>
+<a class="sourceLine" id="cb21-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb21-10" data-line-number="10">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(month <span class="op">==</span><span class="st"> </span><span class="dv">3</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb21-11" data-line-number="11"><span class="st">  </span><span class="kw">group_by</span>(day) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb21-12" data-line-number="12"><span class="st">  </span><span class="kw">sample_n</span>(<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb21-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb21-14" data-line-number="14">flights <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb21-15" data-line-number="15"><span class="st">  </span><span class="kw">filter</span>(month <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb21-16" data-line-number="16"><span class="st">  </span><span class="kw">group_by</span>(carrier) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb21-17" data-line-number="17"><span class="st">  </span><span class="kw">top_n</span>(<span class="dv">5</span>, dep_delay)</a></code></pre></div>
+</div>
+<div id="task-3-transmutations" class="section level2">
+<h2><span class="header-section-number">3.3</span> Task 3 – Trans(mutations)</h2>
+<ul>
+<li><p><code>air_time</code> is the amount of time in minutes spent in the air. Add a new column <code>air_spd</code> that will contain aircraft’s airspeed in mph,</p></li>
+<li><p>as above, but keep only the new <code>air_spd</code> variable,</p></li>
+<li><p>use <code>rownames_to_column()</code> on <code>mtcars</code> to add car model as an extra column,</p></li>
+</ul>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">air_spd =</span> distance<span class="op">/</span>(air_time <span class="op">/</span><span class="st"> </span><span class="dv">60</span>))</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb22-3" data-line-number="3">flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">transmute</span>(<span class="dt">air_spd =</span> distance<span class="op">/</span>(air_time <span class="op">/</span><span class="st"> </span><span class="dv">60</span>))</a>
+<a class="sourceLine" id="cb22-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb22-5" data-line-number="5">mtcars <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">rownames_to_column</span>(<span class="st">&#39;model&#39;</span>)</a></code></pre></div>
+</div>
+<div id="task-4-groups-and-counts" class="section level2">
+<h2><span class="header-section-number">3.4</span> Task 4 – groups and counts</h2>
+<ul>
+<li>use <code>group_by()</code>, <code>summarise()</code> and <code>n()</code> to see how many planes were delayed (departure) every month,</li>
+</ul>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">flights <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(dep_delay <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-3" data-line-number="3"><span class="st">  </span><span class="kw">group_by</span>(month) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-4" data-line-number="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">num_dep_delayed =</span> <span class="kw">n</span>())</a></code></pre></div>
+<ul>
+<li>do the same but using <code>tally()</code> and <code>count()</code>,</li>
+</ul>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">flights <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(dep_delay <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb24-3" data-line-number="3"><span class="st">  </span><span class="kw">group_by</span>(month) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb24-4" data-line-number="4"><span class="st">  </span><span class="kw">tally</span>()</a>
+<a class="sourceLine" id="cb24-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb24-6" data-line-number="6">flights <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb24-7" data-line-number="7"><span class="st">  </span><span class="kw">filter</span>(dep_delay <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb24-8" data-line-number="8"><span class="st">  </span><span class="kw">count</span>(month)</a></code></pre></div>
+<ul>
+<li>what was the mean <code>dep_delay</code> per month?</li>
+</ul>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">flights <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb25-2" data-line-number="2"><span class="st">  </span><span class="kw">group_by</span>(month) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb25-3" data-line-number="3"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">mean_dep_delay =</span> <span class="kw">mean</span>(dep_delay, <span class="dt">na.rm =</span> T))</a></code></pre></div>
+<ul>
+<li>count the number of incoming delayed flights from each unique origin and sort origins by this count (descending),</li>
+</ul>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">flights <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(arr_delay <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb26-3" data-line-number="3"><span class="st">  </span><span class="kw">group_by</span>(origin) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb26-4" data-line-number="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">cnt =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb26-5" data-line-number="5"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(cnt))</a></code></pre></div>
+<ul>
+<li>do the same using <code>tally()</code></li>
+</ul>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">flights <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(arr_delay <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb27-3" data-line-number="3"><span class="st">  </span><span class="kw">group_by</span>(origin) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb27-4" data-line-number="4"><span class="st">  </span><span class="kw">tally</span>(<span class="dt">sort =</span> T)</a></code></pre></div>
+<ul>
+<li>use <code>summarise()</code> to sum total <code>dep_delay</code> per month in hours,</li>
+</ul>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"> flights <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="st">   </span><span class="kw">group_by</span>(month) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb28-3" data-line-number="3"><span class="st">   </span><span class="kw">summarize</span>(<span class="dt">tot_dep_delay =</span> <span class="kw">sum</span>(dep_delay<span class="op">/</span><span class="dv">60</span>, <span class="dt">na.rm =</span> T))</a></code></pre></div>
+<ul>
+<li>use the <code>wt</code> parameter of <code>count()</code> (works with <code>tally()</code> too) to achieve the same,</li>
+</ul>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"> flights <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="st">   </span><span class="kw">group_by</span>(month) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb29-3" data-line-number="3"><span class="st">   </span><span class="kw">count</span>(<span class="dt">wt =</span> dep_delay<span class="op">/</span><span class="dv">60</span>)</a></code></pre></div>
+<ul>
+<li>run <code>group_size()</code> on <code>carrier</code> what does it return?</li>
+</ul>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">flights <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb30-2" data-line-number="2"><span class="st">    </span><span class="kw">group_by</span>(carrier) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="st">    </span><span class="kw">group_size</span>()</a></code></pre></div>
+<ul>
+<li>use <code>n_groups()</code> to check the number of unique origin-carrier pairs,</li>
+</ul>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">flights <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="st">    </span><span class="kw">group_by</span>(carrier) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb31-3" data-line-number="3"><span class="st">    </span><span class="kw">n_groups</span>()</a></code></pre></div>
+<p><strong>Note on <code>ungroup</code></strong> Depending on the version of <code>dplyr</code> you may or may need to use the <code>ungroup()</code> if you want to group your data on some other variables:</p>
+<pre><code>flights %&gt;%
+  group_by(origin) %&gt;%
+  mutate(mean_delay_orig = (mean(dep_delay, na.rm = T) + mean(arr_delay, na.rm = T)) / 2) %&gt;%
+  ungroup() %&gt;%
+  group_by(carrier) %&gt;%
+  mutate(mean_delay_carr = (mean(dep_delay, na.rm = T) + mean(arr_delay, na.rm = T)) / 2) %&gt;%
+  select(origin, carrier, mean_delay_orig, mean_delay_carr)</code></pre>
+<p>may or may need ungroup depending on your <code>dplyr</code> version. In the newer versions, <code>summarise</code> and <code>mutate</code> drop one aggregation level.</p>
+</div>
+<div id="task-5-joins" class="section level2">
+<h2><span class="header-section-number">3.5</span> Task 5 – joins</h2>
+<p>Given the following tibbles:</p>
+<p><code>set1</code>:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">knitr<span class="op">::</span><span class="kw">kable</span>(set1)</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">id</th>
+<th align="left">color</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">id1</td>
+<td align="left">grey</td>
+</tr>
+<tr class="even">
+<td align="left">id1</td>
+<td align="left">red</td>
+</tr>
+<tr class="odd">
+<td align="left">id2</td>
+<td align="left">green</td>
+</tr>
+<tr class="even">
+<td align="left">id3</td>
+<td align="left">blue</td>
+</tr>
+</tbody>
+</table>
+<p>and <code>set2</code>:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">knitr<span class="op">::</span><span class="kw">kable</span>(set2)</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">id</th>
+<th align="left">size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">id2</td>
+<td align="left">XL</td>
+</tr>
+<tr class="even">
+<td align="left">id3</td>
+<td align="left">M</td>
+</tr>
+<tr class="odd">
+<td align="left">id4</td>
+<td align="left">M</td>
+</tr>
+</tbody>
+</table>
+<p>Perform joins on <code>id</code> that result in the grey area from the Venn diagrams below:</p>
+<p><img src="lab_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw">left_join</span>(set1, set2)</a></code></pre></div>
+<p><img src="lab_files/figure-html/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="kw">right_join</span>(set1, set2)</a></code></pre></div>
+<p><img src="lab_files/figure-html/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="kw">inner_join</span>(set1, set2) <span class="co"># or</span></a>
+<a class="sourceLine" id="cb37-2" data-line-number="2"><span class="kw">semi_join</span>(set1, set2) <span class="co"># semi_join removes duplicates in x</span></a>
+<a class="sourceLine" id="cb37-3" data-line-number="3"><span class="co"># and also returns only columns from x.</span></a></code></pre></div>
+<p><img src="lab_files/figure-html/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="kw">full_join</span>(set1, set2) <span class="co"># or</span></a></code></pre></div>
+<p><img src="lab_files/figure-html/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="kw">anti_join</span>(set1, set2) <span class="co"># or</span></a></code></pre></div>
+</div>
+</div>
+<div id="tidying-data" class="section level1">
+<h1><span class="header-section-number">4</span> Tidying data</h1>
+<p>Now time to do some data tidying. First install a package with some untidy data:</p>
+<pre><code>devtools::install_github(&quot;rstudio/EDAWR&quot;)
+library(EDAWR)</code></pre>
+<ul>
+<li>tidy <code>cases</code> so that years are not in separate columns, but in the column called <code>year</code> containing a value per each year.</li>
+</ul>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1">tidy_cases &lt;-<span class="st"> </span>cases <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">gather</span>(<span class="dt">key =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">value =</span> <span class="st">&#39;count&#39;</span>, <span class="dv">2</span><span class="op">:</span><span class="dv">4</span>)</a></code></pre></div>
+<ul>
+<li>now time for the <code>pollution</code> dataset. Tidy it so that there separate columns for <code>large</code> and <code>small</code> pollution values.</li>
+</ul>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1">tidy_pollution &lt;-<span class="st"> </span>pollution <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">spread</span>(size, amount)</a></code></pre></div>
+<ul>
+<li>the <code>storms</code> dataset contains the <code>date</code> column. Make it into 3 columns: <code>year</code>, <code>month</code> and <code>day</code>. Store the result as <code>tidy_storms</code></li>
+</ul>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">tidy_storms &lt;-<span class="st"> </span>storms <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb43-2" data-line-number="2"><span class="st">                          </span><span class="kw">separate</span>(<span class="dt">col =</span> date,</a>
+<a class="sourceLine" id="cb43-3" data-line-number="3">                                   <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&#39;year&#39;</span>, <span class="st">&#39;month&#39;</span>, <span class="st">&#39;day&#39;</span>),</a>
+<a class="sourceLine" id="cb43-4" data-line-number="4">                                   <span class="dt">sep =</span> <span class="st">&#39;-&#39;</span>)</a></code></pre></div>
+<ul>
+<li>now, merge <code>year</code>, <code>month</code> and <code>day</code> in <code>tidy_storms</code> into a <code>date</code> column again but in the “DD/MM/YYYY” format.</li>
+</ul>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">tidy_storms <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">unite</span>(<span class="dt">col =</span> <span class="st">&quot;date&quot;</span>, <span class="dv">4</span><span class="op">:</span><span class="dv">6</span>, <span class="dt">sep =</span> <span class="st">&quot;/&quot;</span>)</a></code></pre></div>
+</div>
+<div id="nanopore-channel-activity-challenge" class="section level1">
+<h1><span class="header-section-number">5</span> Nanopore Channel Activity Challenge</h1>
+<div id="introduction-1" class="section level2">
+<h2><span class="header-section-number">5.1</span> Introduction</h2>
+<p>You will be given a <code>fastq</code> file coming from MinION sequencer (Oxford Nanopore). This file contains test reads from the chicken genome. The flow-cell used here has 512 channels, each channel consists of 4 pores and only one pore is active at a time. Once your sequence gets stuck for some reason, the device will attempt to remove it from the pore by playing with reversing polarity on that pore. If this was successful, the pore will be re-used. Your task will be to visualise reading events from the meta-data in the <code>fastq</code> dataset and to see how each and every channel behaved. Also, you will plot the distribution of reading times.</p>
+</div>
+<div id="preparations" class="section level2">
+<h2><span class="header-section-number">5.2</span> Preparations</h2>
+<p>First, we will need to load the necessary libraries. I will give you a hint – you need the following libraries:</p>
+<ul>
+<li><code>here</code> – not necessary, but it is an elegant way of reading the data locally from the project folder,</li>
+<li><code>tidyverse</code> – well, quite obvious why,</li>
+<li><code>ShortRead</code> from Bioconductor – to deal with short reads in <code>fastq</code>,</li>
+<li><code>lubridate</code> – to figure out reading times.</li>
+</ul>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="kw">library</span>(here)</a>
+<a class="sourceLine" id="cb45-2" data-line-number="2"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb45-3" data-line-number="3"><span class="kw">library</span>(ShortRead)</a>
+<a class="sourceLine" id="cb45-4" data-line-number="4"><span class="kw">library</span>(lubridate)</a></code></pre></div>
+</div>
+<div id="reading-data" class="section level2">
+<h2><span class="header-section-number">5.3</span> Reading data</h2>
+<p>Now, let’s read the fastq data. Check <code>ShortRead</code> documentation to see how to read our <code>fastq</code> file. Also, try to use package <code>here</code>. If you write: <code>data &lt;- here::here('data/my.fastq')</code>, the <code>my.fastq</code> file will be read from the <code>data</code> folder which is a subfolder of your project root, i.e. the folder where your r script is. It is a good practise and also prevents <a href="https://www.tidyverse.org/articles/2017/12/workflow-vs-script/">Jenny Brian from coming to your office and setting your computer on fire</a>.</p>
+<p>Now think a bit, to plot reading events, do we need al the data in the file or only some specific part? You may want to see some few first lines of the <code>fastq</code> to learn about the data structure.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">raw_data &lt;-<span class="st"> </span>here<span class="op">::</span><span class="kw">here</span>(<span class="st">&#39;docs/tidyverse_Marcin/lab/lab_assets/FUL1_fastqs_GRID2.fastq&#39;</span>)</a>
+<a class="sourceLine" id="cb46-2" data-line-number="2">f &lt;-<span class="st"> </span><span class="kw">FastqFile</span>(raw_data)</a>
+<a class="sourceLine" id="cb46-3" data-line-number="3">rfq &lt;-<span class="st"> </span><span class="kw">readFastq</span>(f)</a>
+<a class="sourceLine" id="cb46-4" data-line-number="4">headers &lt;-<span class="st"> </span>rfq<span class="op">@</span>id</a>
+<a class="sourceLine" id="cb46-5" data-line-number="5"><span class="kw">close</span>(f)</a></code></pre></div>
+</div>
+<div id="extracting-information-you-need" class="section level2">
+<h2><span class="header-section-number">5.4</span> Extracting information you need</h2>
+<p>In this step, we are extracting data from fastq headers of each and every read in the fastq file. Not super efficient and perhaps the slowest step of the whole analyses. Can you do it better than our example solution?</p>
+<p>Desired output: a table (tibble/data.frame) with reads as rows and meta-data as columns.</p>
+<p>Hint: use <code>strsplit()</code> to explode string data into columns and <code>str_remove_all()</code> to get rid of unwanted characters. Since we did not talk much about regular expressions and the <code>stringr</code> package:</p>
+<ul>
+<li>To split string on a particular character, group of characters use <code>strsplit</code>. Here we split on comma.</li>
+</ul>
+<pre><code>text &lt;- &quot;This text is long, or not?&quot;
+strsplit(text, &#39;,&#39;)</code></pre>
+<ul>
+<li>To remove everything following a given character, e.g. comma:</li>
+</ul>
+<pre><code>str_remove_all(text, &quot;,.*&quot;)</code></pre>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1">data &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">as_tibble</span>(<span class="kw">matrix</span>(<span class="ot">NA_character_</span>, <span class="dt">ncol =</span> <span class="dv">6</span>, <span class="dt">nrow =</span> <span class="kw">length</span>(headers)))</a>
+<a class="sourceLine" id="cb49-2" data-line-number="2"><span class="kw">colnames</span>(data) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;id&#39;</span>, <span class="st">&#39;run_id&#39;</span>, <span class="st">&#39;sample_id&#39;</span>, <span class="st">&#39;read&#39;</span>, <span class="st">&#39;channel&#39;</span>, <span class="st">&#39;start_time&#39;</span>)</a>
+<a class="sourceLine" id="cb49-3" data-line-number="3"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(headers)) {</a>
+<a class="sourceLine" id="cb49-4" data-line-number="4">  tmp &lt;-<span class="st"> </span><span class="kw">toString</span>(headers[[i]])</a>
+<a class="sourceLine" id="cb49-5" data-line-number="5">  tmp_flat &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">strsplit</span>(tmp, <span class="st">&#39; &#39;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-6" data-line-number="6"><span class="st">    </span><span class="kw">str_remove_all</span>(<span class="st">&quot;.*=&quot;</span>)</a>
+<a class="sourceLine" id="cb49-7" data-line-number="7">  data[i,] &lt;-<span class="st"> </span>tmp_flat</a>
+<a class="sourceLine" id="cb49-8" data-line-number="8">}</a></code></pre></div>
+</div>
+<div id="preparing-tidy-dataset" class="section level2">
+<h2><span class="header-section-number">5.5</span> Preparing tidy dataset</h2>
+<p>Now, the fun part begins:</p>
+<ul>
+<li>add column <code>start_dttm</code> that represents start time for a given read as proper <code>datetime</code> object (read <code>lubridate</code> docs) and</li>
+<li>add column <code>chan</code> that is the proper numeric representation of the channel,</li>
+<li>group reads by channel,</li>
+<li>arrange them by time,</li>
+<li>add time to next read (NA if this was the last read) and</li>
+<li>sort by channel again.</li>
+</ul>
+<p>Hint: read about <code>lead()</code></p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1">data2 &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb50-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">start_dttm =</span> <span class="kw">as_datetime</span>(start_time)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb50-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">chan=</span><span class="kw">as.numeric</span>(channel)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb50-4" data-line-number="4"><span class="st">  </span><span class="kw">group_by</span>(chan) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb50-5" data-line-number="5"><span class="st">  </span><span class="kw">arrange</span>(start_dttm) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb50-6" data-line-number="6"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">time_diff =</span> <span class="kw">lead</span>(start_dttm) <span class="op">-</span><span class="st"> </span>start_dttm) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb50-7" data-line-number="7"><span class="st">  </span><span class="kw">arrange</span>(chan)</a></code></pre></div>
+</div>
+<div id="plotting-events-per-channel" class="section level2">
+<h2><span class="header-section-number">5.6</span> Plotting events per channel</h2>
+<p><strong>Important!</strong> If you are not familiar with <code>ggplot</code> either:</p>
+<ul>
+<li>wait until tomorrow,</li>
+<li>use base-R plotting, or</li>
+<li>see our <code>ggplot2</code> solution.</li>
+</ul>
+<p>Here, we want to see what was happening in each channel over time. Plot the data you have just prepared so that:</p>
+<ul>
+<li>each point is the start of a new read,</li>
+<li>colour corresponds to the lag to the next read.</li>
+</ul>
+<p>Can you visualise this in a better way? Different geometry?</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1"><span class="kw">ggplot</span>(data2, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> start_dttm,</a>
+<a class="sourceLine" id="cb51-2" data-line-number="2">                            <span class="dt">y =</span> <span class="kw">as.factor</span>(chan),</a>
+<a class="sourceLine" id="cb51-3" data-line-number="3">                            <span class="dt">col =</span> <span class="kw">as.numeric</span>(time_diff)</a>
+<a class="sourceLine" id="cb51-4" data-line-number="4">                            )</a>
+<a class="sourceLine" id="cb51-5" data-line-number="5">       ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb51-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="fl">.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb51-7" data-line-number="7"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<p><img src="lab_files/figure-html/plot_events-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="distribution-of-time-intervals" class="section level2">
+<h2><span class="header-section-number">5.7</span> Distribution of time intervals</h2>
+<p>Now, we want to see how time-to-next-read is distributed. Since it has a veeeeery long right tail, I am cutting off everything above 200 seconds (just by eyeballing).</p>
+<ul>
+<li>plot time-to-next-read is distribution (you can use base-R <code>histogram</code>),</li>
+<li>can you find a better cutoff value?</li>
+</ul>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1"><span class="co"># Show time-to-next read distribution</span></a>
+<a class="sourceLine" id="cb52-2" data-line-number="2"><span class="co"># thr &lt;- mean(data2$time_diff, na.rm = T) + 3 * sd(data2$time_diff, na.rm = T)</span></a>
+<a class="sourceLine" id="cb52-3" data-line-number="3">tmp &lt;-<span class="st"> </span>data2 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb52-4" data-line-number="4"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb52-5" data-line-number="5"><span class="st">  </span><span class="kw">filter</span>(time_diff <span class="op">&lt;</span><span class="st"> </span><span class="dv">200</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb52-6" data-line-number="6"><span class="st">  </span><span class="kw">select</span>(time_diff)</a>
+<a class="sourceLine" id="cb52-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb52-8" data-line-number="8"><span class="kw">hist</span>(<span class="kw">as.numeric</span>(tmp<span class="op">$</span>time_diff), <span class="dt">breaks =</span> <span class="dv">1000</span>, <span class="dt">las=</span><span class="dv">1</span>)</a></code></pre></div>
+<p><img src="lab_files/figure-html/time_to_next_1-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+</div>
+<div id="species-identification-challenge" class="section level1">
+<h1><span class="header-section-number">6</span> Species Identification Challenge</h1>
+<p>In this challenge, your task will be to analyse species composition of some samples. The samples, were actual products containing parts of plants. DNA has been isolated form the samples and an amplicon metabarcoding was performed using two sets of primers: for the ITS1 and the ITS2 region. Each sample had 3 technical replicates. Your task will be to transform BLAST output to a tidy form suitable for further analyses or visualisation.</p>
+<div id="load-necessary-libraries" class="section level2">
+<h2><span class="header-section-number">6.1</span> Load necessary libraries</h2>
+<p>We will obviously need <code>tidyverse</code>, we will also do some string manipulations with <code>stringr</code> also <code>here</code> package is good to have.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb53-2" data-line-number="2"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb53-3" data-line-number="3"><span class="kw">library</span>(here)</a></code></pre></div>
+</div>
+<div id="input-variables" class="section level2">
+<h2><span class="header-section-number">6.2</span> Input variables</h2>
+<p>Here, we will define our input variables. We need:</p>
+<ul>
+<li><code>file</code> that contains the path to the dataset,</li>
+<li><code>sample_name</code> is a string, the name of the sample you want to analyse,</li>
+<li><code>threshold</code> is an intiger saying what is a the minimal number of replicates that have to contain an OTU in order to call it a true positive (TP),</li>
+<li><code>strict</code> a logical. If set to TRUE, only the OTUs deemed TP will be shown.</li>
+</ul>
+<p>Below we set some examle values:</p>
+<pre><code># Change the path to your project path, where your data is
+file &lt;- here::here(&quot;docs/tidyverse_Marcin/lab/lab_assets/blast_result.csv&quot;)
+sample_name &lt;- &#39;SAMPLE12&#39;
+threshold &lt;- 1
+strict &lt;- F</code></pre>
+</div>
+<div id="reading-the-data" class="section level2">
+<h2><span class="header-section-number">6.3</span> Reading the data</h2>
+<p>Now, you should read the data:</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1">species_orig &lt;-<span class="st"> </span><span class="kw">read_csv</span>(file, <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;sample&quot;</span>,<span class="st">&quot;its&quot;</span>,<span class="st">&quot;replicate&quot;</span>,<span class="st">&quot;OTU&quot;</span>,<span class="st">&quot;size&quot;</span>,<span class="st">&quot;hit&quot;</span>,<span class="st">&quot;perc_ident&quot;</span>,<span class="st">&quot;score&quot;</span>,<span class="st">&quot;family&quot;</span>,<span class="st">&quot;species&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>score)</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">sample</th>
+<th align="left">its</th>
+<th align="left">replicate</th>
+<th align="left">OTU</th>
+<th align="right">size</th>
+<th align="left">hit</th>
+<th align="right">perc_ident</th>
+<th align="left">family</th>
+<th align="left">species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU1</td>
+<td align="right">372</td>
+<td align="left">KX522674</td>
+<td align="right">97.08</td>
+<td align="left">Anacardiaceae</td>
+<td align="left">Spondias_tuberosa</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU1</td>
+<td align="right">372</td>
+<td align="left">AJ783644</td>
+<td align="right">97.53</td>
+<td align="left">Betulaceae</td>
+<td align="left">Betula_populifolia</td>
+</tr>
+<tr class="odd">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU1</td>
+<td align="right">372</td>
+<td align="left">AJ783641</td>
+<td align="right">97.53</td>
+<td align="left">Betulaceae</td>
+<td align="left">Betula_alnoides</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU1</td>
+<td align="right">372</td>
+<td align="left">MF171078</td>
+<td align="right">98.71</td>
+<td align="left">Pentaphylacaceae</td>
+<td align="left">Pentaphylax_euryoides</td>
+</tr>
+<tr class="odd">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU2</td>
+<td align="right">14</td>
+<td align="left">KY214931</td>
+<td align="right">98.33</td>
+<td align="left">Musaceae</td>
+<td align="left">Musa_ornata</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU2</td>
+<td align="right">14</td>
+<td align="left">KY214926</td>
+<td align="right">96.23</td>
+<td align="left">Musaceae</td>
+<td align="left">Musa_sp.</td>
+</tr>
+<tr class="odd">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU2</td>
+<td align="right">14</td>
+<td align="left">KY214930</td>
+<td align="right">95.73</td>
+<td align="left">Musaceae</td>
+<td align="left">Musa_basjoo</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU2</td>
+<td align="right">14</td>
+<td align="left">KY214927</td>
+<td align="right">97.67</td>
+<td align="left">Musaceae</td>
+<td align="left">Musella_lasiocarpa</td>
+</tr>
+<tr class="odd">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R2</td>
+<td align="left">OTU1</td>
+<td align="right">357</td>
+<td align="left">AM233397</td>
+<td align="right">95.62</td>
+<td align="left">Apocynaceae</td>
+<td align="left">Secamone_filiformis</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R2</td>
+<td align="left">OTU1</td>
+<td align="right">357</td>
+<td align="left">FR832858</td>
+<td align="right">96.69</td>
+<td align="left">Rubiaceae</td>
+<td align="left">Tricalysia_perrieri</td>
+</tr>
+</tbody>
+</table>
+<p>As you see, the following information are included in the data:</p>
+<ul>
+<li><code>sample</code> is simply the name of the sample,</li>
+<li><code>its</code> is either ITS1 or ITS2 and tells which set of PCR primers has been used,</li>
+<li><code>replicate</code> contains information on which replicate the sequences come from,</li>
+<li><code>OTU</code> is a unique identifier of the so-called Operational Taxonomic Unit, an OTU often corresponds to one species but not always. Sometimes 2 OTUs represent the same species, sometimes 1 OTU consists of more than one species,</li>
+<li><code>size</code> is the number of reads that support that particular OTU,</li>
+<li><code>hit</code> is the BLAST hit identifier. The 4 top BLAST hits are reported per OTU,</li>
+<li><code>perc_identity</code> is the percentage identity of the sequence to the BLAST hit,</li>
+<li><code>family</code> is the identified plant family,</li>
+<li><code>species</code> is the identified plant species.</li>
+</ul>
+</div>
+<div id="number-of-replicates-per-species" class="section level2">
+<h2><span class="header-section-number">6.4</span> Number of replicates per species</h2>
+<p>Create a new dataset <code>species</code> that contains an extra column <code>n_replicates</code>. The column contains number of replicates this particular species is present in. Do it per sample and its.</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1">species &lt;-<span class="st"> </span>species_orig <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb56-2" data-line-number="2"><span class="st">  </span><span class="kw">group_by</span>(sample, its, species) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb56-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">n_replicates =</span> <span class="kw">n_distinct</span>(replicate)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb56-4" data-line-number="4"><span class="st">  </span><span class="kw">ungroup</span>()</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">sample</th>
+<th align="left">its</th>
+<th align="left">replicate</th>
+<th align="left">OTU</th>
+<th align="right">size</th>
+<th align="left">hit</th>
+<th align="right">perc_ident</th>
+<th align="left">family</th>
+<th align="left">species</th>
+<th align="right">n_replicates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU1</td>
+<td align="right">372</td>
+<td align="left">KX522674</td>
+<td align="right">97.08</td>
+<td align="left">Anacardiaceae</td>
+<td align="left">Spondias_tuberosa</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU1</td>
+<td align="right">372</td>
+<td align="left">AJ783644</td>
+<td align="right">97.53</td>
+<td align="left">Betulaceae</td>
+<td align="left">Betula_populifolia</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU1</td>
+<td align="right">372</td>
+<td align="left">AJ783641</td>
+<td align="right">97.53</td>
+<td align="left">Betulaceae</td>
+<td align="left">Betula_alnoides</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU1</td>
+<td align="right">372</td>
+<td align="left">MF171078</td>
+<td align="right">98.71</td>
+<td align="left">Pentaphylacaceae</td>
+<td align="left">Pentaphylax_euryoides</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU2</td>
+<td align="right">14</td>
+<td align="left">KY214931</td>
+<td align="right">98.33</td>
+<td align="left">Musaceae</td>
+<td align="left">Musa_ornata</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU2</td>
+<td align="right">14</td>
+<td align="left">KY214926</td>
+<td align="right">96.23</td>
+<td align="left">Musaceae</td>
+<td align="left">Musa_sp.</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU2</td>
+<td align="right">14</td>
+<td align="left">KY214930</td>
+<td align="right">95.73</td>
+<td align="left">Musaceae</td>
+<td align="left">Musa_basjoo</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU2</td>
+<td align="right">14</td>
+<td align="left">KY214927</td>
+<td align="right">97.67</td>
+<td align="left">Musaceae</td>
+<td align="left">Musella_lasiocarpa</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R2</td>
+<td align="left">OTU1</td>
+<td align="right">357</td>
+<td align="left">AM233397</td>
+<td align="right">95.62</td>
+<td align="left">Apocynaceae</td>
+<td align="left">Secamone_filiformis</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE10</td>
+<td align="left">ITS1</td>
+<td align="left">R2</td>
+<td align="left">OTU1</td>
+<td align="right">357</td>
+<td align="left">FR832858</td>
+<td align="right">96.69</td>
+<td align="left">Rubiaceae</td>
+<td align="left">Tricalysia_perrieri</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="filter-out-unwanted-samples" class="section level2">
+<h2><span class="header-section-number">6.5</span> Filter out unwanted samples</h2>
+<p>Now, your task is to filter out all but your <code>sample_name</code> samples from the dataset.
+Call the resulting dataset <code>my_sample</code>.</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" data-line-number="1">my_sample &lt;-<span class="st"> </span>species <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(sample <span class="op">==</span><span class="st"> </span>sample_name)</a></code></pre></div>
+</div>
+<div id="missing-observations" class="section level2">
+<h2><span class="header-section-number">6.6</span> Missing observations</h2>
+<p>What happens if a set of primers failed to amplify or if one replicate was lost?
+Use <code>complete()</code> to make sure you have <code>NA</code> values in such cases.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" data-line-number="1">my_sample &lt;-<span class="st"> </span>my_sample <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb58-2" data-line-number="2"><span class="st">  </span><span class="kw">complete</span>(<span class="dt">its =</span> <span class="kw">c</span>(<span class="st">&quot;ITS1&quot;</span>, <span class="st">&quot;ITS2&quot;</span>),</a>
+<a class="sourceLine" id="cb58-3" data-line-number="3">           <span class="dt">replicate =</span> <span class="kw">c</span>(<span class="st">&quot;R1&quot;</span>,<span class="st">&quot;R2&quot;</span>,<span class="st">&quot;R3&quot;</span>)</a>
+<a class="sourceLine" id="cb58-4" data-line-number="4">           )</a></code></pre></div>
+</div>
+<div id="sorting-issue" class="section level2">
+<h2><span class="header-section-number">6.7</span> Sorting issue</h2>
+<p>Look, the first sample in the table is <code>SAMPLE10</code>. Why not <code>SAMPLE1</code>?
+Thats a sorting issue: if sorted as character, 10 will come before 1. WE have to fix this by adding trailing zero to the values in <code>OTU</code>. We do not expect more than 99 OTUs in a sample, so it is ok with only one trailing 0 (otherwise the 100-th sample will spoil our sorting and come out like: SAMPLE100, SAMPLE01, SAMPLE10). We will need to use regular expression:</p>
+<ul>
+<li>all values in the <code>OTU</code> column that follow pattern “OTU<em>digit</em>” we need to change to “OTU0<em>digit</em>”. Regular expression that matches this is <code>OTU([0-9]$)</code> and it should be replaced by: <code>OTU0\\1</code>. Ask your TAs to explain this if you do not know much about regular expressions and pattern matching.</li>
+</ul>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1">my_sample &lt;-<span class="st"> </span>my_sample <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">OTU =</span> <span class="kw">str_replace</span>(OTU,</a>
+<a class="sourceLine" id="cb59-2" data-line-number="2">                                  <span class="dt">pattern =</span> <span class="st">&quot;OTU([0-9]$)&quot;</span>,</a>
+<a class="sourceLine" id="cb59-3" data-line-number="3">                                  <span class="dt">replacement =</span> <span class="st">&quot;OTU0</span><span class="ch">\\</span><span class="st">1&quot;</span></a>
+<a class="sourceLine" id="cb59-4" data-line-number="4">                                )</a>
+<a class="sourceLine" id="cb59-5" data-line-number="5">                          )</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">its</th>
+<th align="left">replicate</th>
+<th align="left">sample</th>
+<th align="left">OTU</th>
+<th align="right">size</th>
+<th align="left">hit</th>
+<th align="right">perc_ident</th>
+<th align="left">family</th>
+<th align="left">species</th>
+<th align="right">n_replicates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">SAMPLE12</td>
+<td align="left">OTU01</td>
+<td align="right">4169</td>
+<td align="left">LC089998</td>
+<td align="right">99.44</td>
+<td align="left">Brassicaceae</td>
+<td align="left">Capsella_bursa-pastoris</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">SAMPLE12</td>
+<td align="left">OTU02</td>
+<td align="right">2686</td>
+<td align="left">KP794392</td>
+<td align="right">98.19</td>
+<td align="left">Euphorbiaceae</td>
+<td align="left">Tragia_cf.</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">SAMPLE12</td>
+<td align="left">OTU02</td>
+<td align="right">2686</td>
+<td align="left">KP794390</td>
+<td align="right">98.19</td>
+<td align="left">Euphorbiaceae</td>
+<td align="left">Tragia_chlorocaulon</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">SAMPLE12</td>
+<td align="left">OTU02</td>
+<td align="right">2686</td>
+<td align="left">KP794378</td>
+<td align="right">98.19</td>
+<td align="left">Euphorbiaceae</td>
+<td align="left">Tragia_bahiensis</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">SAMPLE12</td>
+<td align="left">OTU02</td>
+<td align="right">2686</td>
+<td align="left">KP794320</td>
+<td align="right">98.19</td>
+<td align="left">Euphorbiaceae</td>
+<td align="left">Bia_alienata</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">SAMPLE12</td>
+<td align="left">OTU04</td>
+<td align="right">1353</td>
+<td align="left">GQ396671</td>
+<td align="right">97.44</td>
+<td align="left">Euphorbiaceae</td>
+<td align="left">Triadica_sebifera</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">SAMPLE12</td>
+<td align="left">OTU04</td>
+<td align="right">1353</td>
+<td align="left">KX522674</td>
+<td align="right">96.25</td>
+<td align="left">Anacardiaceae</td>
+<td align="left">Spondias_tuberosa</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">SAMPLE12</td>
+<td align="left">OTU04</td>
+<td align="right">1353</td>
+<td align="left">KY860928</td>
+<td align="right">96.23</td>
+<td align="left">Adoxaceae</td>
+<td align="left">Viburnum_prunifolium</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">SAMPLE12</td>
+<td align="left">OTU04</td>
+<td align="right">1353</td>
+<td align="left">KX757310</td>
+<td align="right">96.23</td>
+<td align="left">Caryophyllaceae</td>
+<td align="left">Silene_caesia</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">SAMPLE12</td>
+<td align="left">OTU06</td>
+<td align="right">577</td>
+<td align="left">KY860926</td>
+<td align="right">100.00</td>
+<td align="left">Asteraceae</td>
+<td align="left">Taraxacum_officinale</td>
+<td align="right">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="supporting-reads" class="section level2">
+<h2><span class="header-section-number">6.8</span> Supporting reads</h2>
+<p>Sometimes, an OTU generates two or more top BLAST hits that come from the same species. We have decided to sum reads in such cases. Do it!</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" data-line-number="1">  my_sample &lt;-<span class="st"> </span>my_sample <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb60-2" data-line-number="2"><span class="st">    </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb60-3" data-line-number="3"><span class="st">    </span><span class="kw">group_by</span>(sample, its, replicate, OTU, species, n_replicates) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb60-4" data-line-number="4"><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">n_reads =</span> <span class="kw">sum</span>(size)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb60-5" data-line-number="5"><span class="st">    </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb60-6" data-line-number="6"><span class="st">    </span><span class="kw">group_by</span>(its, species, OTU)</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">sample</th>
+<th align="left">its</th>
+<th align="left">replicate</th>
+<th align="left">OTU</th>
+<th align="left">species</th>
+<th align="right">n_replicates</th>
+<th align="right">n_reads</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">SAMPLE12</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU01</td>
+<td align="left">Capsella_bursa-pastoris</td>
+<td align="right">3</td>
+<td align="right">4169</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE12</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU02</td>
+<td align="left">Bia_alienata</td>
+<td align="right">3</td>
+<td align="right">2686</td>
+</tr>
+<tr class="odd">
+<td align="left">SAMPLE12</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU02</td>
+<td align="left">Tragia_bahiensis</td>
+<td align="right">3</td>
+<td align="right">2686</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE12</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU02</td>
+<td align="left">Tragia_cf.</td>
+<td align="right">3</td>
+<td align="right">2686</td>
+</tr>
+<tr class="odd">
+<td align="left">SAMPLE12</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU02</td>
+<td align="left">Tragia_chlorocaulon</td>
+<td align="right">3</td>
+<td align="right">2686</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE12</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU04</td>
+<td align="left">Silene_caesia</td>
+<td align="right">3</td>
+<td align="right">1353</td>
+</tr>
+<tr class="odd">
+<td align="left">SAMPLE12</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU04</td>
+<td align="left">Spondias_tuberosa</td>
+<td align="right">3</td>
+<td align="right">1353</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE12</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU04</td>
+<td align="left">Triadica_sebifera</td>
+<td align="right">3</td>
+<td align="right">1353</td>
+</tr>
+<tr class="odd">
+<td align="left">SAMPLE12</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU04</td>
+<td align="left">Viburnum_prunifolium</td>
+<td align="right">3</td>
+<td align="right">1353</td>
+</tr>
+<tr class="even">
+<td align="left">SAMPLE12</td>
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU06</td>
+<td align="left">Taraxacum_amplum</td>
+<td align="right">3</td>
+<td align="right">577</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="within-otu-species-diversity" class="section level2">
+<h2><span class="header-section-number">6.9</span> Within-OTU species diversity</h2>
+<p>Now, we want to see how many identifications an OTU got. Implement this. Store the result in a new tibble <code>diversity</code>.</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1">diversity &lt;-<span class="st"> </span>my_sample <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb61-2" data-line-number="2"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb61-3" data-line-number="3"><span class="st">  </span><span class="kw">group_by</span>(its, replicate, OTU) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb61-4" data-line-number="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n_species =</span> <span class="kw">n</span>())</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">its</th>
+<th align="left">replicate</th>
+<th align="left">OTU</th>
+<th align="right">n_species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU01</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU02</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU04</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU06</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU07</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU08</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU10</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU11</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU13</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU15</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="adding-diversity-data" class="section level2">
+<h2><span class="header-section-number">6.10</span> Adding diversity data</h2>
+<p>Add the <code>diversity</code> data to <code>my_sample</code> using appropriate <code>join</code> function.
+Also, remove the column with sample names since we are dealing with only one sample.</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" data-line-number="1">my_sample &lt;-<span class="st"> </span>my_sample <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb62-2" data-line-number="2"><span class="st">  </span><span class="kw">left_join</span>(diversity) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb62-3" data-line-number="3"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>sample)</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">its</th>
+<th align="left">replicate</th>
+<th align="left">OTU</th>
+<th align="left">species</th>
+<th align="right">n_replicates</th>
+<th align="right">n_reads</th>
+<th align="right">n_species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU01</td>
+<td align="left">Capsella_bursa-pastoris</td>
+<td align="right">3</td>
+<td align="right">4169</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU02</td>
+<td align="left">Bia_alienata</td>
+<td align="right">3</td>
+<td align="right">2686</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU02</td>
+<td align="left">Tragia_bahiensis</td>
+<td align="right">3</td>
+<td align="right">2686</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU02</td>
+<td align="left">Tragia_cf.</td>
+<td align="right">3</td>
+<td align="right">2686</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU02</td>
+<td align="left">Tragia_chlorocaulon</td>
+<td align="right">3</td>
+<td align="right">2686</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU04</td>
+<td align="left">Silene_caesia</td>
+<td align="right">3</td>
+<td align="right">1353</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU04</td>
+<td align="left">Spondias_tuberosa</td>
+<td align="right">3</td>
+<td align="right">1353</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU04</td>
+<td align="left">Triadica_sebifera</td>
+<td align="right">3</td>
+<td align="right">1353</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU04</td>
+<td align="left">Viburnum_prunifolium</td>
+<td align="right">3</td>
+<td align="right">1353</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">ITS1</td>
+<td align="left">R1</td>
+<td align="left">OTU06</td>
+<td align="left">Taraxacum_amplum</td>
+<td align="right">3</td>
+<td align="right">577</td>
+<td align="right">4</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>what columns did we join on in our example solution?</li>
+</ul>
+</div>
+<div id="visualising-the-data" class="section level2">
+<h2><span class="header-section-number">6.11</span> Visualising the data</h2>
+<p>Can you think of a good way of visualising the data? Think of:</p>
+<ul>
+<li>Type of plot you want. The simpler the better?</li>
+<li>Which variables you would like to visualise? We have chosen <code>ITS</code>, <code>replicate</code>, <code>n_reads</code>, <code>n_replicates</code>, <code>OTU</code>, <code>threshold</code>, <code>n_species</code> and <code>specie</code>. Well, pretty much all of them :-)</li>
+<li>How do you represent variables: colours, shapes, separate plots, sizes?</li>
+<li>What transformations do you need to apply before visualising the data?</li>
+</ul>
+<p>Our example solution involves some <code>ggplot2</code> magics. But would base-R be good enough for this type of plot?</p>
+<div class="figure" style="text-align: left"><span id="fig:unnamed-chunk-54"></span>
+<img src="lab_files/figure-html/unnamed-chunk-54-1.png" alt="Red -- only one species in the current OTU, blue -- identification above the threshold, grey -- identification below the threshold" width="864" />
+<p class="caption">
+Figure 6.1: Red – only one species in the current OTU, blue – identification above the threshold, grey – identification below the threshold
+</p>
+</div>
+</div>
+</div>
+<div id="wildlife-aircraft-strikes-challenge" class="section level1">
+<h1><span class="header-section-number">7</span> Wildlife Aircraft Strikes Challenge</h1>
+<p>Use the <a href="https://www.kaggle.com/faa/wildlife-strikes">FAA report</a> and <code>tidyverse</code> to learn more about aircraft incidents with wildlife. Use your imagination and <a href="https://nycdatascience.com/blog/student-works/exploring-aviation-accidents-from-1908-through-the-present/">NYC data science blog</a> for inspiration!</p>
+</div>
+<div id="session-info" class="section level1">
+<h1><span class="header-section-number">8</span> Session Info</h1>
+<ul>
+<li>This document has been created in RStudio using R Markdown and related packages.</li>
+<li>For R Markdown, see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a></li>
+<li>For details about the OS, packages and versions, see detailed information below:</li>
+</ul>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
+<pre><code>## R version 3.5.0 (2018-04-23)
+## Platform: x86_64-apple-darwin16.7.0 (64-bit)
+## Running under: macOS High Sierra 10.13.5
+## 
+## Matrix products: default
+## BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+## LAPACK: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libLAPACK.dylib
+## 
+## locale:
+## [1] en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] bindrcpp_0.2.2              lubridate_1.7.4            
+##  [3] ShortRead_1.39.0            GenomicAlignments_1.16.0   
+##  [5] SummarizedExperiment_1.10.1 DelayedArray_0.6.0         
+##  [7] matrixStats_0.53.1          Biobase_2.40.0             
+##  [9] Rsamtools_1.32.0            GenomicRanges_1.32.3       
+## [11] GenomeInfoDb_1.16.0         Biostrings_2.48.0          
+## [13] XVector_0.20.0              IRanges_2.14.10            
+## [15] S4Vectors_0.18.3            BiocParallel_1.14.1        
+## [17] BiocGenerics_0.26.0         here_0.1                   
+## [19] eulerr_4.1.0                magrittr_1.5               
+## [21] forcats_0.3.0               stringr_1.3.1              
+## [23] dplyr_0.7.5                 purrr_0.2.5                
+## [25] readr_1.1.1                 tidyr_0.8.1                
+## [27] tibble_1.4.2                ggplot2_2.2.1              
+## [29] tidyverse_1.2.1             captioner_2.2.3            
+## [31] bookdown_0.7                knitr_1.20                 
+## 
+## loaded via a namespace (and not attached):
+##  [1] httr_1.3.1             jsonlite_1.5           modelr_0.1.2          
+##  [4] assertthat_0.2.0       highr_0.6              latticeExtra_0.6-28   
+##  [7] GenomeInfoDbData_1.1.0 cellranger_1.1.0       yaml_2.1.19           
+## [10] pillar_1.2.3           backports_1.1.2        lattice_0.20-35       
+## [13] glue_1.2.0             digest_0.6.15          RColorBrewer_1.1-2    
+## [16] polyclip_1.8-7         rvest_0.3.2            colorspace_1.3-2      
+## [19] Matrix_1.2-14          htmltools_0.3.6        plyr_1.8.4            
+## [22] psych_1.8.4            pkgconfig_2.0.1        broom_0.4.4           
+## [25] haven_1.1.1            zlibbioc_1.26.0        scales_0.5.0          
+## [28] lazyeval_0.2.1         cli_1.0.0              mnormt_1.5-5          
+## [31] crayon_1.3.4           readxl_1.1.0           evaluate_0.10.1       
+## [34] nlme_3.1-137           hwriter_1.3.2          xml2_1.2.0            
+## [37] foreign_0.8-70         Cairo_1.5-9            tools_3.5.0           
+## [40] hms_0.4.2              munsell_0.4.3          compiler_3.5.0        
+## [43] rlang_0.2.1            grid_3.5.0             RCurl_1.95-4.10       
+## [46] rstudioapi_0.7         labeling_0.3           bitops_1.0-6          
+## [49] rmarkdown_1.9          gtable_0.2.0           reshape2_1.4.3        
+## [52] R6_2.2.2               bindr_0.1.1            rprojroot_1.3-2       
+## [55] stringi_1.2.2          Rcpp_0.12.17           tidyselect_0.2.4      
+## [58] xfun_0.1</code></pre>
+<p style="text-align: left; font-size: small;">
+Page built on: <i class="fa fa-calendar" aria-hidden="true"></i> 13-Jun-2018 at <i class="fa fa-clock-o" aria-hidden="true"></i> 12:26:29.
+</p>
+<hr/>
+<div style="padding-bottom: 1.5em">
+<p><span style="float:left; vertical-align:middle">
+<b>2018</b> | <a href="https://www.scilifelab.se/">SciLifeLab</a> &gt; <a href="https://nbis.se/">NBIS</a> &gt; <a href="https://nbisweden.github.io/workshop-RaukR-1806/">RaukR</a>
+</span>
+<span style="float:right; vertical-align:middle">
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://nbisweden.github.io/workshop-RaukR-1806/"><img src="assets/icons8-globe-26.png" alt="website" border="0" style="height:15px"></a>
+</span>
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://twitter.com/hashtag/RaukR?src=hash"><img src="assets/icons8-twitter-26.png" alt="twitter" border="0" style="height:15px"></a>
+</span>
+</span></p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
