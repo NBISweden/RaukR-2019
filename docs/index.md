@@ -17,6 +17,13 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
     + [Lab](best_coding_practises_Marcin/lab/BestCodingPractisesLab.html)
 
 #### 11-Jun-2019 (Tue)
+* **Functions & Scripts** (*Author:* Sebastian DiLorenzo)
+    + [Presentation](functions_and_scripts_Sebastian/presentation/functions_and_scripts_Sebastian.html)
+    + [Lab](functions_and_scripts_Sebastian/lab/functions_and_scripts_Sebastian.html)
+* **R Packages** (*Author:* Sebastian DiLorenzo)
+    + [Presentation](rpackages_Sebastian/presentation/rpackages_Sebastian.html)
+    + [Lab](rpackages_Sebastian/lab/rpackages_Sebastian.html)
+
 #### 12-Jun-2019 (Wed)
 #### 13-Jun-2019 (Thu)
 
@@ -35,7 +42,7 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
 #### 18-Jun-2019 (Tue)
 #### 19-Jun-2019 (Wed)
 #### 20-Jun-2019 (Thu)
-    
+
 ---
 
 **2019** • NBIS

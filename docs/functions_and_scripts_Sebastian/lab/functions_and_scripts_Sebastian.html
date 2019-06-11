@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Sebastian DiLorenzo, Markus Mayrhofer" />
+
+
+<title>Functions &amp; Scripts</title>
+
+<script src="functions_and_scripts_Sebastian_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="functions_and_scripts_Sebastian_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="functions_and_scripts_Sebastian_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="functions_and_scripts_Sebastian_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="functions_and_scripts_Sebastian_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="functions_and_scripts_Sebastian_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="functions_and_scripts_Sebastian_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="functions_and_scripts_Sebastian_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="functions_and_scripts_Sebastian_files/navigation-1.1/tabsets.js"></script>
+<link href="functions_and_scripts_Sebastian_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="functions_and_scripts_Sebastian_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="functions_and_scripts_Sebastian_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="functions_and_scripts_Sebastian_files/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="functions_and_scripts_Sebastian_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="functions_and_scripts_Sebastian_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="functions_and_scripts_Sebastian_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Functions &amp; Scripts</h1>
+<h4 class="author">Sebastian DiLorenzo, Markus Mayrhofer</h4>
+<h4 class="date">11-Jun-2019</h4>
+
+</div>
+
+
+<p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<hr />
+<blockquote>
+<ul>
+<li><p>Write programs that do one thing and do it well.</p></li>
+<li><p>Write programs to work together.</p></li>
+<li><p>Write programs to handle text streams, because that is a universal interface.</p></li>
+</ul>
+<p>–The UNIX philosophy, Doug McIlroy</p>
+</blockquote>
+<p class="abstract">
+In this exercise we will write a few functions and execute R scripts from the command line and provide them with options and data.
+</p>
+<hr />
+<div id="r-functions" class="section level1">
+<h1><span class="header-section-number">1</span> R Functions</h1>
+<p>Let’s jump right in and create a function. Your function should have it’s own <em>function_name</em>, atleast two <em>arguments</em> one of which with a default value, code that performs some <em>operations</em> on the input and a <em>return</em> value. I do encourage you to think about it and make your own function, rather than copying the examples. Examples should be seen more as explanatory and inspirational.</p>
+<p>Example:</p>
+<pre class="r"><code>function_name &lt;- function(arg1, arg2 = &quot;Lucy&quot;){
+  if (arg2 == &quot;Lucy&quot;) {
+    output &lt;- paste(&quot;Lucy in the sky with &quot;,arg1,&quot;\n&quot;,sep=&quot;&quot;)}
+  else {
+    output &lt;- paste(arg1,&quot; in the ocean with &quot;,arg2,&quot;\n&quot;,sep=&quot;&quot;)}
+  return(cat(output))
+}</code></pre>
+<p>Test your function to make sure it gives the output you would expect given different arguments.</p>
+<ul>
+<li>What happens if you don’t assign a value to the argument that does not have a default?</li>
+<li>Did I need to use the <code>return()</code> function in my example?</li>
+<li>Why does my example perform the <code>cat()</code> function in the <code>return()</code> function?</li>
+<li>Try assigning a variable to the return value of your function.
+<code>variable_a &lt;- function_name("Tom")</code>
+What happens to the variable if the return value is the output of <code>cat()</code>?</li>
+</ul>
+<p>Now lets see the power of your function in action. Write a loop that executes your function multiple times. Functions are great for performing operations on a number of files, objects or elements in objects that fit a certain condition.</p>
+<details>
+<p><summary>Example</summary></p>
+<pre class="r"><code>for (i in c(&quot;Tom&quot;,&quot;Mary&quot;,&quot;Mahesh&quot;,&quot;Henrik&quot;)){
+  function_name(arg1=i,arg2=&quot;Brad&quot;)
+  function_name(arg1=i,arg2=&quot;Lucy&quot;)
+}</code></pre>
+<pre><code>## Tom in the ocean with Brad
+## Lucy in the sky with Tom
+## Mary in the ocean with Brad
+## Lucy in the sky with Mary
+## Mahesh in the ocean with Brad
+## Lucy in the sky with Mahesh
+## Henrik in the ocean with Brad
+## Lucy in the sky with Henrik</code></pre>
+</details>
+<p>Now let’s take a look at the special ellipsis argument for functions. Basically the ellipsis say that a function can take additional arguments. The function should work without arguments given at the ellipsis. One great example of this is the <code>data.frame()</code> function.</p>
+<p>From <code>?data.frame</code></p>
+<pre><code>Usage
+data.frame(..., row.names = NULL, check.rows = FALSE,
+           check.names = TRUE, fix.empty.names = TRUE,
+           stringsAsFactors = default.stringsAsFactors())</code></pre>
+<p>The ellipsis can be used to add columns to the data.frame. Try creating a data.frame with one column and one with several. Also, try creating a data.frame with no arguments for <code>...</code>, what happens?</p>
+<pre class="r"><code>data.frame(a=c(1,2,3))
+data.frame(a=c(1,2,3),b=c(4,5,6))</code></pre>
+<p>Another example where ellipsis are often used is to pass plot arguments into a function.</p>
+<p>Example:</p>
+<pre class="r"><code>my_plot &lt;- function(...){
+  plot(c(1,2,3),c(1,2,3),...)
+}
+
+my_plot(main=&quot;Great title&quot;, xlab = &quot;This will be x-label of plot&quot;, ylab=&quot;Y label&quot;)</code></pre>
+<p><img src="functions_and_scripts_Sebastian_files/figure-html/unnamed-chunk-6-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Try creating your own function that uses ellipsis arguments.</p>
+<hr />
+</div>
+<div id="r-scripts" class="section level1">
+<h1><span class="header-section-number">2</span> R Scripts</h1>
+<p>While many R users write and execute code interactively (in e.g. RStudio), you can run the content of a script by writing <code>source(myscriptfile.R)</code> in the R console. This is also a convenient way to load your custom functions (and this is actually what happens when you load an installed package with <code>library()</code>).</p>
+<p>But once you have code that works you may want to run it routinely without an interactive R environment. R scripts can be executed directly from the command line by typing <code>Rscript myscriptfile.R</code>.</p>
+<ul>
+<li>Make an R script that prints a summary of a sample (n=1000) from a normal distribution. Save it as a <code>.R</code> file and execute it.</li>
+</ul>
+<pre class="r"><code># Example of a small script
+mydata=rnorm(1000)
+print(summary(mydata))</code></pre>
+<p>You can also execute your script by typing its name in the console, provided it:</p>
+<ol style="list-style-type: decimal">
+<li>Starts with a <strong>hashbang</strong> line that instructs your system how to interpret it, e.g. <code>#!/usr/bin/env Rscript</code></li>
+<li>Is an executable file e.g. through <code>chmod +x myscriptfile.R</code>.</li>
+</ol>
+<p>Task:</p>
+<ul>
+<li>Modify your script and run it without <code>Rscript</code>.</li>
+<li>Does it work without the path (e.g. <code>./</code>)?</li>
+</ul>
+<!-- ```{r,echo=TRUE,eval=FALSE}
+#!/usr/bin/env Rscript
+mydata=rnorm(1000)
+print(summary(mydata))
+``` -->
+</div>
+<div id="passing-and-parsing-arguments" class="section level1">
+<h1><span class="header-section-number">3</span> Passing and parsing arguments</h1>
+<p>It’s unlikely that you would need to run the exact same process over and over again without any change in what data is processed or how it’s processed. One way to control the behaviour of your code is to provide arguments to it. These commonly refer to file names or settings. You can supply arguments after the name of your script where you invoke it. In R, they are available from <code>commandArgs()</code>.</p>
+<ul>
+<li>Let your script print the arguments. Run it with a few extra words or numbers and see what happens.</li>
+</ul>
+<p>You can use <code>commandArgs(trailingOnly = TRUE)</code> to suppress the first few items and access your actual arguments.</p>
+<ul>
+<li>Make your script use the first argument provided as the mean of the normal distribution.</li>
+</ul>
+<pre class="r"><code>#!/usr/bin/env Rscript
+firstarg=as.numeric(commandArgs(trailingOnly = TRUE)[1])
+mydata=rnorm(1000,mean = firstarg)
+print(summary(mydata))</code></pre>
+<p>Processing multiple arguments may become complicated, especially if you want to be able to use C-like long and short flags such as <code>-o outputfile -i inputfile --distribution normal</code>. Packages that support such options include <code>getopt</code>, <code>optparse</code> and <code>argparser</code>.</p>
+<ul>
+<li>Use the <code>optparse</code> package to modify your script to accept the argument <code>-m</code> or <code>--mean</code> (followed by the value) for mean value.</li>
+</ul>
+<pre class="r"><code>#!/usr/bin/env Rscript
+
+# don&#39;t say &quot;Loading required package: optparse&quot; every time
+suppressPackageStartupMessages(require(optparse))
+
+option_list = list(
+  make_option(c(&quot;-m&quot;, &quot;--mean&quot;), default=0)
+  # you could put the next option here
+)
+options = parse_args(OptionParser(option_list=option_list))
+mean=as.numeric(options$mean)
+
+mydata=rnorm(1000,mean = mean)
+print(summary(mydata))</code></pre>
+</div>
+<div id="standard-in-and-out" class="section level1">
+<h1><span class="header-section-number">4</span> Standard in and out</h1>
+<p>A convenient feature of command line scripts is the possibility to pipe data from one script to another, thereby avoiding the need for intermediate files. You can use <code>file('stdin')</code> and <code>open()</code> to define and open the connection in R and <code>readLines()</code> to read one or more lines from it.</p>
+<ul>
+<li>Make your script parse the mean value from a text stream, and run it using the pipe e.g. <code>echo 100 | ./myscriptfile.R</code>.</li>
+<li>Using the same script, supply the mean from a text file (containing only that) with <code>cat</code>.</li>
+<li>Is it possible to read the input stream using <code>stdin()</code>?</li>
+</ul>
+<pre class="r"><code>#!/usr/bin/env Rscript
+input_con  &lt;- file(&quot;stdin&quot;)
+open(input_con)
+oneline &lt;- readLines(con = input_con, n = 1, warn = FALSE)
+close(input_con)
+mean=as.numeric(oneline)
+mydata=rnorm(1000,mean = mean)
+print(summary(mydata))</code></pre>
+<p>You can pipe your output to another process (any script or tool that accepts a stream) by appending <code>| next_tool_or_script_call</code> to the call, or to a file by appending <code>&gt; filename</code>.</p>
+<ul>
+<li>What happens if a warning is generated by your script, e.g. with <code>warning('Something is wrong')</code> and you pipe the output to a file?</li>
+<li>Why?</li>
+</ul>
+<p>You can use <code>write(x,file=stderr())</code> or <code>write(x,file=stdout())</code> to explicitly divert certain output.</p>
+</div>
+<div id="bonus-challenges" class="section level1">
+<h1><span class="header-section-number">5</span> Bonus challenges</h1>
+<p>If you have time, practice by writing an R script that you need in your own work, or select either of the following:</p>
+<ul>
+<li><p>Write a script that parses any text stream by line from either a file (when specified) or <em>stdin</em>, and writes to either another file (when specified) or <em>stdout</em>. Each line is written with a certain probability which is also provided as an argument (lines that start with <strong>#</strong> are always written). Report to <em>stderr</em> the number of lines read and written. Try your script on any <em>fastq</em>, <em>bam</em>/<em>sam</em>, or <em>vcf</em>-formatted data.</p></li>
+<li><p>Write a script that summarizes the content of a table contained in a plain text file. The table is supplied either as a file (when specified) or as a stream. Make sure any lines starting with <em>#</em> are ignored. For speed, do not use more than a maximum of 1000 lines as default, or another number if supplied as an argument. Try your script on any tabular data you hav available.</p></li>
+</ul>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

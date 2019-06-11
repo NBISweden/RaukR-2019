@@ -1,0 +1,396 @@
+---
+title: "Functions & Scripts"
+subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
+author: "Sebastian DiLorenzo"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+institute: NBIS, SciLifeLab
+keywords: r, RaukR, markdown
+output: 
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: false
+    chakra: 'assets/remark-latest.min.js'
+    css: ['assets/presentation.css','rpackages_presentation_assets/rpackages.css']
+    lib_dir: libs
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "RaukR 2019 • %current%/%total%"
+---
+exclude: true
+count: false
+
+```{r,echo=FALSE,child="assets/header-presentation.Rmd"}
+```
+
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+# load the packages you need
+
+#library(tidyverse)
+#library(ggplot2) # static graphics
+```
+
+---
+
+## R Functions
+
+* Organised, human readable code
+* Any code that will be repeated
+* Add less objects to workspace
+* Perform a set task, preferably that task is not "this whole analysis"
+
+---
+
+## R Functions
+.pull-left-50[
+Without a function
+
+```{r}
+a <- 5
+a + a
+```
+
+```{r}
+b <- 3
+b + b
+```
+
+* User is performing the operation each time
+]
+
+???
+An R function is something you have probably used many times already.. Functions perform a set task within R. Lets looks at a quick example.
+
+--
+
+.pull-right-50[
+With a function
+
+```{r}
+doubleUp <- function(x){
+  x + x
+}
+
+a <- 5
+doubleUp(a)
+b <- 3
+doubleUp(b)
+z <- doubleUp(3)
+```
+]
+
+* Function is performing the operation each time
+
+---
+
+## R Functions
+
+The pieces that make a function
+
+```{r}
+function_name <- function(arg1, arg2 = 20, ...){
+  arg1*2 # operational space
+  arg1+arg2 # What is returned. Alt, use return(arg1+arg2)
+}
+``` 
+
+* `function_name` : Name of the function
+* `function(){}` : The function body
+* `arguments` : User input
+  + `arg1` : No default value. Required.
+  + `arg2 = 20` : Default value
+  + `...`  : ellipses pass other arguments into function
+* `return` : the last line or invoked with `return()` function.
+
+--
+
+Add a function to workspace
+
+* copy paste
+* `source()` / `library()`
+
+---
+
+## R scripts as standalone tools
+
+<img src="http://www.azquotes.com/picture-quotes/quote-this-is-the-unix-philosophy-write-programs-that-do-one-thing-and-do-it-well-write-programs-douglas-mcilroy-81-95-07.jpg">
+
+???
+In many ways this quote about the UNIX philosophy relates to the philosophy you should have for an R script.
+
+--
+
+* Data analysis with R is usually performed interactively using e.g. RStudio
+
+???
+Usually when you are **analyzing data** you will use the **interactive view** and try different things going forward. But say that you have figured out something that you want to **do** for **multiple numbers** of datasets?
+
+--
+
+* Routine tasks can be executed from the terminal using R scripts
+
+???
+In this case it might be **efficient** to use an **Rscript**.
+
+--
+
+* R scripts can form powerful standalone tools
+
+???
+And like the quote it should do **one** thing and do it well. Because of the **power** in that an **R script** can contain **multiple functions**, or "programs", this one thing can be quite **simple**, or quite **advanced**. And like the textstream mentioned here Rscripts often take input, something we will look more at now.
+
+---
+
+## Executing an R script
+
+* Interactively: `source myscript.R` in R console 
+
+???
+One way to execute an Rscript is to use "source myscript.R" from an interactive session which **runs** whatever code is in the R script. So if it has **functions** or wether it **reads** a separate file and creates some new **object**, these will be in your **R environment** after sourcing the script.
+
+--
+
+* Command line: `Rscript myscript.R`
+
+???
+You can also run the Rscript from the command line, or terminal. Then we use the command **Rscript**. It used to be not long ago that people used **R CMD batch**, but nowadays people usually use Rscript.
+Like the source, this will **execute** whichever code is in **myscript.R** but there is **no environment** for the **objects or functions** to pop into so the **code** in this Rscript is probably **different** than one that is intended for **source**.
+
+--
+
+* As executable file: `path/myscript.R` if:
+  + Script is executable: `chmod +x myscript.R`
+  + First line in script is a hashbang e.g. `#!/usr/bin/env Rscript`
+  + Script's path is included in call or `$PATH`
+
+???
+You can also execute the Rscript **itself**, from terminal.
+To execute an R script it must *meet three requirements*.
+It must be **executable**.
+It must start with this **special line**, specifying how it is executed if run on its own.
+If you want to run it without giving path, its folder must be in you $PATH variable.
+
+---
+
+## Providing arguments to an R script
+
+* Passing arguments to the script allows for flexibility in settings and input data
+
+???
+**Often** when we use an R script, like I mentioned in the **beginning**, we want to **pass multiple files/samples** through it for efficiency reasons. It **doesnt** just have to be **files**, like **functions** it can also be **settings.**
+
+--
+
+  + `./myscript.R inputfile.vcf outputfile.vcf`
+
+???
+Here for example we are using the Rscript as an **executable** file, giving it an **inputfile** and specifying what we want the **outputfile** to be named. 
+
+--
+
+* Packages are available that support long and short flags
+
+--
+
+  + `./myscript.R -i inputfile.vcf -o outputfile.vcf`
+
+???
+**Short flags** are when you give a single dash and usually a shortened version of the keyword, here *i for input* and *o for output* for example.
+
+--
+
+  + `./myscript.R --input inputfile.vcf --output outputfile.vcf`
+
+???
+And here **long flags** with *two dashes*
+
+--
+
+  + `./myscript.R --output inputfile.vcf --input outputfile.vcf`
+
+???
+A part of the **flexibility** of this is that you can give the flags in **any order**.
+
+<!-- --
+
+  + `./myscript.R --output inputfile.vcf`
+
+???
+Not sure what Markus is trying to show in this slide.
+
+-->
+
+
+--
+
+  + `./myscript.R --output inputfile.vcf -i inputfile.vcf`
+
+???
+And you can also *mix* the *long/short flag order and styles*. It is the coding in the script that determines how it handles this input.
+
+---
+
+## Parsing arguments
+
+* `commandArgs()`
+
+Use **commandArgs()** to capture whatever was **passed** into R as it was **executed**. To be **clear**; this is a command that is **within the Rscript file.**
+
+--
+
+  + `trailingOnly = TRUE`
+
+Add `trailingOnly = TRUE` to suppress the first few items and get the arguments **you** passed to the script.
+
+--
+
+```{r}
+commandArgs()
+```
+```{r}
+commandArgs(trailingOnly = TRUE)
+```
+
+
+???
+A **standard parameter**, but **not default**, that you can use when invoking commandArgs() is **trailingOnly = TRUE**, which basically tells it to start counting the input from **after** the **Rscript arguments**. As you can see here when we invoke it without this parameter it returns the script itself, in this case R studio. But with it the invocation is clear, there were no trailing command line arguments.
+
+---
+
+## Parsing arguments
+
+The flexible way: short and long flags
+
+???
+So how do we do it with **flags**?
+
+--
+
+* Several packages are available: `getopt`, `optparse`, `argparser`, ...
+
+--
+
+* Define set of possible arguments at start of script:
+
+```{r}
+library(optparse)
+my_options = list(
+  make_option(c("-i", "--inputfile"), default='variants.vcf'),
+  make_option(c("-o", "--outputfile"), default='variants_filtered.vcf')
+)
+```
+
+???
+If we use **optparse** as an example you **create** your options using the **make_option** command, and can set default values. We see also that you can give both long and short form here.
+
+--
+
+* Parse arguments using your definition:
+
+```{r}
+parse_args(OptionParser(option_list=my_options))
+```
+
+???
+And then you use the **my_options** object we defined together with **parse_args and OptionParser** to **check our input** for those **flags**
+We also see an option, **help**, that we did not make, this is a **standard flag** that optparse always looks for and can generate what arguments it is looking for.
+
+---
+
+## Text streams
+
+* Text streams allow for piping of data through a set of applications without writing intermediate files.
+
+???
+What I am sure most of you will think of when you read this is the bash pipe sign.
+
+--
+
+  + `samtools mpileup -uf ref.fa aln.bam | bcftools call -mv | myPythonscript.py | myRscript.R > variants.vcf`
+
+???
+So how does R handle taking input piped to it. And the answer is that we have to write some special code if this is the use case.
+
+--
+
+### Reading
+
+* To define and open a connection, read one line, and close it:
+
+```{r,eval=F}
+input_con  <- file("stdin")
+open(input_con)
+oneline=readLines(input_con, n = 1)
+close(input_con)
+```
+
+???
+What we do is **open** a connection from **standard input** and then read this **text stream** for **n** number of lines at a time. It is also good to close this connection afterwards.
+
+--
+
+* Tidyverse can read a `tibble` from text stream: `read_csv(file("stdin"))`
+
+???
+Alternatively you can read a text stream into a **tibble** from tidyverse by using **read_csv**, note that it isnt **read.csv** the generic R command, which can take our **input connection** and create the tibble in R.
+
+---
+
+## Text streams
+
+### Writing 
+
+???
+What about **piping from** your R script to something else? Continuing the stream?
+
+--
+
+  * Any `stdout` produced by the code (`print()`, `cat()`, etc) can be piped to a new process: `...myRscript.R | myNewScript`
+
+???
+So just writing these commands. print, cat etc, can be piped to a new process.
+
+--
+
+  * or written to a file: `...myRscript.R > output.csv`
+
+--
+
+* To write a `tibble` as a text stream: `cat(format_csv(my_tibble))`
+
+???
+If you already have a tibble, you can stream it out of R using this command.
+
+---
+
+## Summary
+
+--
+
+<img src="http://www.azquotes.com/picture-quotes/quote-this-is-the-unix-philosophy-write-programs-that-do-one-thing-and-do-it-well-write-programs-douglas-mcilroy-81-95-07.jpg">
+
+???
+So to summarize, R scripts are powerful tools to solve a specific problem that you define, and often fit well together with other tools. And now you have learned to execute them in different ways, with inputs and outputs and with other programs. All that is left is to actually write the content.
+
+---
+name: report
+
+## Session  
+
+* This presentation was created in RStudio using [`remarkjs`](https://github.com/gnab/remark) framework through R package [`xaringan`](https://github.com/yihui/xaringan).
+* For R Markdown, see <http://rmarkdown.rstudio.com>
+* For R Markdown presentations, see <https://rmarkdown.rstudio.com/lesson-11.html>
+
+```{r,echo=TRUE}
+R.version
+```
+
+---
+name: end-slide
+class: end-slide
+
+# Thank you
