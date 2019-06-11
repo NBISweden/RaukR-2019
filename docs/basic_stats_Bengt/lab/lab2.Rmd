@@ -1,5 +1,5 @@
 ---
-title: "Basic Statistics Lab"
+title: "Tutorial: Basic Statistics | `Model estimation`"
 subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
 author: "Bengt Sennblad"
 output:
@@ -24,8 +24,10 @@ output:
 <!-- ------------ Only edit title, subtitle & author above this ------------ -->
 
 
-# Probability and statistic models
+# Probability of statistic models
 
+<details>
+<summary> Lecture notes </summary>
 
 Consider a generative model, with parameters $\theta$, for how some data $D$. We would like to test if $\theta$ are 
 good parameters. Given the model, we can compute $$Pr[D| \theta],$$ i.e., the probability that the model with parameters
@@ -39,6 +41,7 @@ philosofical branches of statistics:
 
 * *Bayesian statistics* and 
 * *Frequentist statistics*
+</details> 
 
 ## Bayesian approach
 

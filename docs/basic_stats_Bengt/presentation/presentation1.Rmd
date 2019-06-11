@@ -1,5 +1,5 @@
 ---
-title: "Basic Statistics part"
+title: "Basic Statistics | `Models`"
 subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
 author: "<b>Bengt Sennblad</b>"
 institute: NBIS, SciLifeLab
@@ -33,48 +33,6 @@ count: false
 #library(tidyverse)
 #library(ggplot2)
 ```
----
-name: contents
-
-## Contents
-
-* [Introduction](#intro)
-
----
-name: disposition
-
-##disposition -- the real basics
-
-* models -> stat models
-* Use of stat models (type example linear regression)
-  + simulation of data
-      - variation
-      - distribution
-  + Probabilities of outcome
-      - What are probabilities
-      - conditional on model
-      - full prob, conditional probs, likelihood, post probs-- Bayes theorem?
-          * Bayesian and frequentists (not XOR!)
-* Statistical tests
-  + parametric (linear regression?)
-  + non-parametric (GSEA?)
- 
-  
----
-name: brainstorm
-
-Things that may or may not be treated (preferably in a separate session)
-  - multivariate linear models
-  - confounders?
-  - GLM, LMM 
-  - sensitivity specificity ROC
-  - PCA etc?
-  
-Things that would be very handy to have an intuition about for the exercise:
-  - Matrix algebra version of linear model (e.g., for simulation exercise)
-  - sampling from a distribution (rnorm, but what happens etc)
-      
-    
 
 ---
 name: models1
@@ -86,6 +44,7 @@ name: models1
   + simplification (abstraction) of reality that helps us address a specific problem
   
 ---
+
 ## Models | `Example: R proficiency as a function of beer`
 .pull-left-50[
 We want to model how beer consumption affects the ability to program well in R
@@ -95,6 +54,7 @@ We want to model how beer consumption affects the ability to program well in R
 ]
 
 --
+
 .pull-right-50[
 ```{r, beer1, echo=F, fig.height = 4.5}
 x = seq(0,10)
@@ -107,30 +67,33 @@ plot(x,y, type='b', ylab = "y = R proficiency", xlab = "x= Beers drunk")
 ]
 
 --
-This is a *linear model*, $$y = kx+c,$$ where $y$ changes in proportion to $x$.
+
+This is a *linear model*, $$y = \beta_0 + \beta_1 x,$$ where $y$ changes in proportion to $x$.
 
 ***
 
 --
+
 __Notice that a model is always restricted by its assumptions:__
-* In the model plot above, I have used strong assumptions about $k$ and $c$ being exactly $k=-0.1$ and $c=1.0$. 
-* Therefore, people with a different susceptibility to alcohol $(k \neq -0.1)$ or a different initial proficiency in R $(c \neq 1.0)$ are *not* correctly modeled by this model.
+* In the model plot above, I have used strong assumptions about $\beta_1$ and $\beta_0$ being exactly $\beta_1=-0.1$ and $\beta_0=1.0$. 
+* Therefore, people with a different susceptibility to alcohol $(\beta_1 \neq -0.1)$ or a different initial proficiency in R $(\beta_0 \neq 1.0)$ are *not* correctly modeled by this model.
   
 
 ---
 ## Models | `Example: R proficiency as a function of beer`
 .center[ .large[How can we solve this? ] ]
-Several possibilities (and we will discuss other common ones later), but one way is:
+Several possibilities:
 
 .pull-left-50[
 
-* Create a *new* model taking this into account, where we let
-  + we assume higher body mass gives less alcohol susceptibility (lower $k$)
-  + for simplicity, assume also that lower body mass have lower initial proficiency (lower $c$).
+* Include population variation in the model (*statistical model*)
 
-* This will be a "hierarchical model" with:
-  + a main linear model $$y=kx+c,$$ whose parameters are modeled by
-  + linear submodels $k=f(mass)$ and $c=f(mass)$
+* Create a hierarchical model comprising
+  + a main linear model $$y=\beta_0 + \beta_1 x,$$ whose parameters are modeled by
+  + linear submodels, including body mass ($m$): 
+      - alcohol susceptibility, $\beta_1=am + b$ 
+      - initial proficiency, $\beta_0=cm+d$
+
 ]
 
 --
@@ -156,7 +119,8 @@ for(i in seq(2,5)){
 ]
 --
 
-Still not quite right...
+
+$\hspace{2cm}$Still not quite right...
 
 
 ---
@@ -177,14 +141,16 @@ plot(x,y, type='b',
      ylab = "y = R proficiency", xlab = "x= Beers drunk")
 ```
 
-This is a logistic model $y = \frac{1}{1-e^{-kx+c}} \Leftrightarrow \log\frac{y}{1+y} = kx+c$, where there are saturation towards the extremes
+* This is a logistic model $y = \frac{1}{1-e^{-(\beta_0 +\beta_1x)}}$, where there are saturation towards the extremes
+* By transforming $y$, we get a linear expression in the r.h.s.  $$\log\frac{y}{1+y} = \beta_0+ \beta_1 x$$
 ]
 
 --
+
 .pull-right-50[  
+
 * Models can also be described as a graph ('graph models'):
   + This is a graph model showing whether it is possible to fly to RaukR from a selection of cities of the world
-
 ```{r models1, echo=F, fig.width=5}
 require(igraph)
 towns = c("RaukR/Visby", "Stockholm", "Oslo", "Helsinki","Copenhagen", "Berlin", "Rome", "Moscow", "New York","Toronto", "Rio de Janeiro", "Stånga")
@@ -218,11 +184,6 @@ plot(g, layout=coords)
 
 ]
 
----
-
-name: models3
-
-* model structure vs. model parameters (also observation space!?)
 
 ---
 
@@ -238,13 +199,13 @@ name: Simulation1
 
 ## Task | `Simulation`
 
-$y = \beta_1* x + \beta_0$ is a *generating* model -- it describes how to generate $y$ from observed $x$ and parameters $k,c$.
+Generate $y = \beta_1* x + \beta_0$, $\beta_0=0.3$ and $\beta_1=0.2$
 
-* Generate 100 samples of $x,y$ by
-  - generate 100 genotypes $x$ from a uniform distribution on integers $0,1,2$ (tip: use `runif`)
-  - set $\beta_0=0.3$ and $\beta_0=0.3$
-  - generate $y$ using the  model $y = \sim \beta_1* x + \beta_0$
-  - plot $y$ against $x$.
+**Think about**
+* Does the plotted results look biologically reasonable?
+    + if not: what could be the reason?
+
+--
 
 .pull-left-50[
 ```{r, echo =TRUE, eval=FALSE}
@@ -286,7 +247,9 @@ name: Simulation2
     + Common, e.g., in classical physics ( $E=mc^3$ )
 * $y = \beta_1* x + \beta_0 +\epsilon,$ where $\epsilon ~\sim N(0,\sigma^2)$ is a *statistical* (equiv. *stochastic*, *random*) model
     + attempts to model variation around a population mean (the *residuals*) determined by the model
-    + used in statistic analysis
+    + generates a stochastic variable and is used in statistic analysis
+
+--
 
 .pull-left-50[
 ```{r, echo =TRUE, eval=FALSE}
@@ -318,15 +281,41 @@ plot(x=sim1$genos, y=sim1$phenos)
 ]
 
 ---
+name: simulation3
+## Task | `Simulation`
+
+### Something about the $\sim$ notation
+* Statistical notation 
+    + $x\sim U(0,1)$ means that $x$ is a stochastic variable with a uniform distribution in the interval [0,1]
+* R formulas
+    + `y~x` in `lm` function is a shorthand for $y = \beta_0 + \beta_1 x$.
+
+
+
+---
 name: Probability1
 
 ## Task | `Probability of observed data`
 
-For the linear model $$Y=\beta_0+\beta_1 X,$$ with parameters $(\beta_0=0.3, \beta_1=0.2, \sigma^2=0.05$), estimate $$Pr[Y <= 0.6|x=2].$$ 
+For the linear model $Y=\beta_0+\beta_1 X,$ with parameters $(\beta_0=0.3, \beta_1=0.2, \sigma^2=0.05$), estimate $$Pr[Y <= 0.65|x=2],$$ using a 
 
-### Simulation
-* simulate 1000 $y$ using the model above with $x=2$ and store in a vector $Y$.
-* Make a histogram of $Y$ and estimate (*tip*: make sure that $0.7$ is among to a histogram breakpoints)
+#### Simulation solution
+
+and a
+
+#### Analytic solution
+
+
+---
+
+name: Probability2
+## Task | `Probability of observed data`
+#### Simulation solution
+
+**Think about**
+* What shape does the plotted value have? 
+* Where approximately is the mean?
+* Does this make sense in light of the generative model we used?
 
 .pull-left-50[
 ```{r, echo=TRUE, eval=FALSE}
@@ -335,15 +324,17 @@ b0 = 0.3
 b1 = 0.2
 N = 1000
 x = 2
-
 y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
 
-h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.0, 0.1), ylim =c(0,1000), labels=TRUE)
+h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.0, 0.05), plot=FALSE)
+h$counts = h$counts/N
+plot(h, ylim =c(0,1), labels=TRUE)
 
 # compute requested probability from hist
-paste("Pr[Y<=0.6|X=2] = ",sum(h$counts[1:6])/N)
+paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[1:13]))
 ```
 ]
+
 .pull-right-50[
 ```{r, echo=FALSE}
 #parameters
@@ -351,90 +342,177 @@ b0 = 0.3
 b1 = 0.2
 N = 1000
 x = 2
-
 y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
 
+h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.5, 0.05), plot=FALSE)
+h$counts = h$counts/N
 par(mfrow=c(2,1))
-h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.0, 0.1), ylim =c(0,1000), labels=TRUE)
+plot(h, ylim =c(0,1), labels=TRUE)
 
 # compute requested probability from hist
-paste("Pr[Y<=0.6|X=2] = ",sum(h$counts[1:6])/N)
+paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[1:13]))
 ```
 ]
 
 ---
-name: Probability2
+name: Probaility3
+## Task | `Probability of observed data`
+### Adding mean and multiplying sd
+
+$Y \sim N(mean=0,sd=1) \Leftrightarrow Y \sim  \mu+\sigma * N(mean = 0, sd=1)$
+
+
+```{r, echo=FALSE}
+par(mfrow=c(2,2))
+
+x=seq(-4,4, length=100)
+y0=dnorm(x, mean=0, sd=1)
+y1=dnorm(x, mean=1, sd=1)
+plot(x, y0, typ="l", lty=2, ylab="Pr[x]")
+lines(x,y1, lty=1)
+text(x=c(-2,3) ,y=c(0.1,0.1), c("N(0,1)","N(1,1)"), adj=0.5)
+title(main="Effect of mean")
+
+y2=dnorm(x, mean=0, sd=0.5)
+plot(x, y2, typ="l", lty=1, ylab="Pr[x]")
+lines(x,y0, lty=2)
+text(x=c(2,0),y=c(0.1,0.5), c("N(0,1)","N(0,0.5)"), adj=0.5)
+title(main="Effect of sd")
+
+```
+???
+\begin{eqnarray*}
+Y &\sim& \mu + N(mean=0,sd=1)\\
+Y&\sim & N(mean = \mu, sd=\sigma)\\
+Y&\sim & \sigma * N(mean = \mu, sd=1)
+\end{eqnarray*}
+
+---
+name: Probability4
+
+## Task | `Probability of observed data`
+**Think about**
+* What have we plotted?
+
+
+.pull-left-50[
+
+We estimated the *probability density function* (PDF) of the model $Y\sim N(mean=\beta_0+\beta_1X, sd=\sigma)$
+
+```{r, echo=FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N = 1000
+x = 2
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.5, 0.05), plot=FALSE)
+h$counts = h$counts/N
+#par(mfrow=c(2,1))
+plot(h, ylim =c(0,1), labels=TRUE)
+```
+]
+
+--
+
+.pull-right-50[
+...but we have actually used the *cumulative probability function* (cdf) to estimate $Pr[Y<=0.65|X=x, \theta]$
+
+```{r, echo=FALSE}
+# replace the histogram counts with the cumulative counts
+h$counts = cumsum(h$counts)
+#plot the CDF
+#par(mfrow=c(2,1))
+plot(h, labels=TRUE)
+```
+]
+
+
+
+---
+name: Probability5
 
 ## Task | `Probability of observed data`
 
-### Analytic solution | `challenge`
-* Translate the requested interval of $y$ values to an interval of residuals
-* Calculate the probability of the residual interval using the probability distribution for the Normal distribution (tip: look up help for `Normal`)
-    + The distribution function of the vale $y$ is the probability that the stochastic variable $Y<=y$. *(Memo: introduce stochastic variable better and we need som plot explaining the probaility distribution)*
+### Analytic solution 
 
-```{r, echo=TRUE}
-b0 = 0.3
-b1 = 0.2
-y = 0.6
+**Think about**
 
-res = y - (b0 + b1 * x) 
-paste("residuals = ",res)
+* Do the result fit that from the simulation?
+    + If not, how can we make the fit better?
+* What can this result be used for?
 
-paste("Pr[Y<=.6|X=2] = ",pnorm(res, sd=0.05))
-```
+--
 
-* *Challenge*: try both approaches with other values of $y$ or try to compute $Pr[Y>y|X=2]$.
+**p-values**
+* Probability fo finding a more extreme value or test statistic under the NULL model.
+    + p-values can refer to different meanings of *extreme*. Using our model as an example:
+        - For a *left-tailed* p-value, $p(y) = Pr[Y<=y|X=x]$, i.e., the $CDF(y, \mu, \sigma)$
+        - For a *right-tailed* p-value, $p(y) = Pr[Y>=y|X=x]$, i.e., $1-CDF(y, \mu, \sigma)$
+        - For a *double-tailed* p-value, $p(y) = 2 \min\{Pr[Y<=y|X=x],Pr[Y>=y|X=x]\}$
+    + If the p-value is *significant*, i.e., below some threshold $\alpha$ (typically $\alpha = 0.05$) we can reject the NULL hypothesis that the data is generated from our model.
+
+
+
 ---
+name: Probability6
+
+## Task | `Probability of observed data`
+
+** *Challenge*: Why look at intervals of $Y$ rather than specific values?**
+
+--
+
+* **For continuous $Y$, probabilities only exist for intervals; for any specific $y$, $Pr[Y=y] = 0$**
+--
+
+* Then what is the PDF?
+--
+
+* Let's look at the average probability over the interval of the histogram interval including 0.65 
+```{r, echo = FALSE, fig.height=3}
+
+par(mfrow=c(1,3))
+
+estpdf<-function(n){
+  x=seq(-4,4,length=n)
+  step = 0.5/n
+  y = pnorm(x+step) - pnorm(x-step)
+  plot(x,y, type="s")
+  title(paste("Pr[Y=0.65+-",step,"] = ",round((pnorm(0.65+step) - pnorm(0.65-step))/(2*step),5)))
+}
+x=array(data=c(5,10,20))
+p=apply(x, MARGIN=1, FUN=estpdf)
+
+```
+--
+
+* Asympotically approaches a limit, which is exactly the PDF for 0.65 = `r round(dnorm(0.65), 5)`
+--
+
+* PDF is the derivative of CDF
+* PDF is a (probability) *density*, but not a probability!
+
+---
+
 name: tests
 ## Task | `Statistical tests`
 
-We will now consider an extension of the previous task to several data points. 
-
-As you can imagine, doing this with the above approach could be cumbersome. 
-
-Instead specific tests have been developed. 
-
-### Student's t-test
-Uses normalized residuals as a test statistics:
-
+### Student's t-test for $y\sim N(mean=\mu,sd)$
+* The t-test uses normalized residuals as a test statistics: 
 \begin{eqnarray*}
 t  
-&= \sum_{i}\frac{x_i-\mu}{s/\sqrt{N}} 
-&= \frac{\bar{x}-\mu}{s/\sqrt{N}}
+&= \sum_{i}\frac{y_i-\mu}{s/\sqrt{N}} 
+&= \frac{\bar{y}-\mu}{s/\sqrt{N}}
 \end{eqnarray*}
-where $s$ is the estimated standard deviation from the observed data. 
+where $s\sqrt{N}$ is an estimate of the standard deviation, $\sigma$, from the observed data. 
+* Normalized residuals have a *General Normal distribution*, $N(mean=0,sd=1)$
 
-As you can see this boils down to comparing the (standardized) estimated mean from the data, $\bar{x}$ and the model mean, $\mu$. (*Challenge*: show the equality above)
+**Think about**
 
-Conveniently, The *t*-test is implemented in the R function `t-test`
----
-name: tests
-## Task | `Statistical tests`
+* Does the t-test reject the NULL model or not?
 
-* For simplicity, we will limit ourselves to the case $x=2$ (else *t*-test does not work -- handle this better)
-* Perform a one sample t-test using $\mu$ from our original linear model, above, on new data simulated from a linear model with different parameters.
-* *Challenge*: Try to use other parameters when simulating the new data.
-
-.pull-left-50[
-```{r, echo=TRUE, eval=FALSE}
-# compute the mean, mu, from our model 
-b0 = 0.3
-b1 = 0.2
-x = 2
-mu = b0 + b1 * x
-
-# Let's simulate the data from another model
-b0 = 0.1
-b1 = 0.5
-N=100
-y = b0 + b1 * rep(x,100) + rnorm(N, mean=0, sd=0.05) 
-# t-test
-t.test(y, mu=mu)
-```
-]
-
-
-.pull-right-50[
 ```{r, echo=FALSE}
 # compute mu from our model 
 b0 = 0.3
@@ -443,47 +521,60 @@ x = 2
 mu = b0 + b1 * x
 
 # Let's simulate the data from another model
-b0 = 0.1
-b1 = 0.5
+c0 = 0.1
+c1 = 0.5
 N=100
-y = b0 + b1 * rep(x,100) + rnorm(N, mean=0, sd=0.05) 
+y = c0 + c1 * rep(x,100) + rnorm(N, mean=0, sd=0.05) 
 
+paste("generate data with c0 = ", c0, ", c1 = ", c1)
 # t-test
 t.test(y, mu=mu)
 ```
-<br>
-<br>
-]     
 
-.pull-left-50[
+---
+name: tests
+## Task | `Statistical tests`
 
-* In `lm`, a *t*-test is used to test if the estimated parameters are significantly different from 0. (mention NULL hypothse earlier)
+* In `lm`, a *t*-test is used to test if the estimated parameters are significantly different from 0.
 
-```{r, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE}
 
 summary(lm(phenos~genos, data=sim1))
 ```
-]
-.pull-right-50[
-```{r, echo=FALSE}
-summary(lm(phenos~genos, data=sim1))
-```
-]
 
 ---
 name: nonparam
-## Parametric vs Non-parametric tests
 
-The test we have used above are parametric, i.e., they are based on a parameterized model, e.g., the *t*-test assumes an underlying Normal distribution.
+.pull-left-50[
+## Types of models
 
-There are also non-parametric tests.
+* Deterministic models
+    + structure
+    + parameter values
+* Statistical models
+    + Additional random distribution 
+    + Parameteric models
+        - structure fixed *a priori*
+            * Example: Normal family of distribution (incl. linear model)
+    + Non-parametric distribution
+        - estimates structure from data
+            * Example: histograms, Kernel density estimation
+]
+--
 
-* definition of non-parametric tests a bit unclear
-  - assumes model structure, but not params, or
-  - assumes no model structure and no parameters
+.pull-right-50[
+## Types of statistical tests
+
+* parametric tests
+    + assumes statistical distribution *a priori*
+        - Student's t-test
+        - ANOVA
 * non-parametric tests
-  - often based on ranks of values are
-  - often tests if two samples are simlar or significantly different
+    + no assumption of statistical distribution
+    + typically uses ranking of values
+        - Example: Mann-Whitney U tests
+        - Kruskal-Wallis test
+]
 
 ---
 name: report
@@ -498,11 +589,6 @@ name: report
 R.version
 ```
 
----
-name: end-slide
-class: end-slide
-
-# Thank you. Questions?
 <!-- --------------------- Do not edit this and below --------------------- -->
 
 ---

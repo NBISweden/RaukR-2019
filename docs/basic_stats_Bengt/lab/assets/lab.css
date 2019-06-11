@@ -70,7 +70,7 @@ h6 {
 /* code style */
 code {
   font-family: "Ubuntu Mono", "Consolas","Liberation Mono", "Courier New", monospace;
-  font-size: 16px;
+  font-size: 16pt;
   color: var(--color-code-inline);
   background-color: var(--color-code-bg);
 }
