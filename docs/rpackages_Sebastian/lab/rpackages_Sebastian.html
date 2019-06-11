@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Sebastian DiLorenzo" />
+
+
+<title>R packages</title>
+
+<script src="rpackages_Sebastian_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="rpackages_Sebastian_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="rpackages_Sebastian_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="rpackages_Sebastian_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="rpackages_Sebastian_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="rpackages_Sebastian_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="rpackages_Sebastian_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="rpackages_Sebastian_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="rpackages_Sebastian_files/navigation-1.1/tabsets.js"></script>
+<link href="rpackages_Sebastian_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="rpackages_Sebastian_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="rpackages_Sebastian_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="rpackages_Sebastian_files/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="rpackages_Sebastian_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="rpackages_Sebastian_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="rpackages_Sebastian_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">R packages</h1>
+<h4 class="author">Sebastian DiLorenzo</h4>
+<h4 class="date">10-Jun-2019</h4>
+
+</div>
+
+
+<p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<hr />
+<div class="spaced abstract">
+<p>This is the R packages exercise from RaukR 2019. It will take you through creating an R package with code, data, documentation, creating or generating a correct DESCRIPTION and NAMESPACE, importing packages, checking your package for warnings and using C++ functions through <code>Rcpp</code>.</p>
+<p>It is fine if you do not have time for the whole thing, as all components may not be important to you. You can always come back later :).</p>
+</div>
+<hr />
+<div id="installing-dependencies" class="section level1">
+<h1><span class="header-section-number">1</span> Installing dependencies</h1>
+<p>The first thing we want to do is install the dependencies required for the exercise.</p>
+<pre class="r"><code>install.packages(c(&quot;devtools&quot;,&quot;usethis&quot; &quot;roxygen2&quot;, &quot;knitr&quot;, &quot;rmarkdown&quot;, &quot;reshape2&quot;, &quot;Rcpp&quot;))</code></pre>
+<p>If you haven’t already, install <a href="https://www.rstudio.com/products/rstudio/download/">Rstudio</a>.</p>
+</div>
+<div id="create-a-package-backbone" class="section level1">
+<h1><span class="header-section-number">2</span> Create a package backbone</h1>
+<p>First of all we will create the standard files that are required in an R package.</p>
+<!-- You can do this from within Rstudio **or** using `devtools`. 
+
+## Option 1: In Rstudio -->
+<p>Select <em>File &gt; New Project &gt; New Directory &gt; R package</em>, give your package a name and click <em>Create Project</em>. This should trigger your Rstudio to reload, showing your package name in the top right corner, your packages file structure in the file viewer and a standard <strong>hello.R</strong> R code file in the editor.</p>
+<!--
+## Option 2: In R devtools suite
+
+```
+usethis::create_package("path/to/your/package/packagename")
+```
+
+I recommend using the Rstudio interface when working on your R package. To open this package in Rstudio, double click the **.Rproj** file or select it from Rstudio.
+-->
+</div>
+<div id="insert-wondrous-things" class="section level1">
+<h1><span class="header-section-number">3</span> Insert wondrous things</h1>
+<p>Now that we have a R package backbone lets fill it with stuff!</p>
+<div id="r-code" class="section level2">
+<h2><span class="header-section-number">3.1</span> R code</h2>
+<p>Start by editing your <strong>hello.R</strong> file, you can rename it if you wish. Feel free to rewrite the function to perform some simple task. From adding two numbers to creating a basic plot from some input. It’s up to you!</p>
+<p>Here is an example that I threw together:</p>
+<pre class="r"><code>trianguletter &lt;- function(x) {
+  for(i in 1:x){
+    cat(rep( letters[i], times = i),&quot;\n&quot;)
+  }
+}</code></pre>
+<p>When you are happy with your function, save it and load it using <code>devtools::load_all()</code> or the keyboard shortcut <em>Ctrl/Cmd + Shift + L</em></p>
+<p>Now test your function in the console!</p>
+<pre class="r"><code>trianguletter(12)</code></pre>
+<pre><code>## a 
+## b b 
+## c c c 
+## d d d d 
+## e e e e e 
+## f f f f f f 
+## g g g g g g g 
+## h h h h h h h h 
+## i i i i i i i i i 
+## j j j j j j j j j j 
+## k k k k k k k k k k k 
+## l l l l l l l l l l l l</code></pre>
+<p><strong>Congratulations!</strong> You have just created an R package that fulfills a function!</p>
+</div>
+<div id="data" class="section level2">
+<h2><span class="header-section-number">3.2</span> Data</h2>
+<p>Lets add some data to our package, create an R object with whatever information you want. A string, a vector or a data.frame, as long as you recognise it, it doesn’t matter. First we will save it to our <strong>data/</strong> folder using <code>usethis::use_data()</code>.</p>
+<pre class="r"><code># A random object
+your_object &lt;- c(&#39;red&#39;,&#39;green&#39;,&#39;blue&#39;)
+
+#Save to data
+usethis::use_data(your_object)</code></pre>
+<p>This created the <strong>data/</strong> folder and <strong>your_object.rda</strong> inside it.</p>
+<!-- Notice that we are not giving it our packages location. This is because it will default to using the package in the working directory, if your current R session is not in the package root it will complain.
+
+
+```r
+# Change working directory
+setwd("..")
+
+# Try to save data
+usethis::use_data(your_object)
+# Error: Could not find package root.
+```
+-->
+<p>Now when our package is loaded, <code>your_object</code> will be made available to us. To test this, remove all objects from your working directory, and load all functions. Check that you can access the object, despite just removing it from your workspace.</p>
+<pre class="r"><code># Clear workspace
+rm(list=ls())
+
+# Load all functions and data from our package
+devtools::load_all()
+
+# Check if we can access our saved object
+your_object
+[1] &quot;red&quot;   &quot;green&quot; &quot;blue&quot;</code></pre>
+<p>The data in <strong>data/</strong> folder is available to the user, needs to be documented, and is where you would store data if the purpose of your package is to distribute one or more datasets in an R friendly way. If there is some data that you don’t want to make easily accessible to the users, AKA not document, but that your functions use, you can put it in <strong>sysdata.rda</strong>. Lets create a second object, like the last one it does not matter what it is. Use the same command as before to save the object, except this time specify that this data is intended for internal use.</p>
+<pre class="r"><code># Create a second object
+second_object &lt;- &quot;It works!&quot;
+
+# Save it to R/sysdata.rda
+usethis::use_data(second_object, internal = TRUE)</code></pre>
+<p>To check that this worked, clear your workspace and edit your packages function, the <strong>.R</strong> file, to include the object in some way. Load the package and see if it executes as expected.</p>
+<pre class="r"><code># Clear workspace
+rm(list=ls())</code></pre>
+<pre class="r"><code># Example .R code edit
+trianguletter &lt;- function(x) {
+  for(i in 1:x){
+    cat(rep( letters[i], times = i),&quot;\n&quot;)
+  }
+  # Check if second object can be called by our function
+  cat(second_object)
+}</code></pre>
+<pre class="r"><code># Load all functions and data from our package
+devtools::load_all()</code></pre>
+<pre class="r"><code># Test the function
+trianguletter(5)</code></pre>
+<pre><code>## a 
+## b b 
+## c c c 
+## d d d d 
+## e e e e e 
+## It works!</code></pre>
+<p>Great work! You have created external and internal datasets and shown that they can be used when your package is loaded in the console and in your packages own functions!</p>
+</div>
+<div id="documentation" class="section level2">
+<h2><span class="header-section-number">3.3</span> Documentation</h2>
+<p>Now that we have a function and a dataset, lets use <code>roxygen2</code> to create some documentation for them.</p>
+<div id="function-documentation" class="section level3">
+<h3><span class="header-section-number">3.3.1</span> Function documentation</h3>
+<p>As was discussed in the presentation, the <code>roxygen2</code> documentation for a function is directly before it in so called “comment blocks”, or <code>#'</code>. Here is a brief refresher:</p>
+<ul>
+<li>Comment block : <code>#'</code></li>
+<li>Tags : <code>@tagname</code>
+<ul>
+<li><code>@param</code> : parameter</li>
+<li><code>@example</code> : examples</li>
+<li><code>@return</code> : what does the function return. The <em>value</em> field in R documentation</li>
+<li><code>@section</code> : create any section you want</li>
+</ul></li>
+</ul>
+<p>Go ahead and create documentation for your function. add at least a title, a description, multi-section details, the parameters, the expected return value or output and an example of how to use your function.</p>
+<p>An example functional documentation:</p>
+<pre class="r"><code>#&#39; A right sided triangle of alphabetic letters
+#&#39;
+#&#39; A right sided triangle of alphabetic letters
+#&#39;
+#&#39; This function takes a number as input and outputs an increasing
+#&#39;     number of alphabetic letters on top of eachother, resembling
+#&#39;     a right sided triangle.
+#&#39; @section Warning:
+#&#39; Not tested for numbers over 26!
+#&#39;
+#&#39; @param x A number.
+#&#39; @return Outputs to console. NULL object returned.
+#&#39; @examples
+#&#39; trianguletter(10)
+trianguletter &lt;- function(x) {
+  for(i in 1:x){
+    cat(rep( letters[i], times = i),&quot;\n&quot;)
+  }
+  # Check if second object can be called by our function
+  cat(second_object)
+}</code></pre>
+<p>When you are satisfied with your documentation, build it using <code>devtools::document()</code>, or <em>Ctrl/Cmd + Shift + D</em> in Rstudio. This creates the <strong>.Rd</strong> file in <strong>man/</strong> which is parsed by R when you request the functions documentation. Additionally, the first time you build documentation it will make some edits to your <strong>DESCRIPTION</strong> and check on your <strong>NAMESPACE</strong>.</p>
+<p>Go ahead and preview your function as you would any method and make sure that it looks the way you were expecting.</p>
+<pre class="r"><code>?trianguletter</code></pre>
+<p><img src="rpackages_lab_assets/trianguletterRd.png"></p>
+</div>
+<div id="data-documentation" class="section level3">
+<h3><span class="header-section-number">3.3.2</span> Data documentation</h3>
+<p>Data documentation is a bit different from functional documentation. Remember that you do not need to document datasets not intended for users, so don’t worry about <strong>sysdata.rda</strong>. What we want to document in this case is the data you created in <strong>man/your_object.rda</strong>, or whichever name you have given it.</p>
+<p>The principle is very similar to functional documentation, but not all tags that are applicable to functions are applicable to data, and should not be used. Similarly, there are some tags that are applicable to data, but not to functions. Usually this is the information you would give a dataset:</p>
+<ul>
+<li>Data documentation
+<ul>
+<li>Title</li>
+<li>Description</li>
+<li><code>@format</code> : what rows and variables are in the data?</li>
+<li><code>@source</code> : where is the data from?</li>
+</ul></li>
+</ul>
+<p>First of all, lets check what the output of requesting help for your dataset currently is.</p>
+<pre class="r"><code>?your_object</code></pre>
+<pre><code>## No documentation for &#39;your_object&#39; in specified packages and libraries:
+## you could try &#39;??your_object&#39;</code></pre>
+<p>As expected, it is undocumented.
+Since we cannot add this information to the dataset file, .rda, lets create an R file in <strong>R/</strong> called <strong>data.R</strong> and add the documentation there. The name we document has to be the same name as the dataset object you created earlier. Go ahead and document your dataset now.</p>
+<pre class="r"><code>#&#39; A vector with three strings
+#&#39;
+#&#39; A dataset containing three strings usually linked to the
+#&#39;    colors of pixels on a screen.
+#&#39;
+#&#39; @format A vector with three strings:
+#&#39; \describe{
+#&#39;   \item{red}{A string, it&#39;s red.}
+#&#39;   \item{green}{A string, it&#39;s green. Street talk for money.}
+#&#39;   \item{blue}{A string, really didn&#39;t see that coming. It&#39;s blue this time!}
+#&#39; }
+#&#39; @source \url{http://www.themindofsebastian.com}
+&quot;your_object&quot;</code></pre>
+<p>Once you are happy with your documentation, save the file and run <code>devtools::document()</code>. Now check the help page for your dataset again.</p>
+<pre class="r"><code>?your_object</code></pre>
+<p><img src="rpackages_lab_assets/your_object.png"></p>
+<p>Well done! You have successfully created documentation for a function and a dataset and shown that it can be queried within R.</p>
+</div>
+</div>
+<div id="vignette" class="section level2">
+<h2><span class="header-section-number">3.4</span> Vignette</h2>
+<p>While we are on the topic of documentation, lets check out how to get started writing your vignette. To initialise your vignette run <code>usethis::use_vignette("packagename_vignette")</code>.</p>
+<p>What this does:</p>
+<ol style="list-style-type: decimal">
+<li>Creates the <strong>vignettes/</strong> folder with <strong>packagename_vignettes.Rmd</strong> inside</li>
+<li>Edits your <strong>DESCRIPTION</strong>, adding <code>knitr</code> to <code>Suggests</code> and as a <code>VignetteBuilder</code>.</li>
+</ol>
+<p>Open the file <strong>vignettes/packagename-vignette.Rmd</strong>. Edit the header data, <code>Vignette Title</code> and <code>Vignett Author</code>, and create a minimal vignette for your function. Do run your function and show your dataset using <code>knitr</code> from the vignette. It can be as short as you want, however if you do this for a real package it should be a long form manual showing how your package can use its functions or data to perform the task it was designed for.</p>
+<blockquote>
+<p>Note: To be able to use the functions of your package in the vignette you will need to install your package, the easiest way is to execute <em>Cmd/Ctrl + Shift + B</em>.</p>
+</blockquote>
+<p>To preview your vignette while working on it, press the <em>knit</em> button in Rstudio.</p>
+<p>Example <strong>vignette.Rmd</strong>:</p>
+<pre class="r"><code>        ---
+        title: &quot;How to write more and more letters, in a triangle&quot;
+        author: &quot;Sebastian DiLorenzo&quot;
+        date: &quot;`r Sys.Date()`&quot;
+        output: rmarkdown::html_vignette
+        vignette: &gt;
+          %\VignetteIndexEntry{How to write more and more letters, in a triangle}
+          %\VignetteEngine{knitr::rmarkdown}
+          %\VignetteEncoding{UTF-8}
+        ---
+
+        \```{r setup, include = FALSE}
+        knitr::opts_chunk$set(
+          collapse = TRUE,
+          comment = &quot;#&gt;&quot;
+        )
+
+        # replace this with your package name
+        library(newpkg)
+        \```
+
+        # The greatest package for a very specific purpose
+
+        If you thought that it was impossible to write letters
+        alphabetically from top to bottom with each number represented
+        the same number of times asits position in the alphabet
+         - think again!
+
+        This package and its sole function, trianguletter, solves just this problem!
+
+        But you do not have to take my word for it, see for yourself:
+        \```{r,echo=T}
+        # With just a simple number we specify how long into the alphabet we go.
+        trianguletter(10)
+
+        # Also, this package has this random dataset:
+        your_object
+        \```
+
+        # Future plans
+
+        We plan do add features so that you can give it
+        a letter, rather than a number, and output a
+        bunch of numbers instead!</code></pre>
+<blockquote>
+<p>Note: Because I am writing this in rmarkdown I added backslashes before the code or it would not render properly for this exercise instruction. In your rmarkdown there should <strong>not</strong> be backslashes before code chunks. See the \``` in the vignette code.</p>
+</blockquote>
+<p>And the beautiful rendered version:<br>
+<img src="rpackages_lab_assets/vignette.png"></p>
+<p>The preview you get when knitting the <strong>vignette.Rmd</strong> does not mean that the vignette has been created. To do this you can use <code>devtools::build_vignettes()</code> followed by <code>devtools::document()</code>.
+Reinstall the package again by executing <em>Cmd/Ctrl + Shift + B</em> and view the vignette with <code>browseVignettes("packagename")</code>.</p>
+<p>Once again, good work! Now you have written a short guide to your package that will be included wherever it goes!</p>
+</div>
+<div id="description" class="section level2">
+<h2><span class="header-section-number">3.5</span> DESCRIPTION</h2>
+<p>Now lets take a look at our <strong>DESCRIPTION</strong> file, at this point it should look similar to this:</p>
+<pre><code>Package: newpkg
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Author: Who wrote it
+Maintainer: The package maintainer &lt;yourself@somewhere.net&gt;
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr</code></pre>
+<blockquote>
+<p>Note: The information can look slightly different depending on how the package was created, but the information is equivalent. For example you might see <code>Authors@R</code> instead of <code>Author</code> and <code>Maintainer</code>.</p>
+</blockquote>
+<p>Looks pretty good but some information definitely needs to be updated if you are ever going to submit this to a repository.</p>
+<p>Update the <em>Title</em>, <em>Author</em>, <em>Maintainer</em>, <em>Description</em> and <em>License</em> fields.</p>
+<p>Just in case you don’t want to consider which license to give your package, why not choose one of the most common ones that were mentioned during the lecture?</p>
+<ul>
+<li>MIT : Free, but your license must be included in any following work.</li>
+<li>GPL-3 : Even more free. If someone uses your code, whatever they are doing must also be GPL compatible.</li>
+<li>CC0 : Totally free.</li>
+</ul>
+<p>A good place to look at the meaning of licenses is <a href="https://tldrlegal.com" class="uri">https://tldrlegal.com</a>.</p>
+<p>Now that your <strong>DESCRIPTION</strong> is up to shape, we can move on to the <strong>NAMESPACE</strong>.</p>
+</div>
+<div id="namespace" class="section level2">
+<h2><span class="header-section-number">3.6</span> NAMESPACE</h2>
+<p>In the <strong>NAMESPACE</strong> we want to make our function available to the users and make sure that our package works well with other packages.</p>
+<div id="import" class="section level3">
+<h3><span class="header-section-number">3.6.1</span> Import</h3>
+<p>First, lets import a function from a package and add its functionality to the function we created.</p>
+<ol style="list-style-type: decimal">
+<li>Create a new file called <strong>R/utility.R</strong>. We won’t actually put any utility functions there but this is a good place for imports.</li>
+<li>Next add code to import the <code>melt</code> function from <code>reshape2</code>. This is in the form <code>@importFrom pkg function</code>.</li>
+</ol>
+<pre class="r"><code>#&#39; @importFrom reshape2 melt
+NULL</code></pre>
+<p>To update the <strong>NAMESPACE</strong> run <code>devtools::document()</code>.</p>
+<blockquote>
+<p>Note: Since we didn’t use <code>usethis</code> to create your package you may get an error to the effect that roxygen2 was not used to create this <strong>NAMESPACE</strong> and it won’t be overwritten. In this case delete your <strong>NAMESPACE</strong> and run <code>devtools::document()</code> again.</p>
+</blockquote>
+<p>Now your <strong>NAMESPACE</strong> should look like this:</p>
+<pre><code># Generated by roxygen2: do not edit by hand
+
+importFrom(reshape2,melt)</code></pre>
+<p>Great! If the <code>melt</code> command from <code>reshape2</code> is ever used in your package, it will know which one to use. But for our package to use <code>reshape2</code> we first have to import it in <strong>DESCRIPTION</strong>.</p>
+<p>Add the <code>Imports</code> field somewhere in your <strong>DESCRIPTION</strong>.</p>
+<pre><code>Imports:
+    reshape2</code></pre>
+<p>While <code>Imports</code> means that if someone installs your package it will automatically install <code>reshape2</code> as well, regrettably it does not mean that if <code>reshape2</code> is missing when we reinstall it locally it will be downloaded and installed. Luckily we installed it at the start of the exercise.</p>
+</div>
+<div id="export" class="section level3">
+<h3><span class="header-section-number">3.6.2</span> Export</h3>
+<p>When we imported <code>reshape2</code> and <code>roxygen2</code> recreated the <strong>NAMESPACE</strong> file, we sent a message to the package saying “We know what we are doing, you can take away the NAMESPACE kiddie-wheels”. These kiddie-wheels are specifically the export pattern that was there previously, basically exporting everything between heaven and earth.</p>
+<pre><code>exportPattern(&quot;^[^\\.]&quot;)</code></pre>
+<p>Now our package isn’t exporting anything, and if you reinstall it with <em>Ctrl/Cmd + Shift + B</em> you will notice that it cannot find your function anymore. This is fine, and we are about to fix this, by exporting the function!</p>
+<p>In your <strong>.R</strong> file, directly above the function, add the <code>@export</code> tag, then rebuild the documentation with <code>devtools::document()</code>.</p>
+<p>Have a look at your <strong>NAMESPACE</strong> again. You should find that your function is now being exported.</p>
+<p>Finally, rebuild and install your package with <em>Ctrl/Cmd + Shift + B</em>.</p>
+<p>You do not need to export your data, wether internal or not.</p>
+</div>
+<div id="testing-the-imported-function" class="section level3">
+<h3><span class="header-section-number">3.6.3</span> Testing the imported function</h3>
+<p>Now that we have added <code>melt</code> from <code>reshape2</code> lets add it to our function. You can do this any way you like, or copy usage from the example function.</p>
+<p>In this example the <code>head</code> of <code>iris</code> dataset before and after <code>melt</code> is viewed, to see that it had an effect.</p>
+<pre class="r"><code>#&#39; A right sided triangle of alphabetic letters
+#&#39;
+#&#39; A right sided triangle of alphabetic letters
+#&#39;
+#&#39; This function takes a number as input and outputs an increasing
+#&#39;     number of alphabetic letters on top of eachother, resembling
+#&#39;     a right sided triangle.
+#&#39; @section Warning:
+#&#39; Not tested for numbers over 26!
+#&#39;
+#&#39; @param x A number.
+#&#39; @return Outputs to console. NULL object returned.
+#&#39; @examples
+#&#39; trianguletter(10)
+#&#39; @export
+trianguletter &lt;- function(x) {
+  for(i in 1:x){
+    cat(rep( letters[i], times = i),&quot;\n&quot;)
+  }
+  # Check if second object can be called by our function
+  #cat(second_object)
+  #what iris dataset looks like
+  head(iris)
+  #Use melt and see what it looks like
+  head(melt(iris))
+}</code></pre>
+<p>Rebuild the package, <em>Ctrl/Cmd + Shift + B</em>. Since this loads the package you are working on, <code>reshape2</code> should also be loaded. You can check that this is true in <code>sessionInfo()</code>.</p>
+<p>Test your function, does the output show that it can use <code>melt</code>?</p>
+<p>Now, lets check that the NAMESPACE is doing what we want it to do, making sure that the correct <code>melt</code> is being used by our package. Lets define a new function, also named <code>melt</code>, which will be in our global environment.</p>
+<pre class="r"><code>melt &lt;- function(x) {
+   cat(&quot;abc&quot;,x)}</code></pre>
+<p>Now try your function again. Is it using the correct <code>melt</code>?</p>
+<p>It should be!</p>
+<blockquote>
+<p>Note: An alternative way of doing this is using Imports in DESCRIPTION and writing your code with strict package references. In our case <code>reshape2::melt()</code>. This way you can circumvent using <code>roxygen2</code> to add import tags to <code>NAMESPACE</code> if you want.</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="checking-your-package" class="section level1">
+<h1><span class="header-section-number">4</span> Checking your package</h1>
+<p>Now that we have a pretty complete package, lets run some checks on it. You can use the standard <code>R CMD check</code> <em>pkgname</em> from your terminal, or you can use <code>devtools::check()</code>, which we recommend, as it performs some additional operations such as updating the documentation and bundling the package before checking.</p>
+<pre><code>R CMD check results
+0 errors | 0 warnings | 1 note
+checking R code for possible problems ... NOTE
+trianguletter: no visible global function definition for ‘head’
+trianguletter: no visible binding for global variable ‘iris’
+Undefined global functions or variables:
+  head iris
+Consider adding
+  importFrom(&quot;datasets&quot;, &quot;iris&quot;)
+  importFrom(&quot;utils&quot;, &quot;head&quot;)
+to your NAMESPACE file.</code></pre>
+<p>Did you get any <strong>NOTE</strong>s, <strong>ERROR</strong>s or <strong>WARNING</strong>s? I know I did! Among other things it didn’t like my usage of the <code>iris</code> dataset without specifying it in the NAMESPACE. Go ahead and try to fix whichever messages you received. Google if you need to.</p>
+<p>On the odd chance that you didn’t get any check messages, try introducing an error, like creating an undocumented dataset or using a function that doesn’t exist. It’s easier to break things than to build them :).</p>
+</div>
+<div id="src-and-rcpp" class="section level1">
+<h1><span class="header-section-number">5</span> src/ and Rcpp</h1>
+<p>R is not always the most efficient language, which is why it is great that we can integrate other code with our package. Either using ready made solutions, or by including a script file of another language in the package.</p>
+<p>Here we will integrate the well developed <code>Rcpp</code> package to be able to use C++ code in our package.</p>
+<p>Similarly to how we created the package, the first thing we want to do is setup our package to accept <code>Rcpp</code>. We can do this with <code>usethis::use_rcpp()</code> which does four things:</p>
+<ol style="list-style-type: decimal">
+<li>Creates <strong>src/</strong> folder, unless it already exists.</li>
+<li>Edits <strong>DESCRIPTION</strong>, adding <code>Rcpp</code> to <code>Imports</code> and <code>LinkingTo</code>.</li>
+<li>Create and modify <strong>.gitignore</strong> to not include compiled files (useful if you connect your package to git)</li>
+<li>Let’s you know two roxygen tags that need to be included, like our documentation, somewhere in package.</li>
+</ol>
+<blockquote>
+<p>Note: I received some warnings using <code>usethis::use_rcpp()</code> but it didn’t seem to break anything.</p>
+</blockquote>
+<pre><code>usethis::use_rcpp()</code></pre>
+<p>Lets include the roxygen tags in our <strong>utility.R</strong> file.</p>
+<pre><code>#&#39; @useDynLib typicalr, .registration = TRUE
+#&#39; @importFrom Rcpp sourceCpp
+NULL</code></pre>
+<p>Now we are ready to create a C++ file. You can do this from Rstudio to generate a nice template, <em>File &gt; New file &gt; C++ File</em>. It should look something like this:</p>
+<pre><code>#include &lt;Rcpp.h&gt;
+using namespace Rcpp;
+
+// This is a simple example of exporting a C++ function to R. You can
+// source this function into an R session using the Rcpp::sourceCpp
+// function (or via the Source button on the editor toolbar). Learn
+// more about Rcpp at:
+//
+//   http://www.rcpp.org/
+//   http://adv-r.had.co.nz/Rcpp.html
+//   http://gallery.rcpp.org/
+//
+
+// [[Rcpp::export]]
+NumericVector timesTwo(NumericVector x) {
+  return x * 2;
+}
+
+
+// You can include R code blocks in C++ files processed with sourceCpp
+// (useful for testing and development). The R code will be automatically
+// run after the compilation.
+//
+
+/*** R
+timesTwo(42)
+*/</code></pre>
+<p>You should not mess with the header, unless you know what you are doing. Here you can write any C++ function you want, either do this or leave it as it is and we will use the included example function, <code>timeTwo</code>. The function is exported to R using <code>// [[Rcpp::export]]</code>. Importantly, this does not add the function to your <strong>NAMESPACE</strong>. Add documentation to your function in the same way as we have done previously, but with the C++ commenting style of <code>//</code>.</p>
+<pre><code>//&#39; Multiply a number by two
+//&#39;
+//&#39; @param x A integer.
+//&#39; @export
+// [[Rcpp::export]]
+NumericVector timesTwo(NumericVector x) {
+  return x * 2;
+}</code></pre>
+<p>Save the file to your src/ directory and call <code>pkgbuild::compile_dll()</code>, which re-compiles the package. This is necessary in this special case due to some recent changes to roxygen. Now run <code>devtools::document()</code> to update your <strong>NAMESPACE</strong>. Lets install and restart using <em>Cmd/Ctrl + Shift + B</em>. This will create the file <strong>RcppExports.R</strong> in <strong>R/</strong>, which is what R uses to call your C++ function.</p>
+<p>Test that your function works from console.</p>
+<p>Your R package can now run C++ code, marvelous! Now you just need to learn C++ ;).</p>
+<div id="check-again" class="section level2">
+<h2><span class="header-section-number">5.1</span> Check again!</h2>
+<blockquote>
+<p>Added a new component to the package have we?
+- Yoda</p>
+</blockquote>
+<p>Perform <code>devtools::check()</code> again and fix any new messages.</p>
+</div>
+</div>
+<div id="finish-line" class="section level1">
+<h1><span class="header-section-number">6</span> Finish line</h1>
+<p><img src="rpackages_lab_assets/small_package.jpg" width="40%" style="display: block; margin: auto;" /></p>
+<p>Well done! You have built a functional package. Maybe it is even time to update the version number in <strong>DESCRIPTION</strong> and take it out of development?</p>
+<p>If you want to know even more about this topic, I recommend Hadley Wickhams excellent online resource <a href="http://r-pkgs.had.co.nz/check.html" class="uri">http://r-pkgs.had.co.nz/check.html</a></p>
+<!-- connect a repo to github, add next year -->
+<!-- --------------------- Do not edit this and below ---------------------- -->
+</div>
+<div id="session-info" class="section level1">
+<h1><span class="header-section-number">7</span> Session info</h1>
+<pre><code>## R version 3.6.0 (2019-04-26)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS Mojave 10.14.5
+## 
+## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] rmarkdown_1.13  roxygen2_6.1.1  usethis_1.5.0   devtools_2.0.2 
+## [5] captioner_2.2.3 bookdown_0.11   knitr_1.23     
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_1.0.1        xml2_1.2.0        magrittr_1.5     
+##  [4] pkgload_1.0.2     R6_2.4.0          rlang_0.3.4      
+##  [7] stringr_1.4.0     tools_3.6.0       pkgbuild_1.0.3   
+## [10] xfun_0.7          sessioninfo_1.1.1 cli_1.1.0        
+## [13] withr_2.1.2       commonmark_1.7    remotes_2.0.4    
+## [16] htmltools_0.3.6   rprojroot_1.3-2   yaml_2.2.0       
+## [19] assertthat_0.2.1  digest_0.6.19     crayon_1.3.4     
+## [22] processx_3.3.1    callr_3.2.0       fs_1.3.1         
+## [25] ps_1.3.0          glue_1.3.1        memoise_1.1.0    
+## [28] evaluate_0.14     stringi_1.4.3     compiler_3.6.0   
+## [31] backports_1.1.4   desc_1.2.0        prettyunits_1.0.2</code></pre>
+<p style="text-align: left; font-size: small;">
+Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 10-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 23:09:59.
+</p>
+<hr/>
+<div style="padding-bottom: 1.5em">
+<p><span style="float:left; vertical-align:middle">
+<b>2019</b> • <a href="https://www.scilifelab.se/">SciLifeLab</a> • <a href="https://nbis.se/">NBIS</a> • <a href="https://nbisweden.github.io/workshop-RaukR-1906/">RaukR</a>
+</span>
+<span style="float:right; vertical-align:middle">
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://nbisweden.github.io/workshop-RaukR-1806/"><img src="assets/icons8-globe-26.png" alt="website" border="0" style="height:15px"></a>
+</span>
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://twitter.com/hashtag/RaukR?src=hash"><img src="assets/icons8-twitter-26.png" alt="twitter" border="0" style="height:15px"></a>
+</span>
+</span></p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
