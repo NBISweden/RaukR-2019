@@ -41,7 +41,7 @@ library(bsplus)
 ---
 
 <p class="abstract">
-This is the Tidyverse course work material for RaukR 2018.
+This is the Tidyverse course work material for RaukR 2019.
 </p>
 
 ---
@@ -52,11 +52,11 @@ Welcome to the hands-on workshop "Tidy Work in Tidyverse". Most of the things ne
 
 # General excercises
 
-Datasets are available [here](https://www.dropbox.com/s/dxxt959g6iefeaf/tidyverse_lab_data.zip?dl=0)
+Datasets are available [here](https://www.dropbox.com/s/dxxt959g6iefeaf/tidyverse_lab_data.zip?dl=0).
 
 ## Pipes
 
-Rewrite the following code chunks as pipes (`magrittr`):
+Rewrite the following code chunks as pipes (Load package `magrittr` because `tidyverse` supports only the `%>%` pipe!):
 
 ### Chunk 1
 
@@ -588,7 +588,7 @@ tidy_storms %>% unite(col = "date", 4:6, sep = "/")
 ## Introduction
 You will be given a `fastq` file coming from MinION sequencer (Oxford Nanopore). This file contains test reads from the chicken genome. The flow-cell used here has 512 channels, each channel consists of 4 pores and only one pore is active at a time. Once your sequence gets stuck for some reason, the device will attempt to remove it from the pore by playing with reversing polarity on that pore. If this was successful, the pore will be re-used. Your task will be to visualise reading events from the meta-data in the `fastq` dataset and to see how each and every channel behaved. Also, you will plot the distribution of reading times.
 
-Datasets are available [here](https://www.dropbox.com/s/dxxt959g6iefeaf/tidyverse_lab_data.zip?dl=0)
+Datasets are available [here](https://www.dropbox.com/s/dxxt959g6iefeaf/tidyverse_lab_data.zip?dl=0).
 
 ## Preparations
 First, we will need to load the necessary libraries. I will give you a hint -- you need the following libraries:
