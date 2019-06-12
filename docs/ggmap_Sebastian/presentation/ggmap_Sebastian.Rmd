@@ -1,0 +1,411 @@
+---
+title: "ggmap"
+subtitle: "RaukR, 2019."
+author: "Sebastian DiLorenzo"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+institute: NBIS, SciLifeLab
+keywords: r, RaukR, markdown, ggmap
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: false
+    chakra: 'assets/remark-latest.min.js'
+    css: ['assets/presentation.css', 'ggmap_assets/ggmap.css']
+    lib_dir: libs
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "RaukR 2019 . %current%/%total%"
+
+---
+exclude: true
+count: false
+
+```{r,echo=FALSE,child="assets/header-presentation.Rmd"}
+```
+
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+# load the packages you need
+
+library(tidyverse)
+library(ggplot2) # static graphics
+library(ggmap)
+load("ggmap_assets/ggmap_assets.rda")
+load("ggmap_assets/pres_assets.rda")
+```
+
+## ggmap
+
+.center.large[Plotting maps in R with `ggplot2`]
+
+.pull-left-40[
+* https://github.com/dkahle/ggmap
+* Author: David Kahle
+  + Baylor University, Waco, Texas
+]
+
+.pull-right-50[
+```{r}
+ggmap(baylor.map, extent = "device")
+```
+]
+
+???
+The R package ggmap was create by David Kahle of Baylor University in Waco, Texas, as seen plotted here using ggmap.
+Its description on github is "Plotting maps in R with ggplot2", which is precisely why it is a good package to use together with ggplot2.
+
+---
+
+## Quick-theory: Add data to a map
+
+.center[
+```{r,fig.align="center"}
+ggmap(baylor.map)
+```
+]
+
+???
+When plotting on maps you are using a coordinate system, usually longitudes and latitudes, as the axes. So the information you are adding to this map, for example, has to be something like crime, restaurants, parks or something else where we know the location.
+
+---
+
+## The functions of ggmap
+
+.pull-left-50[
+* `get_map()`
+  + input: location
+  + output: *ggmap* object
+  + `source`
+      + Google, Stamen, OpenStreetMap and CloudMade
+  + `maptype`
+  + `zoom`
+]
+
+???
+ggmap has several useful functions that you can try hands-on in the exercise.
+get_map() is used to query one of several map servers such as google, stamen, open street map and cloudmade. You input a string used to search for the location, and the output is a ggmap class object. You can change between several types of maps, and how zoomed in or out you are. Now, we need a google api key for a lot of these functions. Something that we do not have! So we will use a special version of get_map() called get_stamenmap to circumvent google.
+
+---
+
+## The functions of ggmap
+
+.pull-left-50[
+* `get_stamenmap()`
+  + input: location
+  + output: *ggmap* object
+  + `source`
+      + Stamen
+  + `maptype`
+  + `zoom`
+]
+
+---
+
+## The functions of ggmap
+
+.pull-left-50[
+* `get_stamenmap()`
+  + input: location
+  + output: *ggmap* object
+  + `source`
+      + Stamen
+  + `maptype`
+  + `zoom`
+  
+* `ggmap()`
+  + input: *ggmap* object
+  + output: *ggplot* object
+]
+
+???
+The confusingly named ggmap() is the function this time, not the package, used to plot the ggmap object returned from get_map(). And the great thing here is that the output is a ggplot object, that means you can follow a call to ggmap() by any of the ggplot functions such as geom_point or geom_density.
+
+--
+
+.pull-right-50[
+* `geocode()`
+  + input: location
+  + output: latitude and longitude
+]
+
+???
+geocode() takes a location and returns latitude and longitude rather than a map object. This is useful for creating data to plot on top of your map.
+
+--
+
+.pull-right-50[
+* `trek(), route() & mapdist()`
+  + input: *from* and *to* locations
+  + output: multiple latitudes and longitudes
+  + `mode = c("driving", "walking", "bicycling", "transit")`
+]
+
+???
+trek() is a function that take a From and a To location and asks the same servers as get_map used if they can give us a route between them. A route in this case being a bunch of lat/lon coordinates. Route() is similar to trek() but is allowed to go more offroad whereas mapdist returns more info on distances.
+
+---
+
+## Example
+
+.pull-left-50.smallish[
+```{r, eval = F}
+#Get the map
+visby.watercolor.map <- get_stamenmap(
+  c(left = 18.265071, bottom = 57.631000,
+    right = 18.306766, top = 57.649192),
+    zoom = 14, maptype="watercolor")
+
+#Inspect
+visby.watercolor.map %>% ggmap(extent = "device")
+```
+]
+
+.pull-right-50[
+```{r, fig.align="right", eval = T, echo = F}
+visby.watercolor.map %>% ggmap(extent = "device")
+```
+]
+
+???
+Now for a quick example before the exercise. Here I have started by saving a ggmap object, visby.watercolor.map, using get_stamenmap(). Because I thought it was cute and didnt have a bunch of text on it, I use the maptype watercolor.
+
+---
+
+## Example
+
+.pull-left-50.smallish[
+```{r, eval = F}
+#Get the map
+visby.watercolor.map <- get_stamenmap(
+  c(left = 18.265071, bottom = 57.631000,
+    right = 18.306766, top = 57.649192),
+    zoom = 14, maptype="watercolor")
+
+#Create a tibble of Visby's
+# most important locations
+visby.places <- tibble(
+  location = c("Mullbärsgården, Visby",
+     "Visby Hostel, Visby",
+     "Glassmagasinet, Visby"),
+      lon = c(18.29203,18.28998,18.28720),
+      lat = c(57.64182,57.63851,57.63729))
+
+#Inspect
+visby.watercolor.map %>% ggmap(extent = "device")
+```
+]
+
+.pull-right-50[
+```{r, fig.align="right", eval = T, echo = F}
+visby.watercolor.map %>% ggmap(extent = "device")
+```
+]
+
+???
+Now there are three important places in visby that I want to add to the map, and those are Mullbärsgården, where some of you live, Visby hostel, where some others of you live, and glassmagasinet, they make icecream. I have saved those locations in a tibble called visby.locations.
+
+---
+
+## Example
+
+.pull-left-50.smallish[
+```{r, eval = F}
+#Get the map
+visby.watercolor.map <- get_stamenmap(
+  c(left = 18.265071, bottom = 57.631000,
+    right = 18.306766, top = 57.649192),
+    zoom = 14, maptype="watercolor")
+
+#Create a tibble of Visby's
+# most important locations
+visby.places <- tibble(
+  location = c("Mullbärsgården, Visby",
+     "Visby Hostel, Visby",
+     "Glassmagasinet, Visby"),
+      lon = c(18.29203,18.28998,18.28720),
+      lat = c(57.64182,57.63851,57.63729))
+
+#Plot important locations
+visby.watercolor.map %>% ggmap(extent = "device") +
+  geom_point(data = visby.places,
+    aes(x = lon, y = lat),
+    color = 'red', size = 5)
+```
+]
+
+.pull-right-50[
+```{r, fig.align="right", eval = T, echo = F}
+#Plot important locations
+visby.watercolor.map %>% ggmap(extent="device") +
+  geom_point(data = visby.places, aes(x = lon, y = lat), color = 'red', size = 5)
+```
+]
+
+???
+We can now update our plot, using ggplots geom_point() to place red dots on the locations.
+
+---
+
+## Example
+
+.pull-left-50.smallish[
+```{r, eval = F}
+#Get the map
+visby.watercolor.map <- get_stamenmap(
+  c(left = 18.265071, bottom = 57.631000,
+    right = 18.306766, top = 57.649192),
+    zoom = 14, maptype="watercolor")
+
+#Create a tibble of Visby's
+# most important locations
+visby.places <- tibble(
+  location = c("Mullbärsgården, Visby",
+     "Visby Hostel, Visby",
+     "Glassmagasinet, Visby"),
+      lon = c(18.29203,18.28998,18.28720),
+      lat = c(57.64182,57.63851,57.63729))
+
+#Plot important locations
+visby.watercolor.map %>% ggmap(extent = "device") +
+  geom_point(data = visby.places,
+    aes(x = lon, y = lat),
+    color = 'red', size = 5) +
+  geom_text(data = visby.places,
+    aes(label = location),
+    hjust=0, vjust=-1)
+```
+]
+
+.pull-right-50[
+```{r, fig.align="right", eval = T, echo = F}
+#Plot important locations
+visby.watercolor.map %>% ggmap(extent = "device") +
+  geom_point(data = visby.places, aes(x = lon, y = lat), color = 'red', size = 5) +
+  geom_text(data = visby.places, aes(label = location), hjust=0, vjust=-1)
+```
+]
+
+???
+And incase you dont know which one is which, lets use geom_text() to put labels on them.
+Great, but how do I get from Mullbärsgården to Glassmagasinet?
+
+---
+
+## Example
+
+.pull-left-50.smallish[
+```{r, eval = F}
+#Get the map
+visby.watercolor.map <- get_stamenmap(
+  c(left = 18.265071, bottom = 57.631000,
+    right = 18.306766, top = 57.649192),
+    zoom = 14, maptype="watercolor")
+
+#Create a tibble of Visby's
+# most important locations
+visby.places <- tibble(
+  location = c("Mullbärsgården, Visby",
+     "Visby Hostel, Visby",
+     "Glassmagasinet, Visby"),
+      lon = c(18.29203,18.28998,18.28720),
+      lat = c(57.64182,57.63851,57.63729))
+
+#Create the route with trek()
+goto_icecream <- trek(
+  "Mullbärsgården, Visby",
+  "Glassmagasinet, Visby",
+  structure = "route", mode = "bicycling")
+
+#Plot important locations
+ggmap(visby.watercolor.map,
+  extent="device") +
+  geom_point(
+    data = visby.places,
+    aes(x = lon, y = lat),
+    color = 'red', size = 5) +
+  geom_text(data = visby.places,
+    aes(label = location),
+    hjust=0, vjust=-1)
+```
+]
+
+.pull-right-50[
+```{r, fig.align="right", eval = T, echo = F}
+#Plot important locations
+ggmap(visby.watercolor.map, extent="device") +
+  geom_point(data = visby.places, aes(x = lon, y = lat), color = 'red', size = 5) +
+  geom_text(data = visby.places, aes(label = location), hjust=0, vjust=-1)
+```
+]
+
+???
+Well lets clear some space here and use ggmap function trek(), from Mullbärsgården, to Glassmagasinet.
+
+---
+
+## Example
+
+.pull-left-50.smallish[
+```{r, eval = F}
+#Create the route with trek()
+goto_icecream <- trek(
+  "Mullbärsgården, Visby",
+  "Glassmagasinet, Visby",
+  structure = "route", mode = "bicycling")
+
+#Plot important locations and routes
+ggmap(visby.watercolor.map,
+  extent="device") +
+  geom_point(
+    data = visby.places,
+    aes(x = lon, y = lat),
+    color = 'red', size = 5) +
+  geom_text(data = visby.places,
+    aes(label = location),
+    hjust=0, vjust=-1) +
+  geom_path(aes(x = lon, y = lat),
+    colour = "blue",
+    size = 1.5, alpha = .5,
+    data = goto_icecream,
+    lineend = "round")
+```
+]
+
+.pull-right-50[
+```{r, fig.align="right", eval = T, echo = F}
+#Plot important locations
+ggmap(visby.watercolor.map, extent="device") +
+  geom_point(data = visby.places, aes(x = lon, y = lat), color = 'red', size = 5) +
+  geom_text(data = visby.places, aes(label = location), hjust=0, vjust=-1) +
+  geom_path( aes(x = lon, y = lat),  colour = "blue",
+    size = 1.5, alpha = .5,
+    data = goto_icecream, lineend = "round")
+```
+]
+
+???
+Finally, we use that trek and ggplot geom_path() to add the route to our plot.
+Now that you have a feel for it, we are ready for the exercise.
+
+---
+name: report
+
+## Session  
+
+* This presentation was created in RStudio using [`remarkjs`](https://github.com/gnab/remark) framework through R package [`xaringan`](https://github.com/yihui/xaringan).
+* For R Markdown, see <http://rmarkdown.rstudio.com>
+* For R Markdown presentations, see <https://rmarkdown.rstudio.com/lesson-11.html>
+
+```{r,echo=TRUE}
+R.version
+```
+
+---
+name: end-slide
+class: end-slide
+
+# Thank you

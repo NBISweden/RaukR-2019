@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Sebastian DiLorenzo" />
+
+
+<title>ggmap</title>
+
+<script src="ggmap_Sebastian_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="ggmap_Sebastian_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="ggmap_Sebastian_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="ggmap_Sebastian_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="ggmap_Sebastian_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="ggmap_Sebastian_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="ggmap_Sebastian_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="ggmap_Sebastian_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="ggmap_Sebastian_files/navigation-1.1/tabsets.js"></script>
+<link href="ggmap_Sebastian_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="ggmap_Sebastian_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="ggmap_Sebastian_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="ggmap_Sebastian_files/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="ggmap_Sebastian_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="ggmap_Sebastian_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="ggmap_Sebastian_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">ggmap</h1>
+<h3 class="subtitle">RaukR, 2019.</h3>
+<h4 class="author">Sebastian DiLorenzo</h4>
+<h4 class="date">12-Jun-2019</h4>
+
+</div>
+
+
+<p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<hr />
+<p class="abstract">
+This exercise will show you how to use <code>ggmap</code> to produce maps and combine them with data and the <code>ggplot2</code> skills you have learned for geospatial visualisation.
+</p>
+<hr />
+<div id="installing-requirements" class="section level1">
+<h1><span class="header-section-number">1</span> Installing requirements</h1>
+<p>Lets start by installing and loading the required packages. Note that we are using the github version of <code>ggmap</code>. If you have already installed some of the packages you can skip those.</p>
+<pre class="r"><code>devtools::install_github(&quot;dkahle/ggmap&quot;)
+install.packages(c(&quot;ggplot2&quot;,&quot;tidyverse&quot;))
+
+library(ggmap)
+library(ggplot2)
+library(tidyverse)</code></pre>
+</div>
+<div id="maps-get_stamenmap-and-ggmap" class="section level1">
+<h1><span class="header-section-number">2</span> Maps | get_stamenmap() and ggmap()</h1>
+<p>As the name suggests, the <code>get_stamenmap()</code> function from <code>ggmap</code> is used to get maps. The maps are of the class <em>ggmap</em> and you can get many different maptypes.</p>
+<ul>
+<li>Use <code>get_stamenmap()</code> to get a <em>ggmap</em> object of your hometown or current city and plot it using <code>ggmap()</code>. Try out a few maptypes.</li>
+</ul>
+<blockquote>
+<p>Note: Some maps are pretty big, so try to save them so you don’t have to query and redownload the maps multiple times once you find the size you want.</p>
+</blockquote>
+<pre class="r"><code>visby.map &lt;- get_stamenmap(c(left = 18.265071, bottom = 57.631000,
+    right = 18.306766, top = 57.649192),
+    zoom = 14)
+
+ggmap(visby.map)</code></pre>
+<p><img src="ggmap_Sebastian_files/figure-html/unnamed-chunk-5-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Trying out some other maptypes:</p>
+<pre class="r"><code>visby.watercolor.map &lt;- get_stamenmap(c(left = 18.265071, bottom = 57.631000,
+    right = 18.306766, top = 57.649192),
+    zoom = 14, maptype = &quot;watercolor&quot;)
+visby.tonerlines.map &lt;-get_stamenmap(c(left = 18.265071, bottom = 57.631000,
+    right = 18.306766, top = 57.649192),
+    zoom = 14, maptype = &quot;toner-lines&quot;)
+
+#extent=&quot;device&quot; : removes long/lat axes
+ggmap(visby.watercolor.map, extent=&quot;device&quot;)
+ggmap(visby.tonerlines.map, extent=&quot;device&quot;)</code></pre>
+<p><img src="ggmap_Sebastian_files/figure-html/unnamed-chunk-7-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /><img src="ggmap_Sebastian_files/figure-html/unnamed-chunk-7-2.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="add-data-to-the-map" class="section level1">
+<h1><span class="header-section-number">3</span> Add data to the map</h1>
+<p>Being able to output maps is great but, as with everything in life, it becomes more interesting when you can overlay it with data.</p>
+<div id="points-geocode-and-geom_point" class="section level2">
+<h2><span class="header-section-number">3.1</span> Points | geocode() and geom_point()</h2>
+<p><code>ggmap::geocode()</code> is a nifty function that returns the latitude and longitude of a location. Regrettably, we can’t use it this time because of googles new API key rules.</p>
+<ul>
+<li>Use <a href="https://www.google.com/maps" class="uri">https://www.google.com/maps</a>, or some other service, to find the longitudes and latitudes of some locations. Your favourite gym or restaurant for example?</li>
+</ul>
+<p>In my example code, I show how to use a <code>tibble</code> of locations and <code>geocode()</code> to get coordinates for several locations and bind them together. Since we can’t use <code>geocode()</code> I also show how to create a <code>tibble</code> of locations, longitudes and latitudes directly.</p>
+<ul>
+<li>Create a <code>tibble</code> with location, lon and lat.</li>
+</ul>
+<pre class="r"><code>#Create a tibble of Visby&#39;s most important locations
+visby.locations &lt;- tibble(location = c(&quot;Mullbärsgården, Visby&quot;,
+  &quot;Visby Hostel, Visby&quot;,
+  &quot;Glassmagasinet, Visby&quot;))
+
+#Get the geocode, the latitude and longitude, of the locations
+visby.geo &lt;- geocode(visby.locations$location)
+
+#Create a data.frame of the data for easier plotting
+visby.places &lt;- cbind(visby.locations,visby.geo)
+
+#Create the tibble manually
+visby.places &lt;- tibble(
+  location = c(&quot;Mullbärsgården, Visby&quot;,
+     &quot;Visby Hostel, Visby&quot;,
+     &quot;Glassmagasinet, Visby&quot;),
+      lon = c(18.29203,18.28998,18.28720),
+      lat = c(57.64182,57.63851,57.63729))</code></pre>
+<ul>
+<li>When you have your locations dataset ready, use <code>geom_point()</code> to add markers to your map for your locations. Feel free to use <code>geom_text()</code> to also add labels for your locations. Notice that you can treat the <code>ggmap()</code> function like <code>ggplot()</code>.</li>
+</ul>
+<pre class="r"><code>ggmap(visby.watercolor.map, extent=&quot;device&quot;) +
+  geom_point(data = visby.places, aes(x = lon, y = lat), color = &#39;red&#39;, size = 3) +
+  geom_text(data = visby.places, aes(label = location), hjust=0, vjust=-1)</code></pre>
+<p><img src="ggmap_Sebastian_files/figure-html/unnamed-chunk-9-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<!--
+## Routes | trek() and geom_path()
+
+`trek` is a function from `ggmap` that takes a start location and a stop location and gives a list of latitude and longitude coordinates connecting the two. You can give several different modes of transit, but why anyone would choose anything other than bicycling is beyond me.
+
+Combining `trek` and `ggplot2 geom_path` we can plot a route between two places, as long as one exists. Since we cannot 
+
+> Note: Make sure your background map covers both start and stop position!
+
+
+
+```r
+#Create a map that is zoomed out enough to show start and stop of route
+visby.zoomedout.map <- get_map("Visby", zoom = 7)
+
+#Create the route with trek()
+sthlm_vby <- trek("Stockholm, Sweden", "Visby, Sweden",
+  structure = "route", mode = "bicycling")
+
+#Plot the route to map
+ggmap(visby.zoomedout.map, extent="device") +
+  geom_path( aes(x = lon, y = lat),  colour = "blue",
+    size = 1.5, alpha = .5,
+    data = sthlm_vby, lineend = "round")
+```
+```{r, echo = F, eval = F}  #Set eval=T
+#Create the route with trek()
+sthlm_vby <- trek("Stockholm, Sweden", "Visby, Sweden", structure = "route", mode = "bicycling")
+
+#Plot the route to map
+ggmap(visby.zoomedout.map, extent="device") +
+  geom_path( aes(x = lon, y = lat),  colour = "blue",
+    size = 1.5, alpha = .5,
+    data = sthlm_vby, lineend = "round")
+```
+-->
+</div>
+<div id="pubs" class="section level2">
+<h2><span class="header-section-number">3.2</span> Pubs</h2>
+<p>What do they mean by pubs? Do they mean publications? Nope! We are going to plot actual pubs, bars &amp; inns in the UK using a public dataset from <a href="https://www.getthedata.com/open-pubs" class="uri">https://www.getthedata.com/open-pubs</a>.</p>
+<p>Download the dataset <code>pubs.rda</code> from course materials.</p>
+<blockquote>
+<p>Note: I have processed this data slightly, if you want you can see how below, but it is not important for this exercise.</p>
+</blockquote>
+<pre class="r"><code>#Read the dataset
+pubs &lt;- read.csv(&quot;open_pubs.csv&quot;, stringsAsFactors = F)
+
+#Set column names
+colnames(pubs) &lt;- c(&quot;fsa_id&quot;,&quot;name&quot;,&quot;address&quot;,&quot;postcode&quot;,&quot;easting&quot;,&quot;northing&quot;,
+  &quot;latitude&quot;,&quot;longitude&quot;,&quot;city&quot;)
+
+#Convert long/lat to numeric
+pubs$latitude &lt;- as.numeric(pubs$latitude)
+pubs$longitude &lt;- as.numeric(pubs$longitude)
+
+#Remove any rows with NA values
+pubs &lt;- pubs[complete.cases(pubs),]</code></pre>
+<p>Use what you have learned so far to complete as many tasks as you have time for. There is some help code and example plots of the town “Oldham” below, but really try to do it yourself.</p>
+<ol style="list-style-type: decimal">
+<li>Load <code>pubs.rda</code> into R.</li>
+<li>Subset the dataset to a city.</li>
+<li>Get a map of the city with <code>ggmap</code>.</li>
+<li>Plot the position of the pubs onto the map using <code>geom_point</code>.</li>
+<li>Create another plot where you plot the density lines of pubs using <code>geom_density2d</code>.</li>
+</ol>
+<ul>
+<li>Optional: Feel free to select an appropriate <em>maptype</em> that isn’t so busy with text, I suggest the darker toner ones.</li>
+</ul>
+<ol start="6" style="list-style-type: decimal">
+<li>Fill the density lines by overlaying with <code>stat_density_2d</code> as well. Use parameter<code>geom = "polygon"</code>.</li>
+</ol>
+<ul>
+<li>Tip: You can use <code>scale_fill_gradient2</code> and <code>scale_alpha</code> to adjust colors and alpha.</li>
+</ul>
+<hr />
+<p>Example code:</p>
+<p>Task 4:</p>
+<pre class="r"><code>ggmap(oldham.map, extent=&quot;device&quot;) +
+  geom_point(data = oldham.pubs, aes(x = longitude, y = latitude),
+    color = &#39;red&#39;, size = 2)</code></pre>
+<p><img src="ggmap_Sebastian_files/figure-html/unnamed-chunk-12-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Task 5:</p>
+<pre class="r"><code>ggmap(oldham.toner.map, extent=&quot;device&quot;, darken = .7, legend = &quot;bottomright&quot;) +
+  geom_density2d(data = oldham.pubs, aes(x = longitude, y = latitude))</code></pre>
+<p><img src="ggmap_Sebastian_files/figure-html/unnamed-chunk-13-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Task 6:</p>
+<pre class="r"><code>ggmap(oldham.toner.map, extent=&quot;device&quot;, darken = .7, legend = &quot;bottomright&quot;) +
+  geom_density2d(data = oldham.pubs, aes(x = longitude, y = latitude)) +
+  stat_density_2d(data = oldham.pubs, aes(x = longitude, y = latitude,
+    fill = ..level..,alpha = ..level..), geom = &quot;polygon&quot;, color = NA)</code></pre>
+<p><img src="ggmap_Sebastian_files/figure-html/unnamed-chunk-14-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Task 6, tweaked:</p>
+<pre class="r"><code>ggmap(oldham.toner.map, extent=&quot;device&quot;, darken = .7, legend = &quot;bottomright&quot;) +
+  # Commenting geom_density2d, it is prettier without the lines =)
+  #geom_density2d(data = oldham.pubs, aes(x = longitude, y = latitude)) +
+  stat_density_2d(data = oldham.pubs, aes(x = longitude, y = latitude,
+    fill = ..level..,alpha = ..level..), geom = &quot;polygon&quot;, color = NA) +
+  scale_fill_gradient2(&quot;Pubs&quot;, low = &quot;white&quot;, mid = &quot;yellow&quot;,
+    high = &quot;red&quot;, midpoint = 125) +
+  scale_alpha(range = c(0.05, 0.30), guide = FALSE)</code></pre>
+<p><img src="ggmap_Sebastian_files/figure-html/unnamed-chunk-15-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+</div>
+<div id="session-info" class="section level1">
+<h1><span class="header-section-number">4</span> Session info</h1>
+<pre><code>## R version 3.6.0 (2019-04-26)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS Mojave 10.14.5
+## 
+## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] ggmap_3.0.0     forcats_0.4.0   stringr_1.4.0   dplyr_0.8.1    
+##  [5] purrr_0.3.2     readr_1.3.1     tidyr_0.8.3     tibble_2.1.2   
+##  [9] tidyverse_1.2.1 ggplot2_3.1.1   captioner_2.2.3 bookdown_0.11  
+## [13] knitr_1.23     
+## 
+## loaded via a namespace (and not attached):
+##  [1] tidyselect_0.2.5  xfun_0.7          haven_2.1.0      
+##  [4] lattice_0.20-38   colorspace_1.4-1  generics_0.0.2   
+##  [7] htmltools_0.3.6   yaml_2.2.0        rlang_0.3.4      
+## [10] pillar_1.4.1      glue_1.3.1        withr_2.1.2      
+## [13] modelr_0.1.4      readxl_1.3.1      jpeg_0.1-8       
+## [16] plyr_1.8.4        munsell_0.5.0     gtable_0.3.0     
+## [19] cellranger_1.1.0  rvest_0.3.4       RgoogleMaps_1.4.3
+## [22] evaluate_0.14     labeling_0.3      broom_0.5.2      
+## [25] Rcpp_1.0.1        scales_1.0.0      backports_1.1.4  
+## [28] jsonlite_1.6      rjson_0.2.20      hms_0.4.2        
+## [31] png_0.1-7         digest_0.6.19     stringi_1.4.3    
+## [34] grid_3.6.0        bitops_1.0-6      cli_1.1.0        
+## [37] tools_3.6.0       magrittr_1.5      lazyeval_0.2.2   
+## [40] crayon_1.3.4      pkgconfig_2.0.2   MASS_7.3-51.4    
+## [43] xml2_1.2.0        lubridate_1.7.4   assertthat_0.2.1 
+## [46] rmarkdown_1.13    httr_1.4.0        rstudioapi_0.10  
+## [49] R6_2.4.0          nlme_3.1-140      compiler_3.6.0</code></pre>
+<p style="text-align: left; font-size: small;">
+Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 12-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 22:35:41.
+</p>
+<hr/>
+<div style="padding-bottom: 1.5em">
+<p><span style="float:left; vertical-align:middle">
+<b>2019</b> • <a href="https://www.scilifelab.se/">SciLifeLab</a> • <a href="https://nbis.se/">NBIS</a> • <a href="https://nbisweden.github.io/workshop-RaukR-1906/">RaukR</a>
+</span>
+<span style="float:right; vertical-align:middle">
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://nbisweden.github.io/workshop-RaukR-1806/"><img src="assets/icons8-globe-26.png" alt="website" border="0" style="height:15px"></a>
+</span>
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://twitter.com/hashtag/RaukR?src=hash"><img src="assets/icons8-twitter-26.png" alt="twitter" border="0" style="height:15px"></a>
+</span>
+</span></p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
