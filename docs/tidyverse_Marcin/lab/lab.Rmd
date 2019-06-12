@@ -516,7 +516,7 @@ and `set2`:
 knitr::kable(set2)
 ```
 
-Perform joins on `id` that result in the grey area from the Venn diagrams below:
+Perform joins on `id` that result in the grey area from the Venn diagrams below. We have not talked about all possible joins, so read the docs if you do not know which join to use.
 
 ```{r echo=FALSE, fig.align='left', fig.height=1.5}
 library(eulerr)
