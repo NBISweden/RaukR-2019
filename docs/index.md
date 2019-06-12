@@ -34,6 +34,10 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
 * **ggplot** (*Author:* Roy Francis, *Reviewer:* Marcin Kierczak)
     + [Presentation](ggplot/presentation/ggplot_presentation.html)
     + [Lab](ggplot/lab/ggplot_lab.html)
+* **ggmap** (*Author:* Sebastian DiLorenzo)
+    + [Presentation](ggmap_Sebastian/presentation/ggmap_Sebastian.html)
+    + [Lab](ggmap_Sebastian/lab/ggmap_Sebastian.html)
+    + [Data](ggmap_Sebastian/lab/data/pubs.rda)
 
 #### 14-Jun-2019 (Fri)
 
