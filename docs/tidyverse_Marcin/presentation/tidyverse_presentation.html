@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
     <title>Tidy Work in Tidyverse</title>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta name="author" content="Marcin Kierczak" />
-    <meta name="keywords" content="r, RaukR, markdown, tidyverse" />
+    <meta name="keywords" content="r, RaukR, markdown" />
+    <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+    <link id="font-awesome-1-attachment" rel="attachment" href="libs/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
     <script src="libs/kePrint-0.0.1/kePrint.js"></script>
     <link rel="stylesheet" href="assets/presentation.css" type="text/css" />
   </head>
@@ -13,13 +16,23 @@
 class: center, middle, inverse, title-slide
 
 # Tidy Work in Tidyverse
-## Advanced R for Bioinformatics. Visby, 2018.
-### Marcin Kierczak
-### 04 June, 2018
+## RaukR 2019 • Advanced R for Bioinformatics
+### <b>Marcin Kierczak</b>
+### NBIS, SciLifeLab
 
 ---
 
-class: spaced 
+exclude: true
+count: false
+
+
+&lt;link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;amp;subset=latin-ext" rel="stylesheet"&gt;
+
+
+
+
+
+&lt;!-- ----------------- Only edit title &amp; author above this ----------------- --&gt;
 
 
 
@@ -34,9 +47,9 @@ class: spaced
 * A philosophy of programming or a programing paradigm.
 * Everything is about the flow of *tidy data*.
 .center[
-&lt;img src="assets/hex-tidyverse.png", style="height:200px;"&gt;
-&lt;img src="assets/Hadley-wickham2016-02-04.jpeg", style="height:200px;"&gt;
-&lt;img src="assets/RforDataScience.jpeg", style="height:200px;"&gt;
+&lt;img src="assets_tidyverse/hex-tidyverse.png", style="height:200px;"&gt;
+&lt;img src="assets_tidyverse/Hadley-wickham2016-02-04.jpeg", style="height:200px;"&gt;
+&lt;img src="assets_tidyverse/RforDataScience.jpeg", style="height:200px;"&gt;
 ]
 .vsmall[sources of images: www.tidyverse.org, Wikipedia, www.tidyverse.org]
 
@@ -50,7 +63,7 @@ The tidyverse curse?&lt;br&gt;&lt;br&gt;
 .right[.small[-- [Robert A. Muenchen](http://r4stats.com/articles/why-r-is-hard-to-learn/)]]
 &lt;br&gt;&lt;br&gt;
 --
-&lt;img src="assets/tidyverse-flow.png", style="height:400px;"&gt;
+&lt;img src="assets_tidyverse/tidyverse-flow.png", style="height:400px;"&gt;&lt;br&gt;
 .vsmall[source: http://www.storybench.org/getting-started-with-tidyverse-in-r/]  
 
 ---
@@ -58,14 +71,14 @@ name: intro_to_pipes
 ## Introduction to Pipes
 .pull-left-50[
   .center[
-    &lt;img src="assets/MagrittePipe.jpg" width="300" style="display: block; margin: auto auto auto 0;" /&gt;
+    &lt;img src="assets_tidyverse/MagrittePipe.jpg" width="300" style="display: block; margin: auto auto auto 0;" /&gt;
   ]
   .vsmall[
     Rene Magritt, *La trahison des images*, [Wikimedia Commons](https://en.wikipedia.org/wiki/The_Treachery_of_Images#/media/File:MagrittePipe.jpg)
   ]
   &lt;br&gt;&amp;nbsp;
   .center[
-    &lt;img src="assets/magrittr.png" width="150" style="display: block; margin: auto auto auto 0;" /&gt;
+    &lt;img src="assets_tidyverse/magrittr.png" width="150" style="display: block; margin: auto auto auto 0;" /&gt;
   ]
 ]
 --
@@ -134,13 +147,13 @@ rnorm(50) %&gt;%
 ```
 
 ```
-##        V1                  V2          
-##  Min.   :-1.886251   Min.   :-3.01041  
-##  1st Qu.:-0.759696   1st Qu.:-0.69188  
-##  Median : 0.008827   Median :-0.03033  
-##  Mean   :-0.279981   Mean   : 0.16094  
-##  3rd Qu.: 0.143669   3rd Qu.: 1.03628  
-##  Max.   : 1.461389   Max.   : 2.61304
+##        V1                V2          
+##  Min.   :-1.8005   Min.   :-1.63074  
+##  1st Qu.:-0.7070   1st Qu.:-0.72419  
+##  Median :-0.1815   Median : 0.21506  
+##  Mean   :-0.1333   Mean   :-0.08634  
+##  3rd Qu.: 0.3385   3rd Qu.: 0.46185  
+##  Max.   : 1.8652   Max.   : 0.89255
 ```
 
 &lt;img src="tidyverse_presentation_files/figure-html/magrittr2b-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
@@ -183,7 +196,7 @@ M
 ```
 
 ```
-## [1] -2.3928896 -0.4712869 -1.2343871 -0.4547427
+## [1] -1.8570306 -0.1943518 -0.8976997  3.7219083
 ```
 ---
 name: magrittr_placeholder
@@ -205,9 +218,9 @@ M %&gt;% `%*%`(., .)
 ```
 
 ```
-##           [,1]       [,2]
-## [1,] 1.3229968 -0.4043394
-## [2,] 0.3027784  0.2510555
+##           [,1]      [,2]
+## [1,]  1.261849 0.4939613
+## [2,] -1.223489 1.1420257
 ```
 
 
@@ -227,10 +240,10 @@ name: tibble_intro
 
 ## Tibbles
 .pull-left-50[
-  &lt;img src="assets/hex-tibble.png" width="160" style="display: block; margin: auto;" /&gt;
+  &lt;img src="assets_tidyverse/hex-tibble.png" width="160" style="display: block; margin: auto;" /&gt;
   
   ```r
-  as.tibble(iris)
+  as_tibble(iris)
   ```
   
   ```
@@ -247,14 +260,14 @@ name: tibble_intro
   ##  8          5           3.4          1.5         0.2 setosa 
   ##  9          4.4         2.9          1.4         0.2 setosa 
   ## 10          4.9         3.1          1.5         0.1 setosa 
-  ## # ... with 140 more rows
+  ## # … with 140 more rows
   ```
 ]
 
 .pull-right-50[
 * `tibble` is one of the unifying features of tidyverse,
 * it is a *better* `data.frame` realization,
-* objects `data.frame` can be coerced to `tibble` using `as.tibble()`
+* objects `data.frame` can be coerced to `tibble` using `as_tibble()`
 
 
 ```r
@@ -268,19 +281,19 @@ name: tibble_intro
 
 ```
 ## # A tibble: 50 x 4
-##        x      y     z outcome
-##    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
-##  1     1 0.579   1.34 -0.705 
-##  2     1 0.381   1.15 -1.50  
-##  3     1 0.575   1.33 -0.185 
-##  4     1 0.0603  1.00  0.795 
-##  5     1 0.763   1.58  1.11  
-##  6     1 0.759   1.58 -0.989 
-##  7     1 0.732   1.54 -0.0796
-##  8     1 0.231   1.05 -0.611 
-##  9     1 0.958   1.92  0.626 
-## 10     1 0.640   1.41  0.622 
-## # ... with 40 more rows
+##        x      y     z  outcome
+##    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+##  1     1 0.528   1.28  0.00203
+##  2     1 0.626   1.39 -3.18   
+##  3     1 0.930   1.86 -1.78   
+##  4     1 0.702   1.49 -0.199  
+##  5     1 0.0807  1.01  0.129  
+##  6     1 0.644   1.41 -2.12   
+##  7     1 0.0435  1.00 -1.61   
+##  8     1 0.880   1.77  0.451  
+##  9     1 0.250   1.06  1.50   
+## 10     1 0.0855  1.01  0.568  
+## # … with 40 more rows
 ```
 ]
 
@@ -296,7 +309,7 @@ name: tibble2
 
 
 ```r
-as.tibble(cars)
+as_tibble(cars)
 ```
 
 ```
@@ -313,7 +326,7 @@ as.tibble(cars)
 ##  8    10    26
 ##  9    10    34
 ## 10    11    17
-## # ... with 40 more rows
+## # … with 40 more rows
 ```
 
 * `my_tibble %&gt;% print(n = 50, width = Inf)`,
@@ -328,7 +341,7 @@ name: tibble2
 
 
 ```r
-vehicles &lt;- as.tibble(cars[1:5,])
+vehicles &lt;- as_tibble(cars[1:5,])
 
 vehicles[['speed']]
 vehicles[[1]]
@@ -464,27 +477,34 @@ name: parsing_strings
 * Strings can be represented in different encodings:
 
 ```r
-text1 &lt;- 'P?? en ?? ??r en ??'
-text2 &lt;- 'Za???????? g????l?? ja????'
+text1 &lt;- 'På en ö är en å'
+text2 &lt;- 'Zażółć gęślą jaźń'
 ```
 
 ```r
 text1
 charToRaw(text2)
-parse_character(charToRaw(text1), locale = locale(encoding = 'UTF-8'))
+parse_character(text1, locale = locale(encoding = 'UTF-8'))
 guess_encoding(charToRaw("Test"))
+guess_encoding(charToRaw(text1))
 ```
 
 ```
-## [1] "P?? en ?? ??r en ??"
-##  [1] 5a 61 3f 3f 3f 3f 3f 3f 3f 3f 20 67 3f 3f 3f 3f 6c 3f 3f 20 6a 61 3f
-## [24] 3f 3f 3f
-##  [1] "50" "3f" "3f" "20" "65" "6e" "20" "3f" "3f" "20" "3f" "3f" "72" "20"
-## [15] "65" "6e" "20" "3f" "3f"
+## [1] "På en ö är en å"
+##  [1] 5a 61 c5 bc c3 b3 c5 82 c4 87 20 67 c4 99 c5 9b 6c c4 85 20 6a 61 c5
+## [24] ba c5 84
+## [1] "På en ö är en å"
 ## # A tibble: 1 x 2
 ##   encoding confidence
 ##   &lt;chr&gt;         &lt;dbl&gt;
 ## 1 ASCII             1
+## # A tibble: 4 x 2
+##   encoding   confidence
+##   &lt;chr&gt;           &lt;dbl&gt;
+## 1 UTF-8            1   
+## 2 ISO-8859-1       0.83
+## 3 ISO-8859-9       0.33
+## 4 ISO-8859-2       0.3
 ```
 
 ---
@@ -503,7 +523,8 @@ parse_factor(c('mountains', 'plains', 'seaside', 'swamps'),
 
 ```
 ## Warning: 1 parsing failure.
-## row # A tibble: 1 x 4 col     row   col expected           actual expected   &lt;int&gt; &lt;int&gt; &lt;chr&gt;              &lt;chr&gt;  actual 1     2    NA value in level set plains
+## row col           expected actual
+##   2  -- value in level set plains
 ```
 
 ```
@@ -554,20 +575,20 @@ tricky_dataset &lt;- read_csv(readr_example('challenge.csv'))
 ```
 ## Parsed with column specification:
 ## cols(
-##   x = col_integer(),
-##   y = col_character()
+##   x = col_double(),
+##   y = col_logical()
 ## )
 ```
 
 ```
-## Warning in rbind(names(probs), probs_f): number of columns of result is not
-## a multiple of vector length (arg 1)
-```
-
-```
 ## Warning: 1000 parsing failures.
-## row # A tibble: 5 x 5 col     row col   expected               actual             file               expected   &lt;int&gt; &lt;chr&gt; &lt;chr&gt;                  &lt;chr&gt;              &lt;chr&gt;              actual 1  1001 x     no trailing characters .23837975086644292 '/usr/local/lib/R~ file 2  1002 x     no trailing characters .41167997173033655 '/usr/local/lib/R~ row 3  1003 x     no trailing characters .7460716762579978  '/usr/local/lib/R~ col 4  1004 x     no trailing characters .723450553836301   '/usr/local/lib/R~ expected 5  1005 x     no trailing characters .614524137461558   '/usr/local/lib/R~
-## ... ................. ... .......................................................................... ........ .......................................................................... ...... .......................................................................... .... .......................................................................... ... .......................................................................... ... .......................................................................... ........ ..........................................................................
+##  row col           expected     actual                                                                                         file
+## 1001   y 1/0/T/F/TRUE/FALSE 2015-01-16 '/Library/Frameworks/R.framework/Versions/3.5/Resources/library/readr/extdata/challenge.csv'
+## 1002   y 1/0/T/F/TRUE/FALSE 2018-05-18 '/Library/Frameworks/R.framework/Versions/3.5/Resources/library/readr/extdata/challenge.csv'
+## 1003   y 1/0/T/F/TRUE/FALSE 2015-09-05 '/Library/Frameworks/R.framework/Versions/3.5/Resources/library/readr/extdata/challenge.csv'
+## 1004   y 1/0/T/F/TRUE/FALSE 2012-11-28 '/Library/Frameworks/R.framework/Versions/3.5/Resources/library/readr/extdata/challenge.csv'
+## 1005   y 1/0/T/F/TRUE/FALSE 2020-01-13 '/Library/Frameworks/R.framework/Versions/3.5/Resources/library/readr/extdata/challenge.csv'
+## .... ... .................. .......... ............................................................................................
 ## See problems(...) for more details.
 ```
 OK, so there are some parsing failures. We can examine them more closely using `problems()` as suggested in the above output.
@@ -584,19 +605,19 @@ p
 
 ```
 ## # A tibble: 1,000 x 5
-##      row col   expected               actual             file             
-##    &lt;int&gt; &lt;chr&gt; &lt;chr&gt;                  &lt;chr&gt;              &lt;chr&gt;            
-##  1  1001 x     no trailing characters .23837975086644292 '/usr/local/lib/~
-##  2  1002 x     no trailing characters .41167997173033655 '/usr/local/lib/~
-##  3  1003 x     no trailing characters .7460716762579978  '/usr/local/lib/~
-##  4  1004 x     no trailing characters .723450553836301   '/usr/local/lib/~
-##  5  1005 x     no trailing characters .614524137461558   '/usr/local/lib/~
-##  6  1006 x     no trailing characters .473980569280684   '/usr/local/lib/~
-##  7  1007 x     no trailing characters .5784610391128808  '/usr/local/lib/~
-##  8  1008 x     no trailing characters .2415937229525298  '/usr/local/lib/~
-##  9  1009 x     no trailing characters .11437866208143532 '/usr/local/lib/~
-## 10  1010 x     no trailing characters .2983446326106787  '/usr/local/lib/~
-## # ... with 990 more rows
+##      row col   expected      actual   file                                 
+##    &lt;int&gt; &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt;    &lt;chr&gt;                                
+##  1  1001 y     1/0/T/F/TRUE… 2015-01… '/Library/Frameworks/R.framework/Ver…
+##  2  1002 y     1/0/T/F/TRUE… 2018-05… '/Library/Frameworks/R.framework/Ver…
+##  3  1003 y     1/0/T/F/TRUE… 2015-09… '/Library/Frameworks/R.framework/Ver…
+##  4  1004 y     1/0/T/F/TRUE… 2012-11… '/Library/Frameworks/R.framework/Ver…
+##  5  1005 y     1/0/T/F/TRUE… 2020-01… '/Library/Frameworks/R.framework/Ver…
+##  6  1006 y     1/0/T/F/TRUE… 2016-04… '/Library/Frameworks/R.framework/Ver…
+##  7  1007 y     1/0/T/F/TRUE… 2011-05… '/Library/Frameworks/R.framework/Ver…
+##  8  1008 y     1/0/T/F/TRUE… 2020-07… '/Library/Frameworks/R.framework/Ver…
+##  9  1009 y     1/0/T/F/TRUE… 2011-04… '/Library/Frameworks/R.framework/Ver…
+## 10  1010 y     1/0/T/F/TRUE… 2010-05… '/Library/Frameworks/R.framework/Ver…
+## # … with 990 more rows
 ```
 OK, let's see which columns cause trouble:
 
@@ -606,7 +627,7 @@ p %$% table(col)
 
 ```
 ## col
-##    x 
+##    y 
 ## 1000
 ```
 Looks like the problem occurs only in the `x` column.
@@ -698,7 +719,7 @@ name: basic_data_transformations
 Let us create a tibble:
 
 ```r
-bijou &lt;- as.tibble(diamonds) %&gt;% head(n = 100)
+bijou &lt;- as_tibble(diamonds) %&gt;% head(n = 100)
 bijou
 ```
 
@@ -716,11 +737,11 @@ bijou
 ##  8 0.26  Very Good H     SI1      61.9    55   337  4.07  4.11  2.53
 ##  9 0.22  Fair      E     VS2      65.1    61   337  3.87  3.78  2.49
 ## 10 0.23  Very Good H     VS1      59.4    61   338  4     4.05  2.39
-## # ... with 90 more rows
+## # … with 90 more rows
 ```
 
 .center[
-  &lt;img src="assets/diamonds.png", style="height:200px"&gt;
+  &lt;img src="assets_tidyverse/diamonds.png", style="height:200px"&gt;
 ]
 ---
 name: filter
@@ -781,7 +802,7 @@ bijou %&gt;% arrange(cut, carat, desc(price))
 ##  8  0.26 Good  D     VS2      65.2    56   403  3.99  4.02  2.61
 ##  9  0.26 Good  D     VS1      58.4    63   403  4.19  4.24  2.46
 ## 10  0.3  Good  H     SI1      63.7    57   554  4.28  4.26  2.72
-## # ... with 90 more rows
+## # … with 90 more rows
 ```
 The `NA`s always end up at the end of the rearranged tibble.
 
@@ -908,7 +929,7 @@ bijou %&gt;% group_by(cut) %&gt;% summarize(max_price = max(price),
 ```
 ## # A tibble: 5 x 4
 ##   cut       max_price mean_price min_price
-##   &lt;ord&gt;         &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+##   &lt;ord&gt;         &lt;int&gt;      &lt;dbl&gt;     &lt;int&gt;
 ## 1 Fair           2759      1951        337
 ## 2 Good           2759       661.       327
 ## 3 Very Good      2760       610.       336
@@ -929,7 +950,7 @@ bijou %&gt;%
 ## # A tibble: 5 x 5
 ## # Groups:   cut [2]
 ##   cut   color max_price mean_price min_price
-##   &lt;ord&gt; &lt;ord&gt;     &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+##   &lt;ord&gt; &lt;ord&gt;     &lt;int&gt;      &lt;dbl&gt;     &lt;int&gt;
 ## 1 Fair  E          2757      1547        337
 ## 2 Fair  F          2759      2759       2759
 ## 3 Good  D           403       403        403
@@ -961,18 +982,18 @@ When you need to regroup within the same pipe, use `ungroup()`.
 name: concept_of_tidy_data
 
 ## The Concept of Tidy Data
-Data are tidy *sensu Wickham* :-) if:
+Data are tidy *sensu Wickham* if:
 * each and every observation is represented as exactly one row,
 * each and every variable is represented by exactly one column,
 * thus each data table cell contains only one value.
-&lt;img src="assets/tidy_data.png" width="2560" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="assets_tidyverse/tidy_data.png" width="2560" style="display: block; margin: auto auto auto 0;" /&gt;
 
 Usually data are untidy in only one way. However, if you are unlucky, they are really untidy and thus a pain to work with...
 ---
 name: tidy_data
 
 ## Tidy Data
-&lt;img src="assets/tidy_data.png" width="2560" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="assets_tidyverse/tidy_data.png" width="2560" style="display: block; margin: auto auto auto 0;" /&gt;
 --
 .center[**Are these data tidy?**]
 
@@ -1131,11 +1152,11 @@ bijou2 %&gt;% head(n = 5)
 ## # A tibble: 5 x 3
 ##   cut     `2008` `2009`
 ##   &lt;ord&gt;    &lt;int&gt;  &lt;dbl&gt;
-## 1 Ideal      326   332.
-## 2 Premium    326   332.
-## 3 Good       327   333.
-## 4 Premium    334   340.
-## 5 Good       335   341.
+## 1 Ideal      326   333.
+## 2 Premium    326   333.
+## 3 Good       327   334.
+## 4 Premium    334   341.
+## 5 Good       335   342.
 ```
 
 ```r
@@ -1296,14 +1317,14 @@ missing_stones %&gt;% complete(cut, continent)
 ## # A tibble: 12 x 4
 ##    cut       continent clarity price
 ##    &lt;ord&gt;     &lt;chr&gt;     &lt;ord&gt;   &lt;int&gt;
-##  1 Fair      AusOce    &lt;NA&gt;       NA
-##  2 Fair      Eur       VS2       337
+##  1 Fair      AusOce    VS2       337
+##  2 Fair      Eur       &lt;NA&gt;       NA
 ##  3 Good      AusOce    SI2       335
 ##  4 Good      Eur       VS1       327
-##  5 Very Good AusOce    VVS1      336
+##  5 Very Good AusOce    VVS2      336
 ##  6 Very Good AusOce    SI1       337
-##  7 Very Good Eur       VVS2      336
-##  8 Very Good Eur       VS1       338
+##  7 Very Good AusOce    VS1       338
+##  8 Very Good Eur       VVS1      336
 ##  9 Premium   AusOce    SI1       326
 ## 10 Premium   Eur       VS2       334
 ## 11 Ideal     AusOce    &lt;NA&gt;       NA
@@ -1477,13 +1498,25 @@ A %&gt;% full_join(B, by = 'key')
 ]
 
 ---
+name: more_tidyverse
+## Some Other Friends
+* `stringr` for string manipulation and regular expressions,
+* `forcats` for working with factors,
+* `lubridate` for working with dates.
+---
+name: end-slide
+class: end-slide
+
+# Thank you
+
+---
 name: purrr_map
 ## Using `map` Functions from `purrr`
 
 Base R `apply` functions have their `tidyverse` counterparts.
 
 ```r
-cars &lt;- as.tibble(mtcars)
+cars &lt;- as_tibble(mtcars)
 cars %&gt;% head(n = 5)
 ```
 
@@ -1601,7 +1634,7 @@ How to deal with errors in `purrr`:
   ##  $ result: NULL
   ##  $ error :List of 2
   ##   ..$ message: chr "non-numeric argument to mathematical function"
-  ##   ..$ call   : language sqrt(x = x)
+  ##   ..$ call   : language .Primitive("sqrt")(x)
   ##   ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
   ```
 ]
@@ -1716,9 +1749,9 @@ param_sets %&gt;% pmap(rnorm) %&gt;% str()
 
 ```
 ## List of 3
-##  $ : num [1:50] 23.9 20.4 19.7 21.1 22 ...
-##  $ : num [1:100] 25.3 34.3 34.6 34.2 33.9 ...
-##  $ : num [1:250] 44.1 37.7 39.3 32.1 36.4 ...
+##  $ : num [1:50] 24.7 23.4 23.3 22 25.4 ...
+##  $ : num [1:100] 23.6 32.8 24.7 38.5 37.8 ...
+##  $ : num [1:250] 27.6 43.2 57.1 33.9 34 ...
 ```
 ---
 name: invoke_map 
@@ -1749,17 +1782,17 @@ list(runif(10), rnorm(10)) %&gt;%
 ```
 
 ```
-##  [1] 0.19141448 0.73700574 0.87506734 0.29993970 0.38753262 0.85501264
-##  [7] 0.48393766 0.47824787 0.95261771 0.07841113
-##  [1] -1.5169800 -1.6235191  0.2819054  0.3771507 -0.3640784  0.1787987
-##  [7] -0.9053670  1.2919439  0.2800154  1.8947971
+##  [1] 0.90274778 0.28083973 0.13133800 0.45774198 0.08027158 0.36694898
+##  [7] 0.77141715 0.82984949 0.23660029 0.39106727
+##  [1]  1.04379058  0.57891213 -1.25773084 -1.86956841  0.66966623
+##  [6]  0.04672486 -0.06080231  0.99140409 -0.94845375 -1.73384066
 ## [[1]]
-##  [1] 0.9570724 3.6850287 4.3753367 1.4996985 1.9376631 4.2750632 2.4196883
-##  [8] 2.3912394 4.7630885 0.3920557
+##  [1] 4.5137389 1.4041986 0.6566900 2.2887099 0.4013579 1.8347449 3.8570857
+##  [8] 4.1492474 1.1830014 1.9553364
 ## 
 ## [[2]]
-##  [1] -7.5848998 -8.1175957  1.4095268  1.8857537 -1.8203920  0.8939933
-##  [7] -4.5268352  6.4597195  1.4000770  9.4739857
+##  [1]  5.2189529  2.8945607 -6.2886542 -9.3478420  3.3483311  0.2336243
+##  [7] -0.3040115  4.9570204 -4.7422687 -8.6692033
 ```
 * `walk2()`
 * `pwalk()`
@@ -1828,22 +1861,23 @@ R.version
 
 ```
 ##                _                           
-## platform       x86_64-apple-darwin17.3.0   
+## platform       x86_64-apple-darwin15.6.0   
 ## arch           x86_64                      
-## os             darwin17.3.0                
-## system         x86_64, darwin17.3.0        
+## os             darwin15.6.0                
+## system         x86_64, darwin15.6.0        
 ## status                                     
 ## major          3                           
-## minor          4.3                         
-## year           2017                        
-## month          11                          
-## day            30                          
-## svn rev        73796                       
+## minor          5.0                         
+## year           2018                        
+## month          04                          
+## day            23                          
+## svn rev        74626                       
 ## language       R                           
-## version.string R version 3.4.3 (2017-11-30)
-## nickname       Kite-Eating Tree
+## version.string R version 3.5.0 (2018-04-23)
+## nickname       Joy in Playing
 ```
     </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="assets/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "ratio": "4:3",
@@ -1851,31 +1885,84 @@ R.version
 "highlightStyle": "github",
 "highlightLines": true,
 "countIncrementalSlides": false,
-"slideNumberFormat": "RaukR 2018 . %current%/%total%"
+"slideNumberFormat": "RaukR 2019 • %current%/%total%"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
 });
-(function() {
-  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
   if (!r) return;
   s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
   d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
 })();</script>
 
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  tex2jax: {
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
   }
-});
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
 </script>
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
 (function () {
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
   if (location.protocol !== 'file:' && /^https?:/.test(script.src))
     script.src  = script.src.replace(/^https?:/, '');
   document.getElementsByTagName('head')[0].appendChild(script);
