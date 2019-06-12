@@ -330,6 +330,7 @@ This is the Tidyverse course work material for RaukR 2018.
 </div>
 <div id="general-excercises" class="section level1">
 <h1><span class="header-section-number">2</span> General excercises</h1>
+<p>Datasets are available <a href="https://www.dropbox.com/s/dxxt959g6iefeaf/tidyverse_lab_data.zip?dl=0">here</a></p>
 <div id="pipes" class="section level2">
 <h2><span class="header-section-number">2.1</span> Pipes</h2>
 <p>Rewrite the following code chunks as pipes (<code>magrittr</code>):</p>
@@ -374,14 +375,14 @@ colSums(cars)</code></pre>
 M &lt;- matrix(distr1, ncol = 4)
 plot(M)
 M &lt;- M + sample(M)
-dim_summary(nrows = nrow(M), ncols = ncol(M))
-distr2 &lt;- rnorm(16)</code></pre>
-<pre><code>N &lt;- matrix(distr2, ncol = 4)
-colnames(N, letters[1:4])
+dim_summary(nrows = nrow(M), ncols = ncol(M))</code></pre>
+<pre><code>distr2 &lt;- rnorm(16)
+N &lt;- matrix(distr2, ncol = 4)
+colnames(N) &lt;- (letters[1:4])
 summary(N)</code></pre>
 <pre><code>P &lt;- M %x% t(N)
 heatmap(P)
-names(P) &lt;- letters[1:dim(P)[2]]
+colnames(P) &lt;- letters[1:dim(P)[2]]
 cor(P[ ,&#39;a&#39;], P[ ,&#39;i&#39;])</code></pre>
 <p>A class of functions, called the <em>replacement functions</em> are of the form <code>function(arguments)&lt;-value</code> and <code>rownames(x) &lt;- c('a', 'b', 'c')</code> is a good example of a replacement function. When writing pipes, we have bear in mind that whole <code>function&lt;-</code> is the name of the replacement function and thus we have to use it as such in the pipe.</p>
 <p><strong>Note.</strong> Not always one can put everything into one single pipe, sometimes the results of running two or more pipes have to be used in the final pipe.</p>
@@ -398,7 +399,7 @@ M &lt;- rnorm(16) %&gt;%
 N &lt;- rnorm(16) %&gt;%
   matrix(ncol = 4) %&gt;%
   `colnames&lt;-`(letters[1:4]) %&gt;%
-  t()
+  summary() 
 
 P &lt;- M %&gt;%
   `%x%`(., N) %T&gt;%
@@ -505,7 +506,7 @@ automobiles &lt;- as.data.frame(vehicles)</code></pre>
 <p>Compare the performance of <code>as.data.frame()</code>, <code>as_data_frame()</code> and <code>as_tibble()</code> on a
 100 x 30 matrix filled with random integers. Use package <code>microbenchmark</code>. Fill in your result <a href="https://docs.google.com/spreadsheets/d/1_2tDeEkDVS06RkB437yBI1XEB5SUebtHWyxAf_aRJu4/edit#gid=99106509">here</a> in the Tidyverse Lab sheet, Tibbles – performance.</p>
 <pre class="r"><code>tst &lt;- replicate(30, sample(100), simplify = TRUE)
-names(tst) = paste0(rep(&#39;col&#39;, times = dim(tst)[2]), 1:dim(tst)[2])
+colnames(tst) = paste0(rep(&#39;col&#39;, times = dim(tst)[2]), 1:dim(tst)[2])
 microbenchmark::microbenchmark(
   as.data.frame(tst),
   as_data_frame(tst),
@@ -522,7 +523,7 @@ microbenchmark::microbenchmark(
 <h2><span class="header-section-number">2.3</span> Parsing</h2>
 <p>Parse the following vectors:</p>
 <ul>
-<li><code>vec1 &lt;- c(1, 7.2, 3.84, -5.23)</code> – parse it as double.</li>
+<li><code>vec1 &lt;- c(1, 7.2, 3.84, -5.23)</code> – parse it as double (any problems? why?).</li>
 <li>now parse the same vector <code>c(1, 7.2, 3.84, -5.23)</code> as integer. What happens?</li>
 <li>Can you still parse it as integer somehow?</li>
 <li>Parse as double <code>vec2 &lt;- c('2', '3,45', '?', '-7,28')</code></li>
@@ -815,6 +816,7 @@ library(EDAWR)</code></pre>
 <div id="introduction-1" class="section level2">
 <h2><span class="header-section-number">5.1</span> Introduction</h2>
 <p>You will be given a <code>fastq</code> file coming from MinION sequencer (Oxford Nanopore). This file contains test reads from the chicken genome. The flow-cell used here has 512 channels, each channel consists of 4 pores and only one pore is active at a time. Once your sequence gets stuck for some reason, the device will attempt to remove it from the pore by playing with reversing polarity on that pore. If this was successful, the pore will be re-used. Your task will be to visualise reading events from the meta-data in the <code>fastq</code> dataset and to see how each and every channel behaved. Also, you will plot the distribution of reading times.</p>
+<p>Datasets are available <a href="https://www.dropbox.com/s/dxxt959g6iefeaf/tidyverse_lab_data.zip?dl=0">here</a></p>
 </div>
 <div id="preparations" class="section level2">
 <h2><span class="header-section-number">5.2</span> Preparations</h2>
@@ -1802,7 +1804,7 @@ Figure 6.1: Red – only one species in the current OTU, blue – identification
 ## [52] polylabelr_0.1.0       stringi_1.4.3          Rcpp_1.0.1            
 ## [55] tidyselect_0.2.5       xfun_0.7</code></pre>
 <p style="text-align: left; font-size: small;">
-Page built on: <i class="fa fa-calendar" aria-hidden="true"></i> 12-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 08:11:17.
+Page built on: <i class="fa fa-calendar" aria-hidden="true"></i> 12-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 11:53:26.
 </p>
 <hr/>
 <div style="padding-bottom: 1.5em">
