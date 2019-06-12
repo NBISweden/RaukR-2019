@@ -25,6 +25,7 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
     + [Lab](rpackages_Sebastian/lab/rpackages_Sebastian.html)
 
 #### 12-Jun-2019 (Wed)
+* **Tidyverse** (*Author:* Marcin Kierczak)
     + [Presentation](tidyverse_Marcin/presentation/tidyverse_presentation.html)
     + [Lab](tidyverse_Marcin/lab/lab.html)
 
