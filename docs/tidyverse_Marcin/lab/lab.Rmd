@@ -269,7 +269,7 @@ tibble(x = sample(1:10, size = 10, replace = T), y = log10(x))
 
 Parse the following vectors:
 
-* `vec1 <- c(1, 7.2, 3.84, -5.23)` -- parse it as double.
+* `vec1 <- c(1, 7.2, 3.84, -5.23)` -- parse it as double (any problems? why?).
 * now parse the same vector `c(1, 7.2, 3.84, -5.23)` as integer. What happens?
 * Can you still parse it as integer somehow?
 * Parse as double `vec2 <- c('2', '3,45', '?', '-7,28')`
