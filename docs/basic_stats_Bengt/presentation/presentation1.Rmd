@@ -42,6 +42,8 @@ name: models1
 
 --
   + simplification (abstraction) of reality that helps us address a specific problem
+      - enhance computation/estimation
+      - reflect biology
   
 ---
 
@@ -49,8 +51,8 @@ name: models1
 .pull-left-50[
 We want to model how beer consumption affects the ability to program well in R
 
-* $x$ number of beers drunk
-* $y$ Ability to program in R
+* $x=$ number of beers drunk
+* $y=$ Ability to program in R
 ]
 
 --
@@ -82,22 +84,26 @@ __Notice that a model is always restricted by its assumptions:__
 ---
 ## Models | `Example: R proficiency as a function of beer`
 .center[ .large[How can we solve this? ] ]
+--
+
 Several possibilities:
 
 .pull-left-50[
 
-* Include population variation in the model (*statistical model*)
+* Include population variation in the model (more later)
 
 * Create a hierarchical model comprising
   + a main linear model $$y=\beta_0 + \beta_1 x,$$ whose parameters are modeled by
-  + linear submodels, including body mass ($m$): 
+  + linear submodels, including body mass $(m)$ and *hyperparameters*: 
       - alcohol susceptibility, $\beta_1=am + b$ 
       - initial proficiency, $\beta_0=cm+d$
+* Both these combined
 
 ]
 
 --
-
+<br>
+<br>
 .pull-right-50[
 ```{r beer2, echo=F, fig.height=5}
 x= seq(0,10)
@@ -120,7 +126,7 @@ for(i in seq(2,5)){
 --
 
 
-$\hspace{2cm}$Still not quite right...
+.center[Still not quite right...]
 
 
 ---
@@ -142,7 +148,7 @@ plot(x,y, type='b',
 ```
 
 * This is a logistic model $y = \frac{1}{1-e^{-(\beta_0 +\beta_1x)}}$, where there are saturation towards the extremes
-* By transforming $y$, we get a linear expression in the r.h.s.  $$\log\frac{y}{1+y} = \beta_0+ \beta_1 x$$
+* By transforming $y$ into log-odds, we get a linear expression in the r.h.s.  $$\log\frac{y}{1+y} = \beta_0+ \beta_1 x$$
 ]
 
 --
@@ -188,6 +194,7 @@ plot(g, layout=coords)
 ---
 
 # But what can models be used for?
+--
 
 Perform 
 ## Task | `Simulation`
@@ -199,7 +206,7 @@ name: Simulation1
 
 ## Task | `Simulation`
 
-Generate $y = \beta_1* x + \beta_0$, $\beta_0=0.3$ and $\beta_1=0.2$
+Generate 100 samples from $y = \beta_0 + \beta_1* x,$ with parameters $\beta_0=0.3$ and $\beta_1=0.2$
 
 **Think about**
 * Does the plotted results look biologically reasonable?
@@ -245,7 +252,7 @@ name: Simulation2
 * $y = \beta_1* x + \beta_0$ is a *deterministic* model
     + does not model any variation
     + Common, e.g., in classical physics ( $E=mc^3$ )
-* $y = \beta_1* x + \beta_0 +\epsilon,$ where $\epsilon ~\sim N(0,\sigma^2)$ is a *statistical* (equiv. *stochastic*, *random*) model
+* $y = \beta_1* x + \beta_0 +\epsilon,$ where the *residuals* $\epsilon ~\sim N(0,\sigma^2)$ is a *statistical* (equiv. *stochastic*, *random*) model
     + attempts to model variation around a population mean (the *residuals*) determined by the model
     + generates a stochastic variable and is used in statistic analysis
 
@@ -291,6 +298,21 @@ name: simulation3
     + `y~x` in `lm` function is a shorthand for $y = \beta_0 + \beta_1 x$.
 
 
+---
+name: Simulation3
+
+## Task | `Simulation`
+
+**Think about**
+* When can simulated data be useful?
+
+--
+
+**Uses for simulated data**
+
+* *Oracle knowledge* when evaluating performance of methods, e.g., Type I and II errors 
+* Estimating probabilities and probability distributions of, e.g., data and summary statistics of data (next task)
+
 
 ---
 name: Probability1
@@ -326,7 +348,8 @@ N = 1000
 x = 2
 y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
 
-h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.0, 0.05), plot=FALSE)
+h=hist(y, frequency=TRUE, right=FALSE, 
+       breaks=seq(0,1.0,0.05), plot=FALSE)
 h$counts = h$counts/N
 plot(h, ylim =c(0,1), labels=TRUE)
 
@@ -360,12 +383,10 @@ name: Probaility3
 ### Adding mean and multiplying sd
 
 $Y \sim N(mean=0,sd=1) \Leftrightarrow Y \sim  \mu+\sigma * N(mean = 0, sd=1)$
+```{r, echo=FALSE, fig.height=4}
+par(mfrow=c(1,2))
 
-
-```{r, echo=FALSE}
-par(mfrow=c(2,2))
-
-x=seq(-4,4, length=100)
+x=seq(-4,4, length=1000)
 y0=dnorm(x, mean=0, sd=1)
 y1=dnorm(x, mean=1, sd=1)
 plot(x, y0, typ="l", lty=2, ylab="Pr[x]")
@@ -378,8 +399,11 @@ plot(x, y2, typ="l", lty=1, ylab="Pr[x]")
 lines(x,y0, lty=2)
 text(x=c(2,0),y=c(0.1,0.5), c("N(0,1)","N(0,0.5)"), adj=0.5)
 title(main="Effect of sd")
-
 ```
+--
+
+* $N(mean=0, sd=1)$ is called the * General Normal distribution*
+
 ???
 \begin{eqnarray*}
 Y &\sim& \mu + N(mean=0,sd=1)\\
@@ -417,7 +441,7 @@ plot(h, ylim =c(0,1), labels=TRUE)
 --
 
 .pull-right-50[
-...but we have actually used the *cumulative probability function* (cdf) to estimate $Pr[Y<=0.65|X=x, \theta]$
+...but we have actually used the *cumulative probability function* (CDF) to estimate $Pr[Y<=0.65|X=x, \theta]$
 
 ```{r, echo=FALSE}
 # replace the histogram counts with the cumulative counts
@@ -447,7 +471,7 @@ name: Probability5
 
 **p-values**
 * Probability fo finding a more extreme value or test statistic under the NULL model.
-    + p-values can refer to different meanings of *extreme*. Using our model as an example:
+    + p-values can refer to different meanings of *extreme*. Using our model as an NULL model:
         - For a *left-tailed* p-value, $p(y) = Pr[Y<=y|X=x]$, i.e., the $CDF(y, \mu, \sigma)$
         - For a *right-tailed* p-value, $p(y) = Pr[Y>=y|X=x]$, i.e., $1-CDF(y, \mu, \sigma)$
         - For a *double-tailed* p-value, $p(y) = 2 \min\{Pr[Y<=y|X=x],Pr[Y>=y|X=x]\}$
@@ -506,7 +530,7 @@ t
 &= \sum_{i}\frac{y_i-\mu}{s/\sqrt{N}} 
 &= \frac{\bar{y}-\mu}{s/\sqrt{N}}
 \end{eqnarray*}
-where $s\sqrt{N}$ is an estimate of the standard deviation, $\sigma$, from the observed data. 
+where $s/\sqrt{N}$ is an estimate of the standard deviation, $\sigma$, from the observed data. 
 * Normalized residuals have a *General Normal distribution*, $N(mean=0,sd=1)$
 
 **Think about**
@@ -535,9 +559,53 @@ t.test(y, mu=mu)
 name: tests
 ## Task | `Statistical tests`
 
+* Test if two samples are generated by the same (unknown) model using the standardized difference in means, typically, using the NULL hypothesis that this difference is 0. Example code below
+
+.pull-left-50[
+```{r, echo = TRUE}
+# data 1
+b0 = 0.3
+b1 = 0.2
+x = rep(x,N)
+N=100
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+#data 2
+c0 = 0.4
+c1 = 0.2
+N=100
+yp = c0 + c1 *  + rnorm(N, mean=0, sd=0.05) 
+
+t.test(y,yp)
+```
+]
+.pull-right-50[
+```{r, echo = FALSE}
+# data 1
+b0 = 0.3
+b1 = 0.2
+x = rep(2,N)
+N=1000
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+#data 2
+c0 = 0.4
+c1 = 0.2
+N=100
+yp = c0 + c1 * x + rnorm(N, mean=0, sd=0.05) 
+
+plot(density(y), col=rgb(0,0,1,1), xlim=c(0,1), ylim = c(0,10))
+lines(density(yp), col=rgb(1,0,0,1))
+```
+]
+---
+
+name: tests
+## Task | `Statistical tests`
+
 * In `lm`, a *t*-test is used to test if the estimated parameters are significantly different from 0.
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, eval=TRUE}
 
 summary(lm(phenos~genos, data=sim1))
 ```
@@ -552,7 +620,7 @@ name: nonparam
     + structure
     + parameter values
 * Statistical models
-    + Additional random distribution 
+    + Additional *random distribution*
     + Parameteric models
         - structure fixed *a priori*
             * Example: Normal family of distribution (incl. linear model)
