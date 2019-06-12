@@ -25,11 +25,19 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
     + [Lab](rpackages_Sebastian/lab/rpackages_Sebastian.html)
 
 #### 12-Jun-2019 (Wed)
+* **Tidyverse** (*Author:* Marcin Kierczak)
+    + [Presentation](tidyverse_Marcin/presentation/tidyverse_presentation.html)
+    + [Lab](tidyverse_Marcin/lab/lab.html)
+
 #### 13-Jun-2019 (Thu)
 
 * **ggplot** (*Author:* Roy Francis, *Reviewer:* Marcin Kierczak)
     + [Presentation](ggplot/presentation/ggplot_presentation.html)
     + [Lab](ggplot/lab/ggplot_lab.html)
+* **ggmap** (*Author:* Sebastian DiLorenzo)
+    + [Presentation](ggmap_Sebastian/presentation/ggmap_Sebastian.html)
+    + [Lab](ggmap_Sebastian/lab/ggmap_Sebastian.html)
+    + [Data](ggmap_Sebastian/lab/data/pubs.rda)
 
 #### 14-Jun-2019 (Fri)
 

@@ -1,0 +1,248 @@
+---
+title: "ggmap"
+subtitle: "RaukR, 2019."
+author: "Sebastian DiLorenzo"
+date: "`r format(Sys.Date(),format='%d-%b-%Y')`"
+output:
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    number_sections: true
+    theme: united
+    highlight: textmate
+    df_print: paged
+    code_folding: none
+    self_contained: false
+    keep_md: false
+    encoding: "UTF-8"
+    css: ["assets/lab.css"]
+---
+
+```{r,echo=FALSE,child="assets/header-lab.Rmd"}
+```
+
+```{r,echo=FALSE,results='hide'}
+## LIBRARIES AND VARIABLES
+# load the packages you need for this document
+
+library(ggplot2)
+library(tidyverse)
+library(ggmap)
+load("ggmap_assets/ggmap_assets.rda")
+```
+
+<img src="assets/logo.svg" alt="logo_raukr" class="trlogo">
+
+---
+
+<p class="abstract">
+This exercise will show you how to use `ggmap` to produce maps and combine them with data and the `ggplot2` skills you have learned for geospatial visualisation.
+</p>
+
+---
+
+# Installing requirements
+
+Lets start by installing and loading the required packages. Note that we are using the github version of `ggmap`. If you have already installed some of the packages you can skip those.
+
+```{r,echo=TRUE,eval=FALSE}
+devtools::install_github("dkahle/ggmap")
+install.packages(c("ggplot2","tidyverse"))
+
+library(ggmap)
+library(ggplot2)
+library(tidyverse)
+```
+
+# Maps | get_stamenmap() and ggmap()
+
+As the name suggests, the `get_stamenmap()` function from `ggmap` is used to get maps. The maps are of the class *ggmap* and you can get many different maptypes.
+
+* Use `get_stamenmap()` to get a *ggmap* object of your hometown or current city and plot it using `ggmap()`. Try out a few maptypes. 
+
+> Note: Some maps are pretty big, so try to save them so you don't have to query and redownload the maps multiple times once you find the size you want.
+
+```{r,echo=TRUE, eval = F}
+visby.map <- get_stamenmap(c(left = 18.265071, bottom = 57.631000,
+    right = 18.306766, top = 57.649192),
+    zoom = 14)
+
+ggmap(visby.map)
+```
+```{r, echo = F, eval = T}
+ggmap(visby.map)
+```
+
+Trying out some other maptypes:
+```{r,echo=TRUE, eval = F}
+visby.watercolor.map <- get_stamenmap(c(left = 18.265071, bottom = 57.631000,
+    right = 18.306766, top = 57.649192),
+    zoom = 14, maptype = "watercolor")
+visby.tonerlines.map <-get_stamenmap(c(left = 18.265071, bottom = 57.631000,
+    right = 18.306766, top = 57.649192),
+    zoom = 14, maptype = "toner-lines")
+
+#extent="device" : removes long/lat axes
+ggmap(visby.watercolor.map, extent="device")
+ggmap(visby.tonerlines.map, extent="device")
+```
+```{r, echo = F, eval = T}
+ggmap(visby.watercolor.map, extent="device")
+ggmap(visby.tonerlines.map, extent="device")
+```
+
+# Add data to the map
+
+Being able to output maps is great but, as with everything in life, it becomes more interesting when you can overlay it with data.
+
+## Points | geocode() and geom_point()
+
+`ggmap::geocode()` is a nifty function that returns the latitude and longitude of a location. Regrettably, we can't use it this time because of googles new API key rules. 
+
+* Use https://www.google.com/maps, or some other service, to find the longitudes and latitudes of some locations. Your favourite gym or restaurant for example?
+
+In my example code, I show how to use a `tibble` of locations and `geocode()` to get coordinates for several locations and bind them together. Since we can't use `geocode()` I also show how to create a `tibble` of locations, longitudes and latitudes directly.
+
+* Create a `tibble` with location, lon and lat.
+
+```{r, echo = T, eval = F}
+#Create a tibble of Visby's most important locations
+visby.locations <- tibble(location = c("Mullbärsgården, Visby",
+  "Visby Hostel, Visby",
+  "Glassmagasinet, Visby"))
+
+#Get the geocode, the latitude and longitude, of the locations
+visby.geo <- geocode(visby.locations$location)
+
+#Create a data.frame of the data for easier plotting
+visby.places <- cbind(visby.locations,visby.geo)
+
+#Create the tibble manually
+visby.places <- tibble(
+  location = c("Mullbärsgården, Visby",
+     "Visby Hostel, Visby",
+     "Glassmagasinet, Visby"),
+      lon = c(18.29203,18.28998,18.28720),
+      lat = c(57.64182,57.63851,57.63729))
+```
+
+* When you have your locations dataset ready, use `geom_point()` to add markers to your map for your locations. Feel free to use `geom_text()` to also add labels for your locations. Notice that you can treat the `ggmap()` function like `ggplot()`.
+
+```{r, echo = T, eval = T}
+ggmap(visby.watercolor.map, extent="device") +
+  geom_point(data = visby.places, aes(x = lon, y = lat), color = 'red', size = 3) +
+  geom_text(data = visby.places, aes(label = location), hjust=0, vjust=-1)
+```
+
+<!--
+## Routes | trek() and geom_path()
+
+`trek` is a function from `ggmap` that takes a start location and a stop location and gives a list of latitude and longitude coordinates connecting the two. You can give several different modes of transit, but why anyone would choose anything other than bicycling is beyond me.
+
+Combining `trek` and `ggplot2 geom_path` we can plot a route between two places, as long as one exists. Since we cannot 
+
+> Note: Make sure your background map covers both start and stop position!
+
+
+```{r, echo = T, eval = F}
+#Create a map that is zoomed out enough to show start and stop of route
+visby.zoomedout.map <- get_map("Visby", zoom = 7)
+
+#Create the route with trek()
+sthlm_vby <- trek("Stockholm, Sweden", "Visby, Sweden",
+  structure = "route", mode = "bicycling")
+
+#Plot the route to map
+ggmap(visby.zoomedout.map, extent="device") +
+  geom_path( aes(x = lon, y = lat),  colour = "blue",
+    size = 1.5, alpha = .5,
+    data = sthlm_vby, lineend = "round")
+```
+```{r, echo = F, eval = F}  #Set eval=T
+#Create the route with trek()
+sthlm_vby <- trek("Stockholm, Sweden", "Visby, Sweden", structure = "route", mode = "bicycling")
+
+#Plot the route to map
+ggmap(visby.zoomedout.map, extent="device") +
+  geom_path( aes(x = lon, y = lat),  colour = "blue",
+    size = 1.5, alpha = .5,
+    data = sthlm_vby, lineend = "round")
+```
+-->
+
+## Pubs
+
+What do they mean by pubs? Do they mean publications? Nope! We are going to plot actual pubs, bars & inns in the UK using a public dataset from https://www.getthedata.com/open-pubs.
+
+Download the dataset `pubs.rda` from course materials.
+
+> Note: I have processed this data slightly, if you want you can see how below, but it is not important for this exercise.
+
+```{r,eval = F}
+#Read the dataset
+pubs <- read.csv("open_pubs.csv", stringsAsFactors = F)
+
+#Set column names
+colnames(pubs) <- c("fsa_id","name","address","postcode","easting","northing",
+  "latitude","longitude","city")
+
+#Convert long/lat to numeric
+pubs$latitude <- as.numeric(pubs$latitude)
+pubs$longitude <- as.numeric(pubs$longitude)
+
+#Remove any rows with NA values
+pubs <- pubs[complete.cases(pubs),]
+```
+
+Use what you have learned so far to complete as many tasks as you have time for. There is some help code and example plots of the town "Oldham" below, but really try to do it yourself.
+
+1. Load `pubs.rda` into R.
+2. Subset the dataset to a city.
+3. Get a map of the city with `ggmap`.
+4. Plot the position of the pubs onto the map using `geom_point`.
+5. Create another plot where you plot the density lines of pubs using `geom_density2d`.
+  + Optional: Feel free to select an appropriate *maptype* that isn't so busy with text, I suggest the darker toner ones.
+6. Fill the density lines by overlaying with `stat_density_2d` as well. Use parameter`geom = "polygon"`.
+  + Tip: You can use `scale_fill_gradient2` and `scale_alpha` to adjust colors and alpha.
+
+------
+
+Example code:
+
+Task 4:
+```{r}
+ggmap(oldham.map, extent="device") +
+  geom_point(data = oldham.pubs, aes(x = longitude, y = latitude),
+    color = 'red', size = 2)
+```
+
+Task 5:
+```{r}
+ggmap(oldham.toner.map, extent="device", darken = .7, legend = "bottomright") +
+  geom_density2d(data = oldham.pubs, aes(x = longitude, y = latitude))
+```
+
+Task 6:
+```{r}
+ggmap(oldham.toner.map, extent="device", darken = .7, legend = "bottomright") +
+  geom_density2d(data = oldham.pubs, aes(x = longitude, y = latitude)) +
+  stat_density_2d(data = oldham.pubs, aes(x = longitude, y = latitude,
+    fill = ..level..,alpha = ..level..), geom = "polygon", color = NA)
+```
+
+Task 6, tweaked:
+```{r}
+ggmap(oldham.toner.map, extent="device", darken = .7, legend = "bottomright") +
+  # Commenting geom_density2d, it is prettier without the lines =)
+  #geom_density2d(data = oldham.pubs, aes(x = longitude, y = latitude)) +
+  stat_density_2d(data = oldham.pubs, aes(x = longitude, y = latitude,
+    fill = ..level..,alpha = ..level..), geom = "polygon", color = NA) +
+  scale_fill_gradient2("Pubs", low = "white", mid = "yellow",
+    high = "red", midpoint = 125) +
+  scale_alpha(range = c(0.05, 0.30), guide = FALSE)
+```
+
+
+```{r,echo=FALSE,child="assets/footer-lab.Rmd"}
+```
