@@ -350,8 +350,8 @@ flights %>% rename(destination = dest)
 * retrieve rows 1234:1258 (hint: `?slice`),
 * sample (`?sample_n()`) 3 random flights per day in March,
 * show 5 most departure-delayed flights in January per carrier,
-* retrieve all `unique()` routes and sort them by origin,
-* retrieve all `distinct()` routes and sort them by origin,
+* retrieve all `unique()` routes and sort them by destination,
+* retrieve all `distinct()` routes and sort them by destination,
 * is `unique()` more efficient than `distinct()`?
 
 ```{r eval=F}
@@ -372,6 +372,30 @@ flights %>%
   filter(month == 1) %>%
   group_by(carrier) %>%
   top_n(5, dep_delay)
+
+nycflights13::flights %>% 
+  select(origin, dest) %>% 
+  unique() %>% arrange(dest)
+
+flights %>% mutate(route = paste(origin, dest, sep="-")) %>% select(route) %>% unique()
+
+nycflights13::flights %>% 
+  select(origin, dest) %>% 
+  distinct() %>% arrange(dest)
+# or
+flights %>% 
+  mutate(route = paste(origin, dest, sep="-"))  %>% 
+  distinct(route)
+
+microbenchmark(nycflights13::flights %>% 
+  select(origin, dest) %>% 
+  unique() %>% arrange(dest))
+
+microbenchmark(nycflights13::flights %>% 
+  select(origin, dest) %>% 
+  distinct() %>% arrange(dest))
+
+Distinct is faster.
 ```
 
 ## Task 3 -- Trans(mutations)
