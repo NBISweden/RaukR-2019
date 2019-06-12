@@ -137,7 +137,7 @@ print(summary(mydata))
 You can also execute your script by typing its name in the console, provided it:
 
 1. Starts with a **hashbang** line that instructs your system how to interpret it, e.g. `#!/usr/bin/env Rscript`
-2. Is an executable file e.g. through `chmod +x myscriptfile.R`.
+2. Is an executable file e.g. through `chmod +x myscriptfile.R` on Unix systems. If you are on windows you are on your own =).
 
 Task:
 
@@ -182,9 +182,9 @@ option_list = list(
   # you could put the next option here
 )
 options = parse_args(OptionParser(option_list=option_list))
-mean=as.numeric(options$mean)
+my_mean=as.numeric(options$mean)
 
-mydata=rnorm(1000,mean = mean)
+mydata=rnorm(1000,mean = my_mean)
 print(summary(mydata))
 ```
 
