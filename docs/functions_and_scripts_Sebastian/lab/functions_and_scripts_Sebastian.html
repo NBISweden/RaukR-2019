@@ -384,7 +384,7 @@ print(summary(mydata))</code></pre>
 <p>You can also execute your script by typing its name in the console, provided it:</p>
 <ol style="list-style-type: decimal">
 <li>Starts with a <strong>hashbang</strong> line that instructs your system how to interpret it, e.g. <code>#!/usr/bin/env Rscript</code></li>
-<li>Is an executable file e.g. through <code>chmod +x myscriptfile.R</code>.</li>
+<li>Is an executable file e.g. through <code>chmod +x myscriptfile.R</code> on Unix systems. If you are on windows you are on your own =).</li>
 </ol>
 <p>Task:</p>
 <ul>
@@ -425,9 +425,9 @@ option_list = list(
   # you could put the next option here
 )
 options = parse_args(OptionParser(option_list=option_list))
-mean=as.numeric(options$mean)
+my_mean=as.numeric(options$mean)
 
-mydata=rnorm(1000,mean = mean)
+mydata=rnorm(1000,mean = my_mean)
 print(summary(mydata))</code></pre>
 </div>
 <div id="standard-in-and-out" class="section level1">
