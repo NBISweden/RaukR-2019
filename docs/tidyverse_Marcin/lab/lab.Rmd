@@ -1,8 +1,7 @@
 ---
-title: "Tidy Work in Tidyverse"
-subtitle: "Hands-on"
+title: "Best Coding Practices -- tidy, neat and efficient code"
+subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
 author: "Marcin Kierczak"
-date: "`r format(Sys.Date(),format='%d-%b-%Y')`"
 output:
   bookdown::html_document2:
     toc: true
@@ -10,27 +9,26 @@ output:
     toc_depth: 3
     number_sections: true
     theme: united
-    highlight: tango
+    highlight: textmate
     df_print: paged
     code_folding: hide
     self_contained: false
     keep_md: false
     encoding: "UTF-8"
-    css: ["assets/course.css"]
+    css: ["assets/lab.css"]
 ---
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE,results='hide'}
-# run setup code
-source("assets/setup.R")
-library(magrittr)
+```{r,echo=FALSE,child="assets/header-lab.Rmd"}
 ```
+
 
 ```{r,echo=FALSE,results='hide'}
 ## LIBRARIES AND VARIABLES
 # load the packages you need for this document
 
-#library(ggplot2)
-#library(tidyverse)
+library(ggplot2)
+library(tidyverse)
+library(bsplus)
 
 # variables needed in this document
 # raukr colours

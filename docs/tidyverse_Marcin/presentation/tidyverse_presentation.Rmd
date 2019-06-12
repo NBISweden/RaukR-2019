@@ -1,10 +1,9 @@
 ---
 title: "Tidy Work in Tidyverse"
-subtitle: "Advanced R for Bioinformatics. Visby, 2018."
-author: "Marcin Kierczak"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
+author: "<b>Marcin Kierczak</b>"
 institute: NBIS, SciLifeLab
-keywords: r, RaukR, markdown, tidyverse
+keywords: r, RaukR, markdown
 output: 
   xaringan::moon_reader:
     encoding: 'UTF-8'
@@ -18,14 +17,23 @@ output:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
-      slideNumberFormat: "RaukR 2018 . %current%/%total%"
-
+      slideNumberFormat: "RaukR 2019 • %current%/%total%"
 ---
-class: spaced 
+exclude: true
+count: false
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE,results='hide'}
-# run setup code
-source("assets/setup.R")
+```{r,echo=FALSE,child="assets/header-presentation.Rmd"}
+```
+
+<!-- ----------------- Only edit title & author above this ----------------- -->
+
+```{r setup,include=FALSE}
+knitr::opts_chunk$set(dev="CairoPNG",results="hold",fig.show="hold",fig.align="left",echo=TRUE,warning=FALSE,message=FALSE)
+
+# report related
+library(knitr)
+library(markdown)
+library(rmarkdown)
 ```
 
 ```{r,echo=FALSE,message=FALSE,warning=FALSE}
@@ -46,9 +54,9 @@ library(magrittr)
 * A philosophy of programming or a programing paradigm.
 * Everything is about the flow of *tidy data*.
 .center[
-<img src="assets/hex-tidyverse.png", style="height:200px;">
-<img src="assets/Hadley-wickham2016-02-04.jpeg", style="height:200px;">
-<img src="assets/RforDataScience.jpeg", style="height:200px;">
+<img src="assets_tidyverse/hex-tidyverse.png", style="height:200px;">
+<img src="assets_tidyverse/Hadley-wickham2016-02-04.jpeg", style="height:200px;">
+<img src="assets_tidyverse/RforDataScience.jpeg", style="height:200px;">
 ]
 .vsmall[sources of images: www.tidyverse.org, Wikipedia, www.tidyverse.org]
 
@@ -62,7 +70,7 @@ The tidyverse curse?<br><br>
 .right[.small[-- [Robert A. Muenchen](http://r4stats.com/articles/why-r-is-hard-to-learn/)]]
 <br><br>
 --
-<img src="assets/tidyverse-flow.png", style="height:400px;">
+<img src="assets_tidyverse/tidyverse-flow.png", style="height:400px;"><br>
 .vsmall[source: http://www.storybench.org/getting-started-with-tidyverse-in-r/]  
 
 ---
@@ -71,7 +79,7 @@ name: intro_to_pipes
 .pull-left-50[
   .center[
     ```{r, echo=F, out.width=300}
-    knitr::include_graphics("assets/MagrittePipe.jpg")
+    knitr::include_graphics("assets_tidyverse/MagrittePipe.jpg")
     ```
   ]
   .vsmall[
@@ -80,7 +88,7 @@ name: intro_to_pipes
   <br>&nbsp;
   .center[
     ```{r, echo=F, out.width=150}
-    knitr::include_graphics("assets/magrittr.png")
+    knitr::include_graphics("assets_tidyverse/magrittr.png")
     ```
   ]
 ]
@@ -187,17 +195,17 @@ name: tibble_intro
 ## Tibbles
 .pull-left-50[
   ```{r, fig.align='center', echo=FALSE}
-  knitr::include_graphics("assets/hex-tibble.png")
+  knitr::include_graphics("assets_tidyverse/hex-tibble.png")
   ```
   ```{r}
-  as.tibble(iris)
+  as_tibble(iris)
   ```
 ]
 
 .pull-right-50[
 * `tibble` is one of the unifying features of tidyverse,
 * it is a *better* `data.frame` realization,
-* objects `data.frame` can be coerced to `tibble` using `as.tibble()`
+* objects `data.frame` can be coerced to `tibble` using `as_tibble()`
 
 ```{r tibble_from_scratch}
   tibble(
@@ -220,7 +228,7 @@ name: tibble2
   + data type for each column is shown.
 
 ```{r tibble_printing} 
-as.tibble(cars)
+as_tibble(cars)
 ```
 
 * `my_tibble %>% print(n = 50, width = Inf)`,
@@ -234,7 +242,7 @@ name: tibble2
 ## Subsetting Tibbles
 
 ```{r tibble_subs}
-vehicles <- as.tibble(cars[1:5,])
+vehicles <- as_tibble(cars[1:5,])
 
 vehicles[['speed']]
 vehicles[[1]]
@@ -319,14 +327,15 @@ name: parsing_strings
 
 * Strings can be represented in different encodings:
 ```{r encodings, include=TRUE}
-text1 <- 'P?? en ?? ??r en ??'
-text2 <- 'Za???????? g????l?? ja????'
+text1 <- 'På en ö är en å'
+text2 <- 'Zażółć gęślą jaźń'
 ```
 ```{r encodings2}
 text1
 charToRaw(text2)
-parse_character(charToRaw(text1), locale = locale(encoding = 'UTF-8'))
+parse_character(text1, locale = locale(encoding = 'UTF-8'))
 guess_encoding(charToRaw("Test"))
+guess_encoding(charToRaw(text1))
 ``` 
 
 ---
@@ -437,12 +446,12 @@ name: basic_data_transformations
 
 Let us create a tibble:
 ```{r}
-bijou <- as.tibble(diamonds) %>% head(n = 100)
+bijou <- as_tibble(diamonds) %>% head(n = 100)
 bijou
 ```
 
 .center[
-  <img src="assets/diamonds.png", style="height:200px">
+  <img src="assets_tidyverse/diamonds.png", style="height:200px">
 ]
 ---
 name: filter
@@ -532,18 +541,18 @@ When you need to regroup within the same pipe, use `ungroup()`.
 name: concept_of_tidy_data
 
 ## The Concept of Tidy Data
-Data are tidy *sensu Wickham* :-) if:
+Data are tidy *sensu Wickham* if:
 * each and every observation is represented as exactly one row,
 * each and every variable is represented by exactly one column,
 * thus each data table cell contains only one value.
-`r knitr::include_graphics("assets/tidy_data.png")`
+`r knitr::include_graphics("assets_tidyverse/tidy_data.png")`
 
 Usually data are untidy in only one way. However, if you are unlucky, they are really untidy and thus a pain to work with...
 ---
 name: tidy_data
 
 ## Tidy Data
-`r knitr::include_graphics("assets/tidy_data.png")`
+`r knitr::include_graphics("assets_tidyverse/tidy_data.png")`
 --
 .center[**Are these data tidy?**]
 
@@ -767,12 +776,24 @@ A %>% full_join(B, by = 'key')
 ]
 
 ---
+name: more_tidyverse
+## Some Other Friends
+* `stringr` for string manipulation and regular expressions,
+* `forcats` for working with factors,
+* `lubridate` for working with dates.
+---
+name: end-slide
+class: end-slide
+
+# Thank you
+
+---
 name: purrr_map
 ## Using `map` Functions from `purrr`
 
 Base R `apply` functions have their `tidyverse` counterparts.
 ```{r}
-cars <- as.tibble(mtcars)
+cars <- as_tibble(mtcars)
 cars %>% head(n = 5)
 ```
 The `map` function:
