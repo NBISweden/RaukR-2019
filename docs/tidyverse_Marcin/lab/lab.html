@@ -834,7 +834,7 @@ library(lubridate)</code></pre>
 </div>
 <div id="reading-data" class="section level2">
 <h2><span class="header-section-number">5.3</span> Reading data</h2>
-<p>Now, let’s read the fastq data. Check <code>ShortRead</code> documentation to see how to read our <code>fastq</code> file. Also, try to use package <code>here</code>. If you write: <code>data &lt;- here::here('data/my.fastq')</code>, the <code>my.fastq</code> file will be read from the <code>data</code> folder which is a subfolder of your project root, i.e. the folder where your r script is. It is a good practise and also prevents <a href="https://www.tidyverse.org/articles/2017/12/workflow-vs-script/">Jenny Brian from coming to your office and setting your computer on fire</a>.</p>
+<p>Now, let’s read the fastq data. Check <code>ShortRead</code> documentation to see how to read our <code>fastq</code> file. Also, try to use package <code>here</code>. If you write: <code>data &lt;- here::here('data/my.fastq')</code>, the <code>my.fastq</code> file will be read from the <code>data</code> folder which is a subfolder of your project root, i.e. the folder where your r script is. It is a good practise and also prevents <a href="https://www.tidyverse.org/articles/2017/12/workflow-vs-script/">Jenny Bryan from coming to your office and setting your computer on fire</a>.</p>
 <p>Now think a bit, to plot reading events, do we need al the data in the file or only some specific part? You may want to see some few first lines of the <code>fastq</code> to learn about the data structure.</p>
 <pre class="r"><code>raw_data &lt;- here::here(&#39;docs/tidyverse_Marcin/lab/lab_assets/FUL1_fastqs_GRID2.fastq&#39;)
 f &lt;- FastqFile(raw_data)
@@ -1804,7 +1804,7 @@ Figure 6.1: Red – only one species in the current OTU, blue – identification
 ## [52] polylabelr_0.1.0       stringi_1.4.3          Rcpp_1.0.1            
 ## [55] tidyselect_0.2.5       xfun_0.7</code></pre>
 <p style="text-align: left; font-size: small;">
-Page built on: <i class="fa fa-calendar" aria-hidden="true"></i> 12-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 12:00:22.
+Page built on: <i class="fa fa-calendar" aria-hidden="true"></i> 12-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 12:04:16.
 </p>
 <hr/>
 <div style="padding-bottom: 1.5em">

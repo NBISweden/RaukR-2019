@@ -606,7 +606,7 @@ library(lubridate)
 ```
 
 ## Reading data
-Now, let's read the fastq data. Check `ShortRead` documentation to see how to read our `fastq` file. Also, try to use package `here`. If you write: `data <- here::here('data/my.fastq')`, the `my.fastq` file will be read from the `data` folder which is a subfolder of your project root, i.e. the folder where your r script is. It is a good practise and also prevents [Jenny Brian from coming to your office and setting your computer on fire](https://www.tidyverse.org/articles/2017/12/workflow-vs-script/).
+Now, let's read the fastq data. Check `ShortRead` documentation to see how to read our `fastq` file. Also, try to use package `here`. If you write: `data <- here::here('data/my.fastq')`, the `my.fastq` file will be read from the `data` folder which is a subfolder of your project root, i.e. the folder where your r script is. It is a good practise and also prevents [Jenny Bryan from coming to your office and setting your computer on fire](https://www.tidyverse.org/articles/2017/12/workflow-vs-script/).
 
 Now think a bit, to plot reading events, do we need al the data in the file or only some specific part? You may want to see some few first lines of the `fastq` to learn about the data structure.
 
