@@ -52,6 +52,8 @@ Welcome to the hands-on workshop "Tidy Work in Tidyverse". Most of the things ne
 
 # General excercises
 
+Datasets are available [here](https://www.dropbox.com/s/dxxt959g6iefeaf/tidyverse_lab_data.zip?dl=0)
+
 ## Pipes
 
 Rewrite the following code chunks as pipes (`magrittr`):
@@ -125,19 +127,19 @@ M <- matrix(distr1, ncol = 4)
 plot(M)
 M <- M + sample(M)
 dim_summary(nrows = nrow(M), ncols = ncol(M))
-distr2 <- rnorm(16)
 ```
 
 ```
+distr2 <- rnorm(16)
 N <- matrix(distr2, ncol = 4)
-colnames(N, letters[1:4])
+colnames(N) <- (letters[1:4])
 summary(N)
 ```
 
 ```
 P <- M %x% t(N)
 heatmap(P)
-names(P) <- letters[1:dim(P)[2]]
+colnames(P) <- letters[1:dim(P)[2]]
 cor(P[ ,'a'], P[ ,'i'])
 ```
 
@@ -159,7 +161,7 @@ M <- rnorm(16) %>%
 N <- rnorm(16) %>%
   matrix(ncol = 4) %>%
   `colnames<-`(letters[1:4]) %>%
-  t()
+  summary() 
 
 P <- M %>%
   `%x%`(., N) %T>%
@@ -248,7 +250,7 @@ Compare the performance of `as.data.frame()`, `as_data_frame()` and `as_tibble()
 
 ```{r, eval=FALSE}
 tst <- replicate(30, sample(100), simplify = TRUE)
-names(tst) = paste0(rep('col', times = dim(tst)[2]), 1:dim(tst)[2])
+colnames(tst) = paste0(rep('col', times = dim(tst)[2]), 1:dim(tst)[2])
 microbenchmark::microbenchmark(
   as.data.frame(tst),
   as_data_frame(tst),
@@ -585,6 +587,8 @@ tidy_storms %>% unite(col = "date", 4:6, sep = "/")
 
 ## Introduction
 You will be given a `fastq` file coming from MinION sequencer (Oxford Nanopore). This file contains test reads from the chicken genome. The flow-cell used here has 512 channels, each channel consists of 4 pores and only one pore is active at a time. Once your sequence gets stuck for some reason, the device will attempt to remove it from the pore by playing with reversing polarity on that pore. If this was successful, the pore will be re-used. Your task will be to visualise reading events from the meta-data in the `fastq` dataset and to see how each and every channel behaved. Also, you will plot the distribution of reading times.
+
+Datasets are available [here](https://www.dropbox.com/s/dxxt959g6iefeaf/tidyverse_lab_data.zip?dl=0)
 
 ## Preparations
 First, we will need to load the necessary libraries. I will give you a hint -- you need the following libraries:
