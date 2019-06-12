@@ -606,8 +606,8 @@ flights %&gt;% rename(destination = dest)
 <li>retrieve rows 1234:1258 (hint: <code>?slice</code>),</li>
 <li>sample (<code>?sample_n()</code>) 3 random flights per day in March,</li>
 <li>show 5 most departure-delayed flights in January per carrier,</li>
-<li>retrieve all <code>unique()</code> routes and sort them by origin,</li>
-<li>retrieve all <code>distinct()</code> routes and sort them by origin,</li>
+<li>retrieve all <code>unique()</code> routes and sort them by destination,</li>
+<li>retrieve all <code>distinct()</code> routes and sort them by destination,</li>
 <li>is <code>unique()</code> more efficient than <code>distinct()</code>?</li>
 </ul>
 <pre class="r"><code>flights %&gt;% filter(arr_delay &lt; 0)
@@ -626,7 +626,31 @@ flights %&gt;% filter(month == 3) %&gt;%
 flights %&gt;%
   filter(month == 1) %&gt;%
   group_by(carrier) %&gt;%
-  top_n(5, dep_delay)</code></pre>
+  top_n(5, dep_delay)
+
+nycflights13::flights %&gt;% 
+  select(origin, dest) %&gt;% 
+  unique() %&gt;% arrange(dest)
+
+flights %&gt;% mutate(route = paste(origin, dest, sep=&quot;-&quot;)) %&gt;% select(route) %&gt;% unique()
+
+nycflights13::flights %&gt;% 
+  select(origin, dest) %&gt;% 
+  distinct() %&gt;% arrange(dest)
+# or
+flights %&gt;% 
+  mutate(route = paste(origin, dest, sep=&quot;-&quot;))  %&gt;% 
+  distinct(route)
+
+microbenchmark(nycflights13::flights %&gt;% 
+  select(origin, dest) %&gt;% 
+  unique() %&gt;% arrange(dest))
+
+microbenchmark(nycflights13::flights %&gt;% 
+  select(origin, dest) %&gt;% 
+  distinct() %&gt;% arrange(dest))
+
+Distinct is faster.</code></pre>
 </div>
 <div id="task-3-transmutations" class="section level2">
 <h2><span class="header-section-number">3.3</span> Task 3 – Trans(mutations)</h2>
@@ -1804,7 +1828,7 @@ Figure 6.1: Red – only one species in the current OTU, blue – identification
 ## [52] polylabelr_0.1.0       stringi_1.4.3          Rcpp_1.0.1            
 ## [55] tidyselect_0.2.5       xfun_0.7</code></pre>
 <p style="text-align: left; font-size: small;">
-Page built on: <i class="fa fa-calendar" aria-hidden="true"></i> 12-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 12:11:30.
+Page built on: <i class="fa fa-calendar" aria-hidden="true"></i> 12-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 12:43:16.
 </p>
 <hr/>
 <div style="padding-bottom: 1.5em">
