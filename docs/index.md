@@ -1,6 +1,6 @@
 # RaukR 2019 • Course content
 
-The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISweden/RaukR-2019). Course materials are listed below.
+Course materials are listed below. (The GitHub repo for RaukR 2019 can be accessed by teachers [here](https://github.com/NBISweden/RaukR-2019).)
 
 ---
 ### Week 1
@@ -46,10 +46,10 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
 
 ### Week 2
 #### 17-Jun-2019 (Mon)
-* **Basic statistics** | `Models`
+* **Basic statistics** | Models
     + [Presentation](basic_stats_Bengt/presentation/presentation1.html)
     + [Lab](basic_stats_Bengt/lab/lab1.html)
-* ** Basic statistics** | `Model estimation`
+* **Basic statistics** | Model estimation
     + [Tutorial/lab]((basic_stats_Bengt/lab/lab2.html)
 
 #### 18-Jun-2019 (Tue)
