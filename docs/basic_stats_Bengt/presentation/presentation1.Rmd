@@ -319,7 +319,7 @@ name: Probability1
 
 ## Task | `Probability of observed data`
 
-For the linear model $Y=\beta_0+\beta_1 X,$ with parameters $(\beta_0=0.3, \beta_1=0.2, \sigma^2=0.05$), estimate $$Pr[Y <= 0.65|x=2],$$ using a 
+For the linear model $Y=\beta_0+\beta_1 X,$ with parameters $(\beta_0=0.3, \beta_1=0.2, \sigma^2=0.05$), estimate the conditional probability $$Pr[Y <= 0.65|x=2],$$ using a 
 
 #### Simulation solution
 
