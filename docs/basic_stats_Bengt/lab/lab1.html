@@ -500,7 +500,7 @@ plot(h, labels=TRUE)
 
 # compute requested probability from hist
 paste(&quot;Pr[Y&lt;=0.65|X=2] = &quot;, sum(h$counts[13]))</code></pre>
-<pre><code>## [1] &quot;Pr[Y&lt;=0.65|X=2] =  0.162&quot;</code></pre>
+<pre><code>## [1] &quot;Pr[Y&lt;=0.65|X=2] =  0.153&quot;</code></pre>
 <p><img src="lab1_files/figure-html/unnamed-chunk-7-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
 <details>
 <p><summary> Extra reading <em>The General Normal distribution</em> </summary></p>
@@ -646,13 +646,13 @@ t.test(yp, mu=mu)</code></pre>
 ##  One Sample t-test
 ## 
 ## data:  yp
-## t = 18.998, df = 99, p-value &lt; 2.2e-16
+## t = 18.343, df = 99, p-value &lt; 2.2e-16
 ## alternative hypothesis: true mean is not equal to 0.7
 ## 95 percent confidence interval:
-##  0.7935838 0.8154118
+##  0.7822366 0.8021857
 ## sample estimates:
 ## mean of x 
-## 0.8044978</code></pre>
+## 0.7922111</code></pre>
 </details>
 <ul>
 <li>The <em>t</em>-test appears quite sensitive, especially for changes of <span class="math inline">\(\gamma_1\)</span> (<code>c_1</code>)</li>
@@ -766,7 +766,7 @@ summary(lm(y~x, data=sim1))</code></pre>
 ##  [5] yaml_2.2.0      Rcpp_1.0.1      stringi_1.4.3   rmarkdown_1.13 
 ##  [9] stringr_1.4.0   xfun_0.7        digest_0.6.19   evaluate_0.14</code></pre>
 <p style="text-align: left; font-size: small;">
-Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 13-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 11:16:23.
+Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 13-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 11:42:07.
 </p>
 <hr/>
 <div style="padding-bottom: 1.5em">
