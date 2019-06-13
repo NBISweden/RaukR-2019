@@ -46,11 +46,11 @@ Course materials are listed below. (The GitHub repo for RaukR 2019 can be access
 
 ### Week 2
 #### 17-Jun-2019 (Mon)
-* **Basic statistics** | Models
+* **Basic statistics** -- Models
     + [Presentation](basic_stats_Bengt/presentation/presentation1.html)
     + [Lab](basic_stats_Bengt/lab/lab1.html)
-* **Basic statistics** | Model estimation
-    + [Tutorial/lab]((basic_stats_Bengt/lab/lab2.html)
+* **Basic statistics** -- Model estimation
+    + [Tutorial/lab](basic_stats_Bengt/lab/lab2.html)
 
 #### 18-Jun-2019 (Tue)
 #### 19-Jun-2019 (Wed)
