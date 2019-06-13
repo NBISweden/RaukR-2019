@@ -38,6 +38,8 @@ load("ggmap_assets/ggmap_assets.rda")
 load("ggmap_assets/pres_assets.rda")
 ```
 
+---
+
 ## ggmap
 
 .center.large[Plotting maps in R with `ggplot2`]
@@ -56,7 +58,7 @@ ggmap(baylor.map, extent = "device")
 
 ???
 The R package ggmap was create by David Kahle of Baylor University in Waco, Texas, as seen plotted here using ggmap.
-Its description on github is "Plotting maps in R with ggplot2", which is precisely why it is a good package to use together with ggplot2.
+Its description on github is "Plotting maps in R with ggplot2", which is precisely why it is a good package to use together with ggplot2. Another reason is that maps are often useful for biological data, wether it is plotting where a sample is from, or migratory patterns or something else.
 
 ---
 
@@ -69,7 +71,7 @@ ggmap(baylor.map)
 ]
 
 ???
-When plotting on maps you are using a coordinate system, usually longitudes and latitudes, as the axes. So the information you are adding to this map, for example, has to be something like crime, restaurants, parks or something else where we know the location.
+When plotting on maps you are using a coordinate system, usually longitudes and latitudes, as the axes. So the information you are adding to this map, for example, has to be something like crime, restaurants, parks, samples or something else where we know the location.
 
 ---
 
@@ -87,7 +89,7 @@ When plotting on maps you are using a coordinate system, usually longitudes and 
 
 ???
 ggmap has several useful functions that you can try hands-on in the exercise.
-get_map() is used to query one of several map servers such as google, stamen, open street map and cloudmade. You input a string used to search for the location, and the output is a ggmap class object. You can change between several types of maps, and how zoomed in or out you are. Now, we need a google api key for a lot of these functions. Something that we do not have! So we will use a special version of get_map() called get_stamenmap to circumvent google.
+get_map() is used to query one of several map servers such as google, stamen, open street map and cloudmade.  You can change between several types of maps, and how zoomed in or out you are. Now, we need a google api key for a lot of these functions. Something that we do not have! So we will use a special version of get_map() called get_stamenmap to circumvent google.
 
 ---
 
@@ -133,7 +135,7 @@ The confusingly named ggmap() is the function this time, not the package, used t
 ]
 
 ???
-geocode() takes a location and returns latitude and longitude rather than a map object. This is useful for creating data to plot on top of your map.
+geocode() takes a location and returns latitude and longitude rather than a map object. This is useful for creating data to plot on top of your map. Google api dependent regrettably.
 
 --
 
@@ -206,7 +208,7 @@ visby.watercolor.map %>% ggmap(extent = "device")
 ]
 
 ???
-Now there are three important places in visby that I want to add to the map, and those are Mullbärsgården, where some of you live, Visby hostel, where some others of you live, and glassmagasinet, they make icecream. I have saved those locations in a tibble called visby.locations.
+Now there are three important places in visby that I want to add to the map, and those are Mullbärsgården, where some of you live, Visby hostel, where some others of you live, and glassmagasinet, they make icecream. I have saved those locations in a tibble called visby.places and manually added longitude and latitude coordinates for the places.
 
 ---
 
