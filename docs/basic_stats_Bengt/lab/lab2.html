@@ -367,7 +367,7 @@ Notice that this also works if we have more than one condition:
 <hr />
 </details>
 </div>
-<div id="likelihood-the-frequentist-approach" class="section level2">
+<div id="likelihood" class="section level2">
 <h2><span class="header-section-number">1.2</span> Likelihood – The frequentist approach</h2>
 <details>
 <p><summary> Lecture notes </summary></p>
@@ -489,7 +489,7 @@ Y = b0 + X[,1] * b[1] + X[,2] * b[2] + X[,3] * b[3] + rnorm(N)</code></pre>
 </div>
 <div id="overfitting-model-comparison" class="section level2">
 <h2><span class="header-section-number">2.2</span> Overfitting | <code>Model comparison</code></h2>
-<p>Now consider the following two models for our data</p>
+<p>Now consider the following two linear models for our data</p>
 <p><span class="math display">\[\begin{eqnarray}
 y &amp; \sim &amp; \beta_0 + \beta_1 x_1 &amp; (1) \\
 y &amp; \sim &amp;  \beta_0 + \beta_1 x_1 + \beta_2 x_2 &amp; (2)
@@ -498,7 +498,7 @@ y &amp; \sim &amp;  \beta_0 + \beta_1 x_1 + \beta_2 x_2 &amp; (2)
 <div id="task-plot-two-likelihoods" class="section level3">
 <h3><span class="header-section-number">2.2.1</span> Task | <code>plot two likelihoods</code></h3>
 <ul>
-<li>Create <code>lm</code> models for the two models, and</li>
+<li>Create linear models (use <code>lm</code>) for the two models, and</li>
 <li>store the likelihood (use <code>logLik</code>) in a vector</li>
 <li>plot the likelihoods</li>
 </ul>
@@ -555,6 +555,7 @@ Some possible answers
 <ul>
 <li><p>Model (1) can be described as a special case of Model (2) with the constraints on <span class="math inline">\(\beta_2=0\)</span></p></li>
 <li><p>Therefore Model (2) will always have equal or better ML than Model (1)</p></li>
+<li><p>We say that model (1) is nested in Model (2) (which is nested in Model (3) etc.)</p></li>
 </ul>
 <p><em>Overfitting</em></p>
 <ul>
@@ -575,7 +576,8 @@ Some possible answers
 <h2>
 Model comparison | <code>Likelihood ratio test</code>
 </h1>
-<p>For nested models <span class="math inline">\(-2 \max LRT\)</span> is <span class="math inline">\(\chi^2(d)\)</span>-distributed, with <span class="math inline">\(d=\)</span> the difference in free params in the two models.</p>
+<p><em>(Read <strong>Extra reading</strong> about likelihood ratios under <a href="#likelihood">1.2</a> first)</em>
+For nested models <span class="math inline">\(-2 \max LRT\)</span> is <span class="math inline">\(\chi^2(d)\)</span>-distributed, with <span class="math inline">\(d=\)</span> the difference in free params in the two models.</p>
 <table class="table table-striped" style="font-size: 14px; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -782,7 +784,7 @@ no
 </tr>
 </tbody>
 </table>
-<p>In our simple test case, the LRT also succeed in picking the correct model. It should be noted that certain issues, such as <em>lnkage disequiibriium</em>, may cause problems for LRT (<em>the example is not optimized to show this</em>).</p>
+<p>In our simple test case, the LRT also succeed in picking the correct model. It should be noted that certain issues, such as <em>lnkage disequilibriium</em>, may cause problems for LRT (<em>the example is not optimized to show this</em>).</p>
 <hr />
 </details>
 </div>
@@ -823,24 +825,20 @@ plot(pl, xlim=c(1,P), ylim=c(floor(min(pl)),ceiling(max(pl))),ylab=&quot;log pL&
 \Downarrow\\
 rL[\beta | X, Y]  &amp;=&amp; Pr[Y | X, \beta] * e^{- f(\beta)}
 \end{eqnarray*}\]</span></p>
-<p>This looks suspiciously like a un-normalized posterior probability, with the prior <span class="math inline">\(Pr[\beta]=e^{-f(\beta)}.\)</span></p>
-<p>As we will see examples of, most regularization techniques has a Bayesian interpretation.</p>
-<p>In fact, a standard solution overfitting and, more generally, over-parameterization, i.e., problems where the likelihood function may not have a unique maximmum, is to include prior information, either as Bayesian priors or regularization terms to limit the parameter space.</p>
+<p>This looks suspiciously like an un-normalized posterior probability (i.e., lacking the denominator), with an exponential prior <span class="math inline">\(Pr[\beta]=e^{-f(\beta)}.\)</span></p>
+<p>As we will see examples of, most regularization techniques have a Bayesian interpretation.</p>
+<p>In fact, a standard solution overfitting and, more generally, over-parameterization, i.e., problems where the likelihood function may not have a unique maximmum, is to include prior information, either as Bayesian priors or regularization terms to limit the parameter space. This is an area where Bayesian and frequentist socialize and get on well.</p>
 </details>
 </div>
 <div id="regularization-aic-and-model-testing" class="section level2">
 <h2><span class="header-section-number">3.2</span> Regularization | <code>AIC and model testing</code></h2>
 <details>
 <p><summary> Lecture notes </summary></p>
-<p>Coming from a <em>information theory</em> base, Hirotugu Akaike came up with a very similar approach for the overfitting problem.</p>
+<p>Coming from a <em>information theory</em> base, Hirotugu Akaike (1974) came up with a very similar approach for solving the overfitting problem.</p>
 <p>The Akaike information criterion (AIC), for a model <span class="math inline">\(m\)</span> with variables <span class="math inline">\(X\)</span>, is defined as</p>
 <p><span class="math display">\[AIC_m = 2\# X - 2\log \max L[{\beta}|X,Y]\]</span></p>
 <p>We see that <span class="math inline">\(AIC_m = -2 \left(\log \max L[{\beta}|X,Y] - \#X\right)\)</span>, i.e., <span class="math inline">\(-2\)</span> times the the simple <span class="math inline">\(\log rL\)</span>, we just looked at in our first regularization example.</p>
-<details>
-<p><summary> Extra Reading </summary></p>
-<p>The difference in <span class="math inline">\(AIC\)</span> between two models is claimed to estimate the information lost by selecting the worse model.</p>
-<hr />
-</details>
+<p>In the information theory context, the difference in <span class="math inline">\(AIC\)</span> between two models is claimed to estimate the information lost by selecting the worse model.</p>
 <p>Sometimes, the <em>relative likelihood</em> for model <span class="math inline">\(m\)</span> is used, which is
 <span class="math display">\[relL = e^\frac{ AIC_{min} - AIC_{m} }{2}\]</span>
 where <span class="math inline">\(AIC_{min}\)</span> is the minimum AIC among a set of compared models</p>
@@ -851,13 +849,9 @@ where <span class="math inline">\(AIC_{min}\)</span> is the minimum AIC among a 
 <!--       and can be interpreted as -->
 <!-- $rL \propto Pr[m\textrm{ minimizes estimated information loss}]$. --></p>
 <ul>
-<li>Notice that</li>
+<li>Notice that<span class="math display">\[ relL = \frac{e^{\#X_m} }{e^{\#X_{min}}}\frac{\max L[{\beta}_{m}|X_m,Y]}{\max L[{\beta}_{min}|X_{min},Y]}\]</span>
+we see that <span class="math inline">\(rL\)</span> can be viewed as a weighted likelihood ratio or maybe more naturally as a Bayes factor</li>
 </ul></li>
-</ul>
-<p><span class="math display">\[\log relL = \frac{\#X_m }{\#X_{min}}\log\frac{\max L[{\beta}_{m}|X_m,Y]}{\max L[{\beta}_{min}|X_{min},Y]}\]</span>
-we see that <span class="math inline">\(rL\)</span> can be viewed as a likelihood ratio weighted by the ratio of number of <span class="math inline">\(X\)</span> variables (or as a Bayes factor)</p>
-<ul>
-<li>However, AIC are not limited to nested models</li>
 </ul>
 <hr />
 </details>
@@ -865,7 +859,7 @@ we see that <span class="math inline">\(rL\)</span> can be viewed as a likelihoo
 <div id="task-aic-analysis" class="section level3">
 <h3><span class="header-section-number">3.2.1</span> Task | <code>AIC analysis</code></h3>
 <ul>
-<li><p>A typical strategy is to select the model, <span class="math inline">\(m\)</span> with <span class="math inline">\(AIC_m=AIC_{min}\)</span> and then evaluate how much better it is than the other candidate models, e.g., using the <span class="math inline">\(relL\)</span>.</p></li>
+<li><p>A typical AIC analyss strategy is to select the model, <span class="math inline">\(m\)</span> with <span class="math inline">\(AIC_m=AIC_{min}\)</span> and then evaluate how much better it is than the other candidate models, e.g., using the <span class="math inline">\(relL\)</span>.</p></li>
 <li>Apply this AIC strategy applied to our example data using the R funcion <code>AIC</code></li>
 <li><p>create a table with the AIC and the <span class="math inline">\(relL\)</span> for the set of models comprising <span class="math inline">\(\{X_1, .\ldots, X_i\} \textrm{ for } i \in [1, \ldots, 10]\)</span>; indicate also if a model is the minimum AIC model.</p></li>
 </ul>
@@ -877,9 +871,9 @@ mprev &lt;- lm(Y ~ X[,1]) # current miminimum AIC model
 # dummyentry to be replaced
 aic=data.frame(models=0, aic=0, isAICmin=&quot;-&quot;) 
 
-for(i in seq(1,P)){
+for(i in seq(2,P)){
   m &lt;- lm(Y ~ X[,seq(1,i)])
-  fit = AIC(mprev,m)
+  fit = AIC(mprev,m) # compare with current the minimum model
   mprev = m
   if(i==2){ #include also the first model
     aic[i-1,] = list(paste0(i-1,&quot; variable&quot;), signif(fit$AIC[1],5), &quot;-&quot;) 
@@ -1092,7 +1086,7 @@ plot(aic$rl, xlim=c(1,P), ylab=&quot;relL&quot;, xlab=&quot;model #&quot;, type 
 Some possible answers
 </h4>
 <ul>
-<li>We see that the best model is the one with the 3 first X-variables (in line with our <em>oracle knowledge</em>) and that the second best model (with the first 2 X-variabels) is <span class="math inline">\(\approx70\%\)</span> worse.</li>
+<li>We see that the best model is the one with the 3 first X-variables (in line with our <em>oracle knowledge</em>) and that the second best model (with the first 4 X-variabels) is <span class="math inline">\(\approx 60\%\)</span> as good.</li>
 </ul>
 <details>
 <p><summary> Extra Reading </summary></p>
@@ -1104,7 +1098,7 @@ Some possible answers
 <ul>
 <li>Now, I this case we happened to know that the first 3 variables was the right one, so the order we choose to include them was correct. However, in the general case, we do not know this. How solve this?
 <ul>
-<li>Best subset method; involves testing all possible subsets, which is computationally time-consuming and dometimes unfeasible</li>
+<li>Best subset method; involves testing all possible subsets, which is computationally time-consuming and sometimes unfeasible</li>
 <li>Lasso</li>
 </ul></li>
 </ul>
@@ -1128,23 +1122,22 @@ Some possible answers
 <p>The <span class="math inline">\(\lambda\)</span> parameter sets a limit on the estimation of <span class="math inline">\(\beta\)</span>.</p>
 <p>Lasso is traditionally described as RSS with an auxiliary criterion/constraint:</p>
 <p><span class="math display">\[min_{{\beta}}\left\{RSS\right\} + \lambda\sum_{\beta_i\in\beta} |\beta_i|.\]</span>
-Lasso can also be viewed as a Bayesian posterior probability, with a LaPlacean prior on <span class="math inline">\(\beta\)</span>: <span class="math inline">\(\beta_j ∼ LaPlace(0, 1/\lambda)\)</span></p>
+Lasso can also be viewed as a un-normalized Bayesian posterior probability, with a LaPlacean prior on <span class="math inline">\(\beta\)</span>: <span class="math inline">\(\beta_j ∼ LaPlace(0, 1/\lambda)\)</span></p>
 <details>
 <p><summary> Extra Reading </summary>
 Often the regularization term is expressed in terms of the <span class="math inline">\(\ell_1-norm\)</span>, which can be viewed simply a short-hand notation, e.g., the <span class="math inline">\(\ell_1-norm\)</span> of <span class="math inline">\(\beta\)</span> is
 <span class="math display">\[ ||\beta||_1 = \sum_{\beta_i\in\beta} |\beta_i|\]</span></p>
 <p>There is also a <span class="math inline">\(\ell_2-norm\)</span>:
 <span class="math display">\[ ||\beta||_2 = \sqrt{\sum_{\beta_i\in{\beta}} \beta_i^2}\]</span>
-which is used, e.g., in ridge regression.</p>
-<p>We note, BTW, that you already have been working with an <span class="math inline">\(\ell_2-norm\)</span>: since <span class="math inline">\(RSS = ||Y-X\beta||_2^2\)</span> is simply the square of the <span class="math inline">\(\ell_2\)</span> norm of the residuals.</p>
-<p>Another common notation for LASSO is using the norm notstion:</p>
+which is used, e.g., in ridge regression. This correspond to a Normal prior for Baysians.</p>
+<p>We note, BTW, that you might already have encountered an <span class="math inline">\(\ell_2-norm\)</span>: since <span class="math inline">\(RSS = ||Y-X\beta||_2^2\)</span> is simply the square of the <span class="math inline">\(\ell_2\)</span> norm of the residuals.</p>
 <ul>
-<li>You might often see the notation <span class="math display">\[min_{{\beta}}\left\{RSS\right\} \textrm{ subject to } ||{\beta}||_1 &lt;= t\]</span>
+<li>You might also see the notation <span class="math display">\[min_{{\beta}}\left\{RSS\right\} \textrm{ subject to } ||{\beta}||_1 &lt;= t\]</span>
 where <span class="math inline">\(t\)</span> is related to <span class="math inline">\(\lambda\)</span>.</li>
 </ul>
 <hr />
 </details>
-<p>The optimal values of <span class="math inline">\(\beta\)</span> are then estimated, using some algorithm (lars or coordinate descent).</p>
+<p>The optimal values of <span class="math inline">\(\beta\)</span> for different values of <span class="math inline">\(\lambda\)</span> are then estimated, using some algorithm (lars or coordinate descent). A convenient way to think about this is that at very high <span class="math inline">\(\lambda\)</span> values, all <span class="math inline">\(\beta_s\)</span> are 0; by sequentially lowering <span class="math inline">\(\lambda\)</span> more and more <span class="math inline">\(\beta_i\)</span> become non-zero, the most important variables <span class="math inline">\(i\)</span> are included first.</p>
 <details>
 <p><summary> Extra Reading </summary></p>
 <p>The <em>Coordinate descent</em> algorithm is used in the R package <code>glmnet</code>:</p>
@@ -1175,7 +1168,7 @@ where <span class="math inline">\(t\)</span> is related to <span class="math inl
 <div id="task-lasso-using-the-glmnet-r-package" class="section level3">
 <h3><span class="header-section-number">3.3.1</span> Task | <code>Lasso using the glmnet R-package</code></h3>
 <ul>
-<li>Use function <code>glmnet</code> to perform LASSO analysis on our example data; relevant arguments of the function:
+<li>Use function <code>glmnet</code> to perform LASSO analysis on our example data; relevant arguments of the function include:
 <ul>
 <li>linear regression (<code>family='gaussian'</code> = default)</li>
 <li>LASSO (<code>alpha=1</code> = default)</li>
@@ -1190,8 +1183,11 @@ where <span class="math inline">\(t\)</span> is related to <span class="math inl
 </ul>
 <details>
 <p><summary> Extra Reading </summary></p>
-<p>Standardization in <code>glmnet</code>:
-<span class="math inline">\(x&#39; = \frac{x-\bar{x}}{1/\sqrt{N}||X-\bar{x}||_2}\)</span></p>
+<p>Standardization in <code>glmnet</code>:</p>
+<ul>
+<li><span class="math inline">\(x&#39; = \frac{x-\bar{x}}{s/\sqrt{N}}\)</span>
+where <span class="math inline">\(\frac{s}{\sqrt{N}}\)</span> is the estimate of the standard deviation of <span class="math inline">\(x\)</span> (and, incidently, can be written using the <span class="math inline">\(\ell_2-\)</span>norm: <span class="math inline">\(\frac{s}{\sqrt{N}} = \frac{\sum_{x_i \in x} (x-\bar{x})^2}{\sqrt{N}} = \frac{||X-\bar{x}||_2}{\sqrt{N}}\)</span>).</li>
+</ul>
 <hr />
 </details>
 <pre class="r"><code>require(glmnet)
@@ -1209,7 +1205,7 @@ fit = glmnet(X,Y, family=&quot;gaussian&quot;, alpha=1, standardize=T)</code></p
 <div id="think-about-2" class="section level4">
 <h4><span class="header-section-number">3.3.1.1</span> Think about</h4>
 <ul>
-<li>In which order are variables included (i.e., their <span class="math inline">\(\beta\)</span> becomes non-zero?</li>
+<li>In which order are variables included (i.e., their <span class="math inline">\(\beta\)</span> becomes non-zero)?</li>
 <li>In which direction is the effect</li>
 <li>Which lambda should we select?
 <ul>
@@ -1226,7 +1222,7 @@ Some possible answers
 <li>The order in the above plot appears to be <span class="math inline">\((1,2,3,7,6,5,10,9,4,8)\)</span> (may vary depending on the simulation)</li>
 <li><span class="math inline">\(\beta_i &gt; 0, i\in \{1,2,3,4,7,9\}\)</span>, while <span class="math inline">\(\beta_i&lt;0, i\in \{5,6,8,10\}\)</span></li>
 <li>Given <em>oracle knowledge</em>, the correct <span class="math inline">\(\lambda\)</span> appears lie somewhere in the interval <span class="math inline">\([\approx \exp(-0.9), \approx\exp(-2.25)]\)</span></li>
-<li>In the normal case, we do not have <em>oracle knowledge</em>.</li>
+<li>In the typical analysis case, we never have <em>oracle knowledge</em>.</li>
 </ul>
 <hr />
 </details>
@@ -1530,7 +1526,7 @@ Some possible answers
 ## [61] processx_3.3.1     yaml_2.2.0         inline_0.3.15     
 ## [64] colorspace_1.4-1   rvest_0.3.4</code></pre>
 <p style="text-align: left; font-size: small;">
-Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 12-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 17:37:29.
+Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 13-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 09:52:44.
 </p>
 <hr/>
 <div style="padding-bottom: 1.5em">
