@@ -50,8 +50,8 @@ $Y = \beta_0 + \beta_1* X$ is a *generating* model -- it describes how to genera
 
 * Generate 100 samples of $x,y$ by
   - generate genotypes $x$ for each sample from a uniform distribution on integers $0,1,2$ (tip: use `runif`)
-  - set $\beta_0=0.3$ and $\beta_0=0.3$
-  - generate $y$ for each sample of using the  model $y = \beta_1* x + \beta_0$ 
+  - set $\beta_0=0.3$ and $\beta_1=0.2$
+  - generate $y$ for each sample of using the  model $y = \beta_0 + \beta_1* x$ 
   - plot $y$ against $x$.
 
 #### Think about
@@ -74,7 +74,7 @@ plot(x=sim1$x, y=sim1$y)
 
 **Does the plot look biologically reasonable?**
 
-* If you followed the formula $y = \beta_1* x + \beta_0$ in the instructions literally, you  end up with something like this
+* If you followed the formula $y = \beta_0 + \beta_1* x$ in the instructions literally, you  end up with something like this
 
 ```{r, echo=FALSE}
 #parameters
@@ -92,24 +92,29 @@ plot(x=sim1$x, y=sim1$y)
 * Notice that there are no variation in $y$ for each genotyp $X$, this is not what we see in biological data.
 
 Go on and read more below under **Statistical model**
-<details>    
+</details>    
     
 ### Statistical model
 
 **Deterministic vs statistical models**
 
-* $Y = \beta_1* X + \beta_0$ is a *deterministic* model
+* $Y = \beta_0 + \beta_1* X$ is a *deterministic* model
     + does not model any variation
     + Common, e.g., in classical physics ( $E=mc^3$ )
     
-* $Y = \beta_1* X + \beta_0 +\epsilon,$ where $\epsilon~\sim N(0,\sigma)$ is a *statistical* (equiv. *stochastic*, *random*) linear model ($\sim$ means '*is drawn from*')
+* $Y = \beta_0 + \beta_1* X +\epsilon,$ where $\epsilon~\sim N(0,\sigma)$ is a *statistical* (equiv. *stochastic*, *random*) linear model ($\sim$ means '*is drawn from*')
     + attempts to model variation around a population mean (the *residuals*) determined by the model
-        - the residual of sample $i$ is $y_i-\beta_1* X + \beta_0$.
+        - the residual of sample $i$ is $y_i-(\beta_0 + \beta_1* X)$.
     + used in statistic analysis
     + $Y$ is then called a stochastic or random variable 
-    + Code for generating data from $Y = \beta_1* X + \beta_0 +\epsilon,$ where $\epsilon ~\sim N(0,\sigma)$ follows below
-
+    
 Henceforth, we will only consider *statistical* models.
+
+**Task**
+
+* Generate data from $Y = \beta_0+ \beta_1* X +\epsilon,$ where $\epsilon ~\sim N(mean=0,sd = 0.05)$ (tip: use `rnorm`).
+
+
 
 ```{r, echo =TRUE, eval=FALSE}
 #parameters
@@ -152,13 +157,13 @@ plot(x=sim1$x, y=sim1$y)
 
 ## Task | `Probability of observed data`
 
-A (statistical) linear model, $Y=\beta_0+\beta_1 X,$ generates $Y$ given, or *conditioned* on, specified value of $X$. Since we have variation in the model, we can't say exactly what value $Y$ will be. Instead, we can compute or estimate the probability that $Y$ takes a specific value, say $Y=y$, conditioned ona specific value of $X$, say $X=x$. This will be a *conditional probability* $Pr[Y=y|X=x]$, where the bar ('$|$') means that the probability is conditioned on $X=x$. In fact, if $X\neq x$ then this probability tells us nothing about $Y$.
+A (statistical) linear model, $Y=\beta_0+\beta_1 X,$ generates $Y$ given, or *conditioned* on, specified value of $X$. Since we have variation in the model, we can't say exactly what value $Y$ will be. Instead, we can compute or estimate the probability that $Y$ takes a specific value, say $Y=y$, if we know that $X$ has a specific value, say $X=x$ (we say that the probaility is *conditioned* this value of $X$). This will be a *conditional probability* $Pr[Y=y|X=x]$, where the bar ('$|$') means that the probability is conditioned on $X=x$. In fact, if $X\neq x$ then this probability tells us nothing about $Y$.
 
 Our task here is to, for the linear model $$Y=\beta_0+\beta_1 X$$ with parameters $(\beta_0=0.3, \beta_1=0.2, \sigma=0.05$), estimate the conditional probability $$Pr[Y <=0.65|X=2].$$ 
 
 ### Simulation solution
 * simulate 1000 $y$ using the model above with $x=2$ and store in a vector $Y$.
-* Make a histogram of $Y$ and estimate the probability that $Y<=0.655$ (*tip*: make sure that $0.7$ is among to a histogram breakpoints)
+* Make a histogram of $Y$ and estimate the probability that $Y<=0.65$ (*tip*: make sure that $0.65$ is among to a histogram breakpoints)
 
 
 **Think About**
@@ -166,7 +171,7 @@ Our task here is to, for the linear model $$Y=\beta_0+\beta_1 X$$ with parameter
 * What shape does the plotted value have? 
 * Where approximately is the mean?
 * Does this make sense in light of the generative model we used?
-* What have we plotted?
+* *Challenge* What have we plotted? (tip: google, e.g., 'probability distribution')
 
 ```{r, echo=TRUE, eval=FALSE}
 #parameters
@@ -198,7 +203,7 @@ paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[1:13]))
 
 **Makes sense?**
 
-* A bell-shaped distribution is typical for the Normal distribution, which makes sense since the residuals are sampled from a normal distribution. However, in our simulation we used a `mean = 0`, not `0.7`
+* A bell-shaped distribution is typical for the Normal distribution, which makes sense since the residuals are sampled from a normal distribution. However, in our simulation we used a `mean = 0`, and not `0.7` -- how does this work?
     + The reason is that ($\Leftrightarrow$ means 'is equivalent to') $$N(mean = \mu, sd =\sigma) \Leftrightarrow N(mean = 0, sd = \sigma) + \mu,$$ meaning that adding $\mu$ moves the whole distribution to a new mean $=\mu$.
         - this means that our model can equivalently be written $Y = N(\beta_0+\beta_1*X, \sigma)$
         
@@ -232,7 +237,7 @@ paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[13]))
 <details>
 <summary> Extra reading *The General Normal distribution* </summary>
 
-* Additionally, multiplying a normal distribution with $\sigma$ changes the 'width' of the distribution, meaning that we have $$N(mean = \mu, sd =\sigma) \Leftrightarrow N(mean = 0, sd = 1)* \sigma + \mu, $$ something that is very much used in statistics
+* Additionally, multiplying a normal distribution with $\sigma$ changes the 'width' of the distribution to have the satndard deviation $\sigma$, meaning that we have $$N(mean = \mu, sd =\sigma) \Leftrightarrow N(mean = 0, sd = 1)* \sigma + \mu, $$ something that is very much used in statistics
     + The distribution $N(mean=0, sd=\sigma)$ is called the *general normal distribution*
     + Any variable $Y\sim N(mean= \mu, sd=\sigma)$ can therefore be transformed into a *Z-value*,  $Z=\frac{Y-\mu}{\sigma},$ which has a general normal distribution, i.e.,  $Z \sim N(mean=0, sd=1)$
 </summary>

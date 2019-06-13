@@ -147,8 +147,8 @@ plot(x,y, type='b',
      ylab = "y = R proficiency", xlab = "x= Beers drunk")
 ```
 
-* This is a logistic model $y = \frac{1}{1-e^{-(\beta_0 +\beta_1x)}}$, where there are saturation towards the extremes
-* By transforming $y$ into log-odds, we get a linear expression in the r.h.s.  $$\log\frac{y}{1+y} = \beta_0+ \beta_1 x$$
+* This is a logistic model $y = \frac{1}{1+e^{-(\beta_0 +\beta_1x)}}$, where there are saturation towards the extremes
+* By transforming $y$ into log-odds, we get a linear expression in the r.h.s.  $$\log\frac{y}{1-y} = \beta_0 + \beta_1 x$$
 ]
 
 --
