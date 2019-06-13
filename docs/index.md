@@ -44,7 +44,10 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
 * **shiny** (*Author:* Roy Francis, *Reviewer:* Marcin Kierczak)
     + [Presentation](shiny/presentation/shiny_presentation.html)
     + [Lab](shiny/lab/shiny_lab.html)
-
+* **object-oriented programming** (*Author:* Marcin Kierczak)
+    + [Presentation](oop_Marcin/presentation/oop_presentation.html)
+    + [Lab](oop_Marcin/lab/oop_lab.html)
+    
 ### Week 2
 #### 17-Jun-2019 (Mon)
 #### 18-Jun-2019 (Tue)
