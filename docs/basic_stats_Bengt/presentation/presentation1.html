@@ -239,7 +239,7 @@ name: Probability1
 
 ## Task | `Probability of observed data`
 
-For the linear model `\(Y=\beta_0+\beta_1 X,\)` with parameters `\((\beta_0=0.3, \beta_1=0.2, \sigma^2=0.05\)`), estimate `$$Pr[Y &lt;= 0.65|x=2],$$` using a 
+For the linear model `\(Y=\beta_0+\beta_1 X,\)` with parameters `\((\beta_0=0.3, \beta_1=0.2, \sigma^2=0.05\)`), estimate the conditional probability `$$Pr[Y &lt;= 0.65|x=2],$$` using a 
 
 #### Simulation solution
 
@@ -282,7 +282,7 @@ paste("Pr[Y&lt;=0.65|X=2] = ", sum(h$counts[1:13]))
 .pull-right-50[
 
 ```
-## [1] "Pr[Y&lt;=0.65|X=2] =  0.157"
+## [1] "Pr[Y&lt;=0.65|X=2] =  0.156"
 ```
 
 &lt;img src="presentation1_files/figure-html/unnamed-chunk-8-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
@@ -407,13 +407,13 @@ where `\(s/\sqrt{N}\)` is an estimate of the standard deviation, `\(\sigma\)`, f
 ## 	One Sample t-test
 ## 
 ## data:  y
-## t = 71.182, df = 99, p-value &lt; 2.2e-16
+## t = 88.937, df = 99, p-value &lt; 2.2e-16
 ## alternative hypothesis: true mean is not equal to 0.7
 ## 95 percent confidence interval:
-##  1.094385 1.117003
+##  1.092622 1.110540
 ## sample estimates:
 ## mean of x 
-##  1.105694
+##  1.101581
 ```
 
 ---
@@ -446,13 +446,13 @@ t.test(y,yp)
 ## 	Welch Two Sample t-test
 ## 
 ## data:  y and yp
-## t = 57.045, df = 108.45, p-value &lt; 2.2e-16
+## t = 60.598, df = 106.93, p-value &lt; 2.2e-16
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.2877287 0.3084434
+##  0.3006333 0.3209684
 ## sample estimates:
 ## mean of x mean of y 
-## 0.6988233 0.4007372
+## 0.7097082 0.3989074
 ```
 ]
 .pull-right-50[
@@ -477,18 +477,18 @@ summary(lm(phenos~genos, data=sim1))
 ## 
 ## Residuals:
 ##       Min        1Q    Median        3Q       Max 
-## -0.140335 -0.035552 -0.003355  0.040018  0.104907 
+## -0.112219 -0.037492 -0.002291  0.036787  0.163077 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.298932   0.009151   32.67   &lt;2e-16 ***
-## genos       0.199274   0.007257   27.46   &lt;2e-16 ***
+## (Intercept) 0.302601   0.009431   32.09   &lt;2e-16 ***
+## genos       0.197689   0.007752   25.50   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.05478 on 98 degrees of freedom
-## Multiple R-squared:  0.885,	Adjusted R-squared:  0.8838 
-## F-statistic:   754 on 1 and 98 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 0.05371 on 98 degrees of freedom
+## Multiple R-squared:  0.869,	Adjusted R-squared:  0.8677 
+## F-statistic: 650.3 on 1 and 98 DF,  p-value: &lt; 2.2e-16
 ```
 
 ---
@@ -569,7 +569,7 @@ count: false
 
 &lt;p&gt;R version 3.5.3 (2019-03-11)&lt;br&gt;&lt;p&gt;Platform: x86_64-apple-darwin15.6.0 (64-bit)&lt;/p&gt;&lt;p&gt;OS: macOS High Sierra 10.13.6&lt;/p&gt;&lt;br&gt;
 
-Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 12-Jun-2019 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 17:06:40  
+Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 13-Jun-2019 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 11:16:17  
 
 __2019__ • [SciLifeLab](https://www.scilifelab.se/) • [NBIS](https://nbis.se/)
     </textarea>
