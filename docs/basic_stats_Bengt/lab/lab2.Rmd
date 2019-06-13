@@ -109,7 +109,7 @@ What happens in Bayes rule is that we first, in the numerator, perform $Pr[B|A]*
 
 </details>
 
-## Likelihood -- The frequentist approach
+## Likelihood -- The frequentist approach {#likelihood}
 
 <details>
 <summary> Lecture notes </summary>
@@ -279,7 +279,7 @@ Y = b0 + X[,1] * b[1] + X[,2] * b[2] + X[,3] * b[3] + rnorm(N)
 
 ## Overfitting | `Model comparison`
 
-Now consider the following two models for our data
+Now consider the following two linear models for our data
 
 \begin{eqnarray}
 y & \sim & \beta_0 + \beta_1 x_1 & (1) \\
@@ -289,7 +289,7 @@ y & \sim &  \beta_0 + \beta_1 x_1 + \beta_2 x_2 & (2)
 What are the max Likelihood estimates of the two models? (we can use the R function `logLik` in the `stats` package)
 
 ### Task | `plot two likelihoods`
-* Create `lm` models for the two models, and
+* Create linear models (use `lm`) for the two models, and
 * store the likelihood (use `logLik`) in a vector
 * plot the likelihoods
 
@@ -380,8 +380,12 @@ plot(ll, ylab="log L", xlab="model #", type = "b", xlim=c(1,P), ylim=c(floor(min
 _Nested models_
 
 * Model (1) can be described as a special case of Model (2) with the constraints on $\beta_2=0$
-
+ 
 * Therefore Model (2) will always have equal or better ML than Model (1)
+
+* We say that model (1) is nested in Model (2) (which is nested in Model (3) etc.)
+
+
 
 
 _Overfitting_
@@ -402,6 +406,7 @@ _Overfitting_
 <summary> Extra Reading </summary>
 <h2> Model comparison | `Likelihood ratio test`</h1>
 
+*(Read **Extra reading** about likelihood ratios under \@ref(likelihood) first)*
 For nested models $-2 \max LRT$ is $\chi^2(d)$-distributed, with $d=$ the difference in free params in the two models.
 
 ```{r, lrt, echo=F}
@@ -420,7 +425,7 @@ library(kableExtra)
 kable(lrt,"html",row.names=F, col.names=c("Compared models","logL 1st model","logL 2nd model","logLR", "P-value", "Sign at 0.05"),digits=30, format.args=list(snsmall=0)) %>% kable_styling(bootstrap="striped", font_size = 14, full_width=F)
 
 ```
-In our simple test case, the LRT also succeed in picking the correct model. It should be noted that certain issues, such as *lnkage disequiibriium*, may cause problems for LRT (*the example is not optimized to show this*).
+In our simple test case, the LRT also succeed in picking the correct model. It should be noted that certain issues, such as *lnkage disequilibriium*, may cause problems for LRT (*the example is not optimized to show this*).
 
 
 ***
@@ -461,7 +466,6 @@ plot(pl, xlim=c(1,P), ylim=c(floor(min(pl)),ceiling(max(pl))),ylab="log pL", xla
 
 </details>
 
-
 ## Regularization | `Bayesian interpretation`
 <details>
 <summary> Lecture notes </summary>
@@ -476,14 +480,15 @@ The standard way of writing a regularized likelihood is using the logLikelihood,
 rL[\beta | X, Y]  &=& Pr[Y | X, \beta] * e^{- f(\beta)}
 \end{eqnarray*}
 
-This looks suspiciously like a un-normalized posterior probability, with the prior $Pr[\beta]=e^{-f(\beta)}.$
+This looks suspiciously like an un-normalized posterior probability (i.e., lacking the denominator), with an exponential prior $Pr[\beta]=e^{-f(\beta)}.$
 
-As we will see examples of, most regularization techniques has a Bayesian interpretation.
+As we will see examples of, most regularization techniques have a Bayesian interpretation.
 
 
-In fact, a standard solution overfitting and, more generally, over-parameterization, i.e., problems where the likelihood function may not have a unique maximmum, is to include prior information, either as Bayesian priors or regularization terms to limit the parameter space.
+In fact, a standard solution overfitting and, more generally, over-parameterization, i.e., problems where the likelihood function may not have a unique maximmum, is to include prior information, either as Bayesian priors or regularization terms to limit the parameter space. This is an area where Bayesian and frequentist socialize and get on well.
 
 </details>
+
 
 
 ##  Regularization | `AIC and model testing`
@@ -491,26 +496,22 @@ In fact, a standard solution overfitting and, more generally, over-parameterizat
 <details>
 <summary> Lecture notes </summary>
 
-Coming from a _information theory_ base, Hirotugu Akaike came up with a very similar approach for the overfitting problem.
+Coming from a _information theory_ base, Hirotugu Akaike (1974) came up with a very similar approach for solving the overfitting problem.
 
 The Akaike information criterion (AIC), for a model $m$ with variables $X$, is defined as
 
   $$AIC_m = 2\# X - 2\log \max L[{\beta}|X,Y]$$
 
 We see that $AIC_m = -2 \left(\log \max L[{\beta}|X,Y] - \#X\right)$, i.e., $-2$ times the the simple $\log rL$, we just looked at in our first regularization example. 
-    
-<details>
-<summary> Extra Reading </summary>
 
-The difference in $AIC$ between two models is claimed to estimate the information lost by selecting the worse model.
+In the information theory context, the difference in $AIC$ between two models is claimed to estimate the information lost by selecting the worse model.
 
-***
-</details>
     
 Sometimes, the *relative likelihood* for model $m$ is used, which is
       $$relL = e^\frac{ AIC_{min} - AIC_{m} }{2}$$
 where $AIC_{min}$ is the minimum AIC among a set of compared models
       
+
 <details>
 <summary> Extra Reading </summary>
 
@@ -518,12 +519,8 @@ where $AIC_{min}$ is the minimum AIC among a set of compared models
 <!--       and can be interpreted as -->
 <!-- $rL \propto Pr[m\textrm{ minimizes estimated information loss}]$. -->
 
-   * Notice that
-   
-$$\log relL = \frac{\#X_m }{\#X_{min}}\log\frac{\max L[{\beta}_{m}|X_m,Y]}{\max L[{\beta}_{min}|X_{min},Y]}$$
-  we see that $rL$ can be viewed as a  likelihood ratio weighted by the ratio of number of $X$ variables (or as a Bayes factor)
-  
-* However, AIC are not limited to nested models
+   * Notice that$$ relL = \frac{e^{\#X_m} }{e^{\#X_{min}}}\frac{\max L[{\beta}_{m}|X_m,Y]}{\max L[{\beta}_{min}|X_{min},Y]}$$
+  we see that $rL$ can be viewed as a weighted likelihood ratio or maybe more naturally as a Bayes factor
 
 ***
 </details>
@@ -534,7 +531,7 @@ $$\log relL = \frac{\#X_m }{\#X_{min}}\log\frac{\max L[{\beta}_{m}|X_m,Y]}{\max 
 
 ### Task | `AIC analysis`
 
-* A typical strategy is to select the model, $m$ with $AIC_m=AIC_{min}$ and then evaluate how much better it is than the other candidate models, e.g., using the $relL$.
+* A typical AIC analyss strategy is to select the model, $m$ with $AIC_m=AIC_{min}$ and then evaluate how much better it is than the other candidate models, e.g., using the $relL$.
 
 * Apply this AIC strategy applied to our example data using the R funcion `AIC`
 * create a table with the AIC and the $relL$ for the set of models comprising $\{X_1, .\ldots, X_i\} \textrm{ for } i \in [1, \ldots, 10]$; indicate also if a model is the minimum AIC model.
@@ -548,9 +545,9 @@ mprev <- lm(Y ~ X[,1]) # current miminimum AIC model
 # dummyentry to be replaced
 aic=data.frame(models=0, aic=0, isAICmin="-") 
 
-for(i in seq(1,P)){
+for(i in seq(2,P)){
   m <- lm(Y ~ X[,seq(1,i)])
-  fit = AIC(mprev,m)
+  fit = AIC(mprev,m) # compare with current the minimum model
   mprev = m
   if(i==2){ #include also the first model
     aic[i-1,] = list(paste0(i-1," variable"), signif(fit$AIC[1],5), "-") 
@@ -572,7 +569,7 @@ require(dplyr)
 require(kableExtra)
 mprev <- lm(Y ~ X[,1])
 aic=data.frame(models=0, aic=0, lowest="-")
-for(i in seq(1,P)){
+for(i in seq(2,P)){
   m <- lm(Y ~ X[,seq(1,i)])
   fit=AIC(mprev,m)
   mprev=m
@@ -629,7 +626,7 @@ plot(aic$rl, xlim=c(1,P), ylab="relL", xlab="model #", type = "b")
 <summary> Some possible answers </summary>
 <h4>Some possible answers</h4>
 
-* We see that the best model is the one with the 3 first X-variables (in line with our *oracle knowledge*) and that the second best model (with the first 2 X-variabels) is $\approx70\%$ worse.
+* We see that the best model is the one with the 3 first X-variables (in line with our *oracle knowledge*) and that the second best model (with the first 4 X-variabels) is $\approx 60\%$ as good.
 
 <details>
 <summary> Extra Reading </summary>
@@ -640,7 +637,7 @@ plot(aic$rl, xlim=c(1,P), ylab="relL", xlab="model #", type = "b")
 </details>
 
 * Now, I this case we happened to know that the first 3 variables was the right one, so the order we choose to include them was correct. However, in the general case, we do not know this. How solve this?
-  - Best subset method; involves testing all possible subsets, which is computationally time-consuming and dometimes unfeasible
+  - Best subset method; involves testing all possible subsets, which is computationally time-consuming and sometimes unfeasible
   - Lasso
 
 ***
@@ -674,7 +671,7 @@ The $\lambda$ parameter sets a limit on the estimation of $\beta$.
 Lasso is traditionally described as RSS with an auxiliary criterion/constraint: 
 
 $$min_{{\beta}}\left\{RSS\right\} + \lambda\sum_{\beta_i\in\beta} |\beta_i|.$$
-Lasso can also be viewed as a Bayesian posterior probability, with a LaPlacean prior on $\beta$: $\beta_j ∼ LaPlace(0, 1/\lambda)$ 
+Lasso can also be viewed as a un-normalized Bayesian posterior probability, with a LaPlacean prior on $\beta$: $\beta_j ∼ LaPlace(0, 1/\lambda)$ 
 
 <details>
 <summary> Extra Reading </summary>
@@ -683,19 +680,17 @@ $$ ||\beta||_1 = \sum_{\beta_i\in\beta} |\beta_i|$$
 
 There is also a $\ell_2-norm$:
 $$ ||\beta||_2 = \sqrt{\sum_{\beta_i\in{\beta}} \beta_i^2}$$
-which is used, e.g., in ridge regression.
+which is used, e.g., in ridge regression. This correspond to a Normal prior for Baysians.
 
-We note, BTW, that you already have been working with an $\ell_2-norm$: since $RSS = ||Y-X\beta||_2^2$ is simply the square of the $\ell_2$ norm of the residuals.
+We note, BTW, that you might already have encountered an $\ell_2-norm$: since $RSS = ||Y-X\beta||_2^2$ is simply the square of the $\ell_2$ norm of the residuals.
 
-Another common notation for LASSO is using the norm notstion:
-
-* You might often see the notation $$min_{{\beta}}\left\{RSS\right\} \textrm{ subject to } ||{\beta}||_1 <= t$$
+* You might also see the notation $$min_{{\beta}}\left\{RSS\right\} \textrm{ subject to } ||{\beta}||_1 <= t$$
   where $t$ is related to $\lambda$.
 
 ***
 </details>
 
-The optimal values of $\beta$ are then estimated, using some algorithm (lars or coordinate descent).
+The optimal values of $\beta$ for different values of $\lambda$ are then estimated, using some algorithm (lars or coordinate descent). A convenient way to think about this is that at very high $\lambda$ values, all $\beta_s$ are 0; by sequentially lowering $\lambda$ more and more $\beta_i$ become non-zero, the most important variables $i$ are included first.
 
 <details>
 <summary> Extra Reading </summary>
@@ -729,7 +724,7 @@ Alternatives to LASSO, differing mainly in the auxiliary criterion
 
 ### Task | `Lasso using the glmnet R-package`
 
-* Use function `glmnet` to perform LASSO analysis on our example data; relevant arguments of the function:
+* Use function `glmnet` to perform LASSO analysis on our example data; relevant arguments of the function include:
     + linear regression (`family='gaussian'` = default)
     + LASSO (`alpha=1` = default)
     + standardization
@@ -742,7 +737,9 @@ Alternatives to LASSO, differing mainly in the auxiliary criterion
 <summary> Extra Reading </summary>
 
 Standardization in `glmnet`:
-$x' = \frac{x-\bar{x}}{1/\sqrt{N}||X-\bar{x}||_2}$
+
+* $x' = \frac{x-\bar{x}}{s/\sqrt{N}}$
+where $\frac{s}{\sqrt{N}}$ is the estimate of the standard deviation of $x$ (and, incidently, can be written using the $\ell_2-$norm: $\frac{s}{\sqrt{N}} = \frac{\sum_{x_i \in x} (x-\bar{x})^2}{\sqrt{N}} = \frac{||X-\bar{x}||_2}{\sqrt{N}}$).
 
 ***
 </details>
@@ -769,7 +766,7 @@ plot(fit, xvar="lambda",label=T)
 </details>
 
 #### Think about
-* In which order are variables included (i.e., their $\beta$ becomes non-zero? 
+* In which order are variables included (i.e., their $\beta$ becomes non-zero)? 
 * In which direction is the effect
 * Which lambda should we select?
   - Given our *oracle knowledge*, where would an appropriate $\lambda$ be?
@@ -782,7 +779,7 @@ plot(fit, xvar="lambda",label=T)
 * The order in the above plot appears to be $(1,2,3,7,6,5,10,9,4,8)$ (may vary depending on the simulation)
 * $\beta_i > 0, i\in \{1,2,3,4,7,9\}$, while $\beta_i<0, i\in \{5,6,8,10\}$
 * Given *oracle knowledge*, the correct $\lambda$ appears lie somewhere in the interval $[\approx \exp(-0.9), \approx\exp(-2.25)]$
-* In the normal case, we do not have *oracle knowledge*.
+* In the typical analysis case, we never have *oracle knowledge*.
 
 ***
 </details>
