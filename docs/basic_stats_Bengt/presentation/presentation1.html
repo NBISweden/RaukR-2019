@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Basic Statistics | Models</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bengt Sennblad" />
+    <meta name="keywords" content="r, RaukR, markdown" />
+    <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+    <link id="font-awesome-1-attachment" rel="attachment" href="libs/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+    <link rel="stylesheet" href="assets/presentation.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Basic Statistics | <code>Models</code>
+## RaukR 2019 • Advanced R for Bioinformatics
+### <b>Bengt Sennblad</b>
+### NBIS, SciLifeLab
+
+---
+
+exclude: true
+count: false
+
+
+&lt;link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;amp;subset=latin-ext" rel="stylesheet"&gt;
+
+
+
+
+
+&lt;!-- ----------------- Only edit title &amp; author above this ----------------- --&gt;
+
+
+
+---
+name: models1
+## Models
+
+* What is a model?
+
+--
+  + simplification (abstraction) of reality that helps us address a specific problem
+      - enhance computation/estimation
+      - reflect biology
+  
+---
+
+## Models | `Example: R proficiency as a function of beer`
+.pull-left-50[
+We want to model how beer consumption affects the ability to program well in R
+
+* `\(x=\)` number of beers drunk
+* `\(y=\)` Ability to program in R
+]
+
+--
+
+.pull-right-50[
+&lt;img src="presentation1_files/figure-html/beer1-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+
+]
+
+--
+
+This is a *linear model*, `$$y = \beta_0 + \beta_1 x,$$` where `\(y\)` changes in proportion to `\(x\)`.
+
+***
+
+--
+
+__Notice that a model is always restricted by its assumptions:__
+* In the model plot above, I have used strong assumptions about `\(\beta_1\)` and `\(\beta_0\)` being exactly `\(\beta_1=-0.1\)` and `\(\beta_0=1.0\)`. 
+* Therefore, people with a different susceptibility to alcohol `\((\beta_1 \neq -0.1)\)` or a different initial proficiency in R `\((\beta_0 \neq 1.0)\)` are *not* correctly modeled by this model.
+  
+
+---
+## Models | `Example: R proficiency as a function of beer`
+.center[ .large[How can we solve this? ] ]
+--
+
+Several possibilities:
+
+.pull-left-50[
+
+* Include population variation in the model (more later)
+
+* Create a hierarchical model comprising
+  + a main linear model `$$y=\beta_0 + \beta_1 x,$$` whose parameters are modeled by
+  + linear submodels, including body mass `\((m)\)` and *hyperparameters*: 
+      - alcohol susceptibility, `\(\beta_1=am + b\)` 
+      - initial proficiency, `\(\beta_0=cm+d\)`
+* Both these combined
+
+]
+
+--
+&lt;br&gt;
+&lt;br&gt;
+.pull-right-50[
+&lt;img src="presentation1_files/figure-html/beer2-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+--
+
+
+.center[Still not quite right...]
+
+
+---
+
+## Models | `Example`
+.pull-left-50[  
+More realistic?
+&lt;img src="presentation1_files/figure-html/beer3-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+
+* This is a logistic model `\(y = \frac{1}{1-e^{-(\beta_0 +\beta_1x)}}\)`, where there are saturation towards the extremes
+* By transforming `\(y\)` into log-odds, we get a linear expression in the r.h.s.  `$$\log\frac{y}{1+y} = \beta_0+ \beta_1 x$$`
+]
+
+--
+
+.pull-right-50[  
+
+* Models can also be described as a graph ('graph models'):
+  + This is a graph model showing whether it is possible to fly to RaukR from a selection of cities of the world
+&lt;img src="presentation1_files/figure-html/models1-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+
+
+]
+
+
+---
+
+# But what can models be used for?
+--
+
+Perform 
+## Task | `Simulation`
+## Task | `Probability of data`
+## Task | `Statistical test`
+
+---
+name: Simulation1
+
+## Task | `Simulation`
+
+Generate 100 samples from `\(y = \beta_0 + \beta_1* x,\)` with parameters `\(\beta_0=0.3\)` and `\(\beta_1=0.2\)`
+
+**Think about**
+* Does the plotted results look biologically reasonable?
+    + if not: what could be the reason?
+
+--
+
+.pull-left-50[
+
+```r
+#parameters
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(genos=round(runif(N,min=0,max=2)))
+
+sim1$phenos = b0 + b1 * sim1$genos
+
+plot(x=sim1$genos, y=sim1$phenos)
+```
+]
+
+.pull-right-50[
+&lt;img src="presentation1_files/figure-html/unnamed-chunk-4-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+name: Simulation2
+
+## Task | `Simulation`
+
+### Deterministic vs statistical models
+* `\(y = \beta_1* x + \beta_0\)` is a *deterministic* model
+    + does not model any variation
+    + Common, e.g., in classical physics ( `\(E=mc^3\)` )
+* `\(y = \beta_1* x + \beta_0 +\epsilon,\)` where the *residuals* `\(\epsilon ~\sim N(0,\sigma^2)\)` is a *statistical* (equiv. *stochastic*, *random*) model
+    + attempts to model variation around a population mean (the *residuals*) determined by the model
+    + generates a stochastic variable and is used in statistic analysis
+
+--
+
+.pull-left-50[
+
+```r
+#parameters
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(genos=round(runif(N,min=0,max=2)))
+
+sim1$phenos = b0 + b1 * sim1$genos + rnorm(N, mean=0, sd=0.05) 
+
+plot(x=sim1$genos, y=sim1$phenos)
+```
+]
+
+.pull-right-50[
+&lt;img src="presentation1_files/figure-html/unnamed-chunk-6-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+name: simulation3
+## Task | `Simulation`
+
+### Something about the `\(\sim\)` notation
+* Statistical notation 
+    + `\(x\sim U(0,1)\)` means that `\(x\)` is a stochastic variable with a uniform distribution in the interval [0,1]
+* R formulas
+    + `y~x` in `lm` function is a shorthand for `\(y = \beta_0 + \beta_1 x\)`.
+
+
+---
+name: Simulation3
+
+## Task | `Simulation`
+
+**Think about**
+* When can simulated data be useful?
+
+--
+
+**Uses for simulated data**
+
+* *Oracle knowledge* when evaluating performance of methods, e.g., Type I and II errors 
+* Estimating probabilities and probability distributions of, e.g., data and summary statistics of data (next task)
+
+
+---
+name: Probability1
+
+## Task | `Probability of observed data`
+
+For the linear model `\(Y=\beta_0+\beta_1 X,\)` with parameters `\((\beta_0=0.3, \beta_1=0.2, \sigma^2=0.05\)`), estimate `$$Pr[Y &lt;= 0.65|x=2],$$` using a 
+
+#### Simulation solution
+
+and a
+
+#### Analytic solution
+
+
+---
+
+name: Probability2
+## Task | `Probability of observed data`
+#### Simulation solution
+
+**Think about**
+* What shape does the plotted value have? 
+* Where approximately is the mean?
+* Does this make sense in light of the generative model we used?
+
+.pull-left-50[
+
+```r
+#parameters
+b0 = 0.3
+b1 = 0.2
+N = 1000
+x = 2
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+h=hist(y, frequency=TRUE, right=FALSE, 
+       breaks=seq(0,1.0,0.05), plot=FALSE)
+h$counts = h$counts/N
+plot(h, ylim =c(0,1), labels=TRUE)
+
+# compute requested probability from hist
+paste("Pr[Y&lt;=0.65|X=2] = ", sum(h$counts[1:13]))
+```
+]
+
+.pull-right-50[
+
+```
+## [1] "Pr[Y&lt;=0.65|X=2] =  0.157"
+```
+
+&lt;img src="presentation1_files/figure-html/unnamed-chunk-8-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+name: Probaility3
+## Task | `Probability of observed data`
+### Adding mean and multiplying sd
+
+`\(Y \sim N(mean=0,sd=1) \Leftrightarrow Y \sim  \mu+\sigma * N(mean = 0, sd=1)\)`
+&lt;img src="presentation1_files/figure-html/unnamed-chunk-9-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+--
+
+* `\(N(mean=0, sd=1)\)` is called the * General Normal distribution*
+
+???
+`\begin{eqnarray*}
+Y &amp;\sim&amp; \mu + N(mean=0,sd=1)\\
+Y&amp;\sim &amp; N(mean = \mu, sd=\sigma)\\
+Y&amp;\sim &amp; \sigma * N(mean = \mu, sd=1)
+\end{eqnarray*}`
+
+---
+name: Probability4
+
+## Task | `Probability of observed data`
+**Think about**
+* What have we plotted?
+
+
+.pull-left-50[
+
+We estimated the *probability density function* (PDF) of the model `\(Y\sim N(mean=\beta_0+\beta_1X, sd=\sigma)\)`
+
+&lt;img src="presentation1_files/figure-html/unnamed-chunk-10-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+--
+
+.pull-right-50[
+...but we have actually used the *cumulative probability function* (CDF) to estimate `\(Pr[Y&lt;=0.65|X=x, \theta]\)`
+
+&lt;img src="presentation1_files/figure-html/unnamed-chunk-11-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+
+
+---
+name: Probability5
+
+## Task | `Probability of observed data`
+
+### Analytic solution 
+
+**Think about**
+
+* Do the result fit that from the simulation?
+    + If not, how can we make the fit better?
+* What can this result be used for?
+
+--
+
+**p-values**
+* Probability fo finding a more extreme value or test statistic under the NULL model.
+    + p-values can refer to different meanings of *extreme*. Using our model as an NULL model:
+        - For a *left-tailed* p-value, `\(p(y) = Pr[Y&lt;=y|X=x]\)`, i.e., the `\(CDF(y, \mu, \sigma)\)`
+        - For a *right-tailed* p-value, `\(p(y) = Pr[Y&gt;=y|X=x]\)`, i.e., `\(1-CDF(y, \mu, \sigma)\)`
+        - For a *double-tailed* p-value, `\(p(y) = 2 \min\{Pr[Y&lt;=y|X=x],Pr[Y&gt;=y|X=x]\}\)`
+    + If the p-value is *significant*, i.e., below some threshold `\(\alpha\)` (typically `\(\alpha = 0.05\)`) we can reject the NULL hypothesis that the data is generated from our model.
+
+
+
+---
+name: Probability6
+
+## Task | `Probability of observed data`
+
+** *Challenge*: Why look at intervals of `\(Y\)` rather than specific values?**
+
+--
+
+* **For continuous `\(Y\)`, probabilities only exist for intervals; for any specific `\(y\)`, `\(Pr[Y=y] = 0\)`**
+--
+
+* Then what is the PDF?
+--
+
+* Let's look at the average probability over the interval of the histogram interval including 0.65 
+&lt;img src="presentation1_files/figure-html/unnamed-chunk-12-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+--
+
+* Asympotically approaches a limit, which is exactly the PDF for 0.65 = 0.32297
+--
+
+* PDF is the derivative of CDF
+* PDF is a (probability) *density*, but not a probability!
+
+---
+
+name: tests
+## Task | `Statistical tests`
+
+### Student's t-test for `\(y\sim N(mean=\mu,sd)\)`
+* The t-test uses normalized residuals as a test statistics: 
+`\begin{eqnarray*}
+t  
+&amp;= \sum_{i}\frac{y_i-\mu}{s/\sqrt{N}} 
+&amp;= \frac{\bar{y}-\mu}{s/\sqrt{N}}
+\end{eqnarray*}`
+where `\(s/\sqrt{N}\)` is an estimate of the standard deviation, `\(\sigma\)`, from the observed data. 
+* Normalized residuals have a *General Normal distribution*, `\(N(mean=0,sd=1)\)`
+
+**Think about**
+
+* Does the t-test reject the NULL model or not?
+
+
+```
+## [1] "generate data with c0 =  0.1 , c1 =  0.5"
+## 
+## 	One Sample t-test
+## 
+## data:  y
+## t = 71.182, df = 99, p-value &lt; 2.2e-16
+## alternative hypothesis: true mean is not equal to 0.7
+## 95 percent confidence interval:
+##  1.094385 1.117003
+## sample estimates:
+## mean of x 
+##  1.105694
+```
+
+---
+name: tests
+## Task | `Statistical tests`
+
+* Test if two samples are generated by the same (unknown) model using the standardized difference in means, typically, using the NULL hypothesis that this difference is 0. Example code below
+
+.pull-left-50[
+
+```r
+# data 1
+b0 = 0.3
+b1 = 0.2
+x = rep(x,N)
+N=100
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+#data 2
+c0 = 0.4
+c1 = 0.2
+N=100
+yp = c0 + c1 *  + rnorm(N, mean=0, sd=0.05) 
+
+t.test(y,yp)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  y and yp
+## t = 57.045, df = 108.45, p-value &lt; 2.2e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.2877287 0.3084434
+## sample estimates:
+## mean of x mean of y 
+## 0.6988233 0.4007372
+```
+]
+.pull-right-50[
+&lt;img src="presentation1_files/figure-html/unnamed-chunk-15-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+---
+
+name: tests
+## Task | `Statistical tests`
+
+* In `lm`, a *t*-test is used to test if the estimated parameters are significantly different from 0.
+
+
+```r
+summary(lm(phenos~genos, data=sim1))
+```
+
+```
+## 
+## Call:
+## lm(formula = phenos ~ genos, data = sim1)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.140335 -0.035552 -0.003355  0.040018  0.104907 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.298932   0.009151   32.67   &lt;2e-16 ***
+## genos       0.199274   0.007257   27.46   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.05478 on 98 degrees of freedom
+## Multiple R-squared:  0.885,	Adjusted R-squared:  0.8838 
+## F-statistic:   754 on 1 and 98 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+name: nonparam
+
+.pull-left-50[
+## Types of models
+
+* Deterministic models
+    + structure
+    + parameter values
+* Statistical models
+    + Additional *random distribution*
+    + Parameteric models
+        - structure fixed *a priori*
+            * Example: Normal family of distribution (incl. linear model)
+    + Non-parametric distribution
+        - estimates structure from data
+            * Example: histograms, Kernel density estimation
+]
+--
+
+.pull-right-50[
+## Types of statistical tests
+
+* parametric tests
+    + assumes statistical distribution *a priori*
+        - Student's t-test
+        - ANOVA
+* non-parametric tests
+    + no assumption of statistical distribution
+    + typically uses ranking of values
+        - Example: Mann-Whitney U tests
+        - Kruskal-Wallis test
+]
+
+---
+name: report
+
+## Session  
+
+* This presentation was created in RStudio using [`remarkjs`](https://github.com/gnab/remark) framework through R package [`xaringan`](https://github.com/yihui/xaringan).
+* For R Markdown, see &lt;http://rmarkdown.rstudio.com&gt;
+* For R Markdown presentations, see &lt;https://rmarkdown.rstudio.com/lesson-11.html&gt;
+
+
+```r
+R.version
+```
+
+```
+##                _                           
+## platform       x86_64-apple-darwin15.6.0   
+## arch           x86_64                      
+## os             darwin15.6.0                
+## system         x86_64, darwin15.6.0        
+## status                                     
+## major          3                           
+## minor          5.3                         
+## year           2019                        
+## month          03                          
+## day            11                          
+## svn rev        76217                       
+## language       R                           
+## version.string R version 3.5.3 (2019-03-11)
+## nickname       Great Truth
+```
+
+&lt;!-- --------------------- Do not edit this and below --------------------- --&gt;
+
+---
+name: end-slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+
+&lt;p&gt;R version 3.5.3 (2019-03-11)&lt;br&gt;&lt;p&gt;Platform: x86_64-apple-darwin15.6.0 (64-bit)&lt;/p&gt;&lt;p&gt;OS: macOS High Sierra 10.13.6&lt;/p&gt;&lt;br&gt;
+
+Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 12-Jun-2019 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 17:06:40  
+
+__2019__ • [SciLifeLab](https://www.scilifelab.se/) • [NBIS](https://nbis.se/)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="assets/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "4:3",
+"highlightLanguage": "r",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "RaukR 2019 • %current%/%total%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

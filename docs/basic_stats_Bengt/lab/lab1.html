@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Bengt Sennblad" />
+
+
+<title>Lab: Basic Statistics | Models</title>
+
+<script src="lab1_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lab1_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="lab1_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lab1_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lab1_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="lab1_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="lab1_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="lab1_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="lab1_files/navigation-1.1/tabsets.js"></script>
+<script src="lab1_files/navigation-1.1/codefolding.js"></script>
+<link href="lab1_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="lab1_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="lab1_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="lab1_files/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="lab1_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="lab1_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="lab1_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Lab: Basic Statistics | <code>Models</code></h1>
+<h3 class="subtitle">RaukR 2019 • Advanced R for Bioinformatics</h3>
+<h4 class="author">Bengt Sennblad</h4>
+
+</div>
+
+
+<p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<!-- ------------ Only edit title, subtitle & author above this ------------ -->
+<div id="tasks" class="section level1">
+<h1><span class="header-section-number">1</span> Tasks</h1>
+<div id="task-simulation" class="section level2">
+<h2><span class="header-section-number">1.1</span> Task | <code>Simulation</code></h2>
+<p>Here, we will generate a synthetic data set by simulating data from a linear model.</p>
+<p><span class="math inline">\(Y = \beta_0 + \beta_1* X\)</span> is a <em>generating</em> model – it describes how to generate <span class="math inline">\(Y\)</span> from observed <span class="math inline">\(X\)</span> and parameters <span class="math inline">\(\beta_0,\beta_1\)</span>.</p>
+<div id="deterministic-model" class="section level3">
+<h3><span class="header-section-number">1.1.1</span> Deterministic model</h3>
+<ul>
+<li>Generate 100 samples of <span class="math inline">\(x,y\)</span> by
+<ul>
+<li>generate genotypes <span class="math inline">\(x\)</span> for each sample from a uniform distribution on integers <span class="math inline">\(0,1,2\)</span> (tip: use <code>runif</code>)</li>
+<li>set <span class="math inline">\(\beta_0=0.3\)</span> and <span class="math inline">\(\beta_0=0.3\)</span></li>
+<li>generate <span class="math inline">\(y\)</span> for each sample of using the model <span class="math inline">\(y = \beta_1* x + \beta_0\)</span></li>
+<li>plot <span class="math inline">\(y\)</span> against <span class="math inline">\(x\)</span>.</li>
+</ul></li>
+</ul>
+<div id="think-about" class="section level4">
+<h4><span class="header-section-number">1.1.1.1</span> Think about</h4>
+<ul>
+<li>Does the plotted results look biologically reasonable?
+<ul>
+<li>if not: what could be the reason?</li>
+</ul></li>
+</ul>
+<pre class="r"><code>#parameters
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(x=round(runif(N,min=0,max=2)))
+
+sim1$y = b0 + b1 * sim1$x
+
+plot(x=sim1$x, y=sim1$y)</code></pre>
+<details>
+<p><summary> Some possible answers </summary></p>
+<p><strong>Does the plot look biologically reasonable?</strong></p>
+<ul>
+<li>If you followed the formula <span class="math inline">\(y = \beta_1* x + \beta_0\)</span> in the instructions literally, you end up with something like this</li>
+</ul>
+<p><img src="lab1_files/figure-html/unnamed-chunk-4-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<ul>
+<li>This means that you have effectively demonstrated what a <em>deterministic</em> model is and that is a good thing pedagoically :D</li>
+<li>Notice that there are no variation in <span class="math inline">\(y\)</span> for each genotyp <span class="math inline">\(X\)</span>, this is not what we see in biological data.</li>
+</ul>
+Go on and read more below under <strong>Statistical model</strong>
+<details>
+</div>
+</div>
+<div id="statistical-model" class="section level3">
+<h3><span class="header-section-number">1.1.2</span> Statistical model</h3>
+<p><strong>Deterministic vs statistical models</strong></p>
+<ul>
+<li><span class="math inline">\(Y = \beta_1* X + \beta_0\)</span> is a <em>deterministic</em> model
+<ul>
+<li>does not model any variation</li>
+<li>Common, e.g., in classical physics ( <span class="math inline">\(E=mc^3\)</span> )</li>
+</ul></li>
+<li><span class="math inline">\(Y = \beta_1* X + \beta_0 +\epsilon,\)</span> where <span class="math inline">\(\epsilon~\sim N(0,\sigma)\)</span> is a <em>statistical</em> (equiv. <em>stochastic</em>, <em>random</em>) linear model (<span class="math inline">\(\sim\)</span> means ‘<em>is drawn from</em>’)
+<ul>
+<li>attempts to model variation around a population mean (the <em>residuals</em>) determined by the model
+<ul>
+<li>the residual of sample <span class="math inline">\(i\)</span> is <span class="math inline">\(y_i-\beta_1* X + \beta_0\)</span>.</li>
+</ul></li>
+<li>used in statistic analysis</li>
+<li><span class="math inline">\(Y\)</span> is then called a stochastic or random variable</li>
+<li>Code for generating data from <span class="math inline">\(Y = \beta_1* X + \beta_0 +\epsilon,\)</span> where <span class="math inline">\(\epsilon ~\sim N(0,\sigma)\)</span> follows below</li>
+</ul></li>
+</ul>
+<p>Henceforth, we will only consider <em>statistical</em> models.</p>
+<pre class="r"><code>#parameters
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(x=round(runif(N,min=0,max=2)))
+
+sim1$y = b0 + b1 * sim1$x + rnorm(N, mean=0, sd=0.05) 
+
+plot(x=sim1$x, y=sim1$y)</code></pre>
+<div id="think-about-1" class="section level4">
+<h4><span class="header-section-number">1.1.2.1</span> Think about</h4>
+<ul>
+<li>Does the result look more biologically plausible?</li>
+<li>When can simulated data be useful?</li>
+</ul>
+<details>
+<p><summary> Some possible answers </summary></p>
+<p><strong>Biologically plausible</strong></p>
+<ul>
+<li>Now we have some variation around the mean <span class="math inline">\(Y\)</span> for each genotype <span class="math inline">\(X\)</span>.</li>
+<li>However,
+<ul>
+<li>we still cannot be sure that the arbitrarily chosen <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are correct and</li>
+<li>maybe there are more variables (or <em>covariates</em>), affecting <span class="math inline">\(y\)</span>, that are not in the model.</li>
+</ul></li>
+<li><em>Always think about what the assumptions of the model is and if they are reasonable!</em></li>
+</ul>
+<p><strong>Uses for simulated data</strong></p>
+<ul>
+<li>Oracle knowledge when evaluating performance of methods, e.g., Type I and II errors</li>
+<li>Estimating probabilities and probability distributions of, e.g., data and summary statistics of data (next task)</li>
+</ul>
+</details>
+<hr />
+</div>
+</div>
+</div>
+<div id="task-probability-of-observed-data" class="section level2">
+<h2><span class="header-section-number">1.2</span> Task | <code>Probability of observed data</code></h2>
+<p>A (statistical) linear model, <span class="math inline">\(Y=\beta_0+\beta_1 X,\)</span> generates <span class="math inline">\(Y\)</span> given, or <em>conditioned</em> on, specified value of <span class="math inline">\(X\)</span>. Since we have variation in the model, we can’t say exactly what value <span class="math inline">\(Y\)</span> will be. Instead, we can compute or estimate the probability that <span class="math inline">\(Y\)</span> takes a specific value, say <span class="math inline">\(Y=y\)</span>, conditioned ona specific value of <span class="math inline">\(X\)</span>, say <span class="math inline">\(X=x\)</span>. This will be a <em>conditional probability</em> <span class="math inline">\(Pr[Y=y|X=x]\)</span>, where the bar (‘<span class="math inline">\(|\)</span>’) means that the probability is conditioned on <span class="math inline">\(X=x\)</span>. In fact, if <span class="math inline">\(X\neq x\)</span> then this probability tells us nothing about <span class="math inline">\(Y\)</span>.</p>
+<p>Our task here is to, for the linear model <span class="math display">\[Y=\beta_0+\beta_1 X\]</span> with parameters <span class="math inline">\((\beta_0=0.3, \beta_1=0.2, \sigma=0.05\)</span>), estimate the conditional probability <span class="math display">\[Pr[Y &lt;=0.65|X=2].\]</span></p>
+<div id="simulation-solution" class="section level3">
+<h3><span class="header-section-number">1.2.1</span> Simulation solution</h3>
+<ul>
+<li>simulate 1000 <span class="math inline">\(y\)</span> using the model above with <span class="math inline">\(x=2\)</span> and store in a vector <span class="math inline">\(Y\)</span>.</li>
+<li>Make a histogram of <span class="math inline">\(Y\)</span> and estimate the probability that <span class="math inline">\(Y&lt;=0.655\)</span> (<em>tip</em>: make sure that <span class="math inline">\(0.7\)</span> is among to a histogram breakpoints)</li>
+</ul>
+<p><strong>Think About</strong></p>
+<ul>
+<li>What shape does the plotted value have?</li>
+<li>Where approximately is the mean?</li>
+<li>Does this make sense in light of the generative model we used?</li>
+<li>What have we plotted?</li>
+</ul>
+<pre class="r"><code>#parameters
+b0 = 0.3
+b1 = 0.2
+N = 1000
+x = 2
+
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.0, 0.05), plot=FALSE)
+h$counts = h$counts/N
+plot(h, ylim =c(0,1), labels=TRUE)
+
+# compute requested probability from hist
+paste(&quot;Pr[Y&lt;=0.65|X=2] = &quot;, sum(h$counts[1:13]))</code></pre>
+<details>
+<p><summary> Some possible answers </summary></p>
+<p><strong>Shape</strong></p>
+<ul>
+<li>The plot should be more or less bell-shaped (how well this show might depend on how many breaks you had for the histogram)</li>
+</ul>
+<p><strong>Mean</strong></p>
+<ul>
+<li>The mean appers to be approx 0.7</li>
+</ul>
+<p><strong>Makes sense?</strong></p>
+<ul>
+<li>A bell-shaped distribution is typical for the Normal distribution, which makes sense since the residuals are sampled from a normal distribution. However, in our simulation we used a <code>mean = 0</code>, not <code>0.7</code>
+<ul>
+<li>The reason is that (<span class="math inline">\(\Leftrightarrow\)</span> means ‘is equivalent to’) <span class="math display">\[N(mean = \mu, sd =\sigma) \Leftrightarrow N(mean = 0, sd = \sigma) + \mu,\]</span> meaning that adding <span class="math inline">\(\mu\)</span> moves the whole distribution to a new mean <span class="math inline">\(=\mu\)</span>.
+<ul>
+<li>this means that our model can equivalently be written <span class="math inline">\(Y = N(\beta_0+\beta_1*X, \sigma)\)</span></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><strong>What have we plotted</strong></p>
+<ul>
+<li>We have plotted an estimate of the distribution of the <em>probability density function (PDF)</em> of <span class="math inline">\(N(\beta_0+\beta_1*X, \sigma)\)</span>.</li>
+<li>Another important distribution in statistics is the distribution of the <em>cumulative distribution function (CDF)</em>, which is exactly the probability we estimated above, namely <span class="math inline">\(Pr[Y &lt;= y| \mu, \sigma]\)</span> for a normal distribution <span class="math inline">\(N(mean = \mu, sd=\sigma)\)</span>. The code below plots the estimated <em>CDF</em> from our simulation; notice the typical sigmoid shape.</li>
+</ul>
+<pre class="r"><code>#parameters
+b0 = 0.3
+b1 = 0.2
+N = 1000
+x = 2
+
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.0, 0.05), plot=FALSE)
+h$counts = h$counts/N
+
+# replace the histogram counts with the cumulative counts
+h$counts = cumsum(h$counts)
+#plot the CDF
+plot(h, labels=TRUE)
+
+# compute requested probability from hist
+paste(&quot;Pr[Y&lt;=0.65|X=2] = &quot;, sum(h$counts[13]))</code></pre>
+<pre><code>## [1] &quot;Pr[Y&lt;=0.65|X=2] =  0.16&quot;</code></pre>
+<p><img src="lab1_files/figure-html/unnamed-chunk-7-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<details>
+<p><summary> Extra reading <em>The General Normal distribution</em> </summary></p>
+<ul>
+<li>Additionally, multiplying a normal distribution with <span class="math inline">\(\sigma\)</span> changes the ‘width’ of the distribution, meaning that we have <span class="math display">\[N(mean = \mu, sd =\sigma) \Leftrightarrow N(mean = 0, sd = 1)* \sigma + \mu, \]</span> something that is very much used in statistics
+<ul>
+<li>The distribution <span class="math inline">\(N(mean=0, sd=\sigma)\)</span> is called the <em>general normal distribution</em></li>
+<li>Any variable <span class="math inline">\(Y\sim N(mean= \mu, sd=\sigma)\)</span> can therefore be transformed into a <em>Z-value</em>, <span class="math inline">\(Z=\frac{Y-\mu}{\sigma},\)</span> which has a general normal distribution, i.e., <span class="math inline">\(Z \sim N(mean=0, sd=1)\)</span>
+</summary></li>
+</ul></li>
+</ul>
+</details>
+</div>
+<div id="analytical-solution" class="section level3">
+<h3><span class="header-section-number">1.2.2</span> Analytical solution</h3>
+<ul>
+<li>Conveniently, R has both the PDF and CDF implemented, making a</li>
+<li>Calculate <span class="math inline">\(Pr[Y&lt;=0.65|X=2]\)</span>using R’s <em>cumulative distribution function (CDF)</em> for the Normal distribution (tip: look up help for <code>Normal</code>)
+<ul>
+<li>The <em>CDF</em> of the value <span class="math inline">\(y\)</span> is the probability that the stochastic variable <span class="math inline">\(Y&lt;=y\)</span>.</li>
+</ul></li>
+<li><em>Challenge</em>: try both approaches with other values of <span class="math inline">\(y\)</span> or try to compute <span class="math inline">\(Pr[Y&gt;y|X=2]\)</span>.</li>
+</ul>
+<p><strong>Think about</strong></p>
+<ul>
+<li>Do the result fit that from the Simulation?
+<ul>
+<li>If not, can make the fit better?</li>
+</ul></li>
+<li>What can this result be used for?</li>
+<li><em>Challenge</em>: Why do we look at intervals of <span class="math inline">\(Y\)</span> rather than specific values?</li>
+</ul>
+<pre class="r"><code>b0 = 0.3
+b1 = 0.2
+x = 2
+y = 0.6
+mu = b0 + b1 * x
+
+paste(&quot;Pr[Y&lt;=.6|X=2] = &quot;,pnorm(y, mean = mu, sd=0.05))</code></pre>
+<details>
+<p><summary> Some possible answers </summary></p>
+<ul>
+<li>The result should fit quite well with that from the Simulation approach, given that precision obtained from the histogram
+<ul>
+<li>The precision can be improved with a higher sample size for the simulation</li>
+</ul></li>
+<li>The CDF, i.e., <span class="math inline">\(Pr[Y&lt;=y|X=2]\)</span>, is actually the basis for p-values. A <em>p-value</em> for an observation <span class="math inline">\(y\)</span> under a model is defined as the probability of generating <span class="math inline">\(y\)</span> or more extreme values from the model.
+<ul>
+<li>p-values can refer to different meanings of <em>extreme</em>. Using our model as an example NULL model:
+<ul>
+<li>For a <em>left-tailed</em> p-value, <span class="math inline">\(p(y) = Pr[Y&lt;=y|X=x]\)</span>, i.e., the <span class="math inline">\(CDF(y, \mu, \sigma)\)</span></li>
+<li>For a <em>right-tailed</em> p-value, <span class="math inline">\(p(y) = Pr[Y&gt;=y|X=x]\)</span>, i.e., <span class="math inline">\(1-CDF(y, \mu, \sigma)\)</span></li>
+<li>For a <em>double-tailed</em> p-value, <span class="math inline">\(p(y) = 2 \min\{Pr[Y&lt;=y|X=x],Pr[Y&gt;=y|X=x]\}\)</span></li>
+</ul></li>
+<li>If the p-value is <em>significant</em>, i.e., below some threshold <span class="math inline">\(\alpha\)</span> (typically <span class="math inline">\(\alpha = 0.05\)</span>) we can reject the NULL hypothesis that the data is generated from our model.</li>
+<li>What was the left-tailed p-value for <span class="math inline">\(y=0.65\)</span> under our model and was that significant? What can we say about our model as a NULL model.</li>
+</ul></li>
+</ul>
+<details>
+<p><summary> Extra Reading <strong>Why probability of interval</strong> </summary></p>
+<p>This is a bit tricky to explain.</p>
+<ul>
+<li>For discrete <span class="math inline">\(Y\)</span>, say heads or tails, we can compute an exact probability for, e.g. heads.</li>
+<li>However, for continuous <span class="math inline">\(Y\)</span>, it is not possible compute the probability of an exact value of <span class="math inline">\(Y\)</span>, since exact must be defined using an inifite number of decimals. Thus, in effect makes <span class="math inline">\(Pr[Y] = 0\)</span>!
+<ul>
+<li>Hence, only intervals of continuous variables can be assigned proper probabilities.</li>
+</ul></li>
+<li>However, it is, in statistics, very convenient to be able to talk about and work with <span class="math inline">\(Pr[Y=y]\)</span> also for continuous variables.
+<ul>
+<li>If we reduce the interval centered around <span class="math inline">\(Y=y\)</span> decrementally, we can get a better and better approximation of <span class="math inline">\(Pr[Y]\)</span>, we will in the limit end up with the (probability) <em>density</em> of <span class="math inline">\(Y=y\)</span>, which gives the PDF of <span class="math inline">\(Y\)</span></li>
+<li>Mathematically, the PDF can be viewed as the derivative of the CDF</li>
+<li>Notice that the density of <span class="math inline">\(Y\)</span> is not a probability (e.g., it can be higher than 1.0). Sometimes this is marked by using a different notation for the density, e.g., <span class="math inline">\(f(Y)\)</span>; here however, we will use <span class="math inline">\(Pr[Y]\)</span> for the density.</li>
+</ul></li>
+</ul>
+</details>
+<hr />
+</details>
+<hr />
+</div>
+</div>
+<div id="task-statistical-tests" class="section level2">
+<h2><span class="header-section-number">1.3</span> Task | <code>Statistical tests</code></h2>
+<p>We will now consider an extension of the previous task to several data points. As you can imagine, doing this with the above approach could be cumbersome. Instead specific tests have been developed. We will here use the t-test as a very simple example.</p>
+<div id="students-t-test" class="section level3">
+<h3><span class="header-section-number">1.3.1</span> Student’s t-test</h3>
+<p>We will use a single sample t-test, which tests how probable it is that some sampled data is drawn from a given Normal distribution; this distribution is called the <em>NULL model</em> of the test. The t-test is not designed to handle different genotypes, so for simplicity, we will, again, limit ourselves to the case <span class="math inline">\(X=2\)</span>.</p>
+<p>The t-test uses normalized residuals as a test statistics:</p>
+<p><span class="math display">\[\begin{eqnarray*}
+t  
+&amp;= \sum_{i}\frac{y_i-\mu}{s/\sqrt{N}} 
+&amp;= \frac{\bar{y}-\mu}{s/\sqrt{N}}
+\end{eqnarray*}\]</span>
+where <span class="math inline">\(s/\sqrt{N}\)</span> is an estimate of the standard deviation, <span class="math inline">\(\sigma\)</span>, from the observed data. As you can see this boils down to comparing the (standardized) estimated mean from the data, <span class="math inline">\(\bar{y}\)</span> and the model mean, <span class="math inline">\(\mu\)</span>.</p>
+<ul>
+<li><em>Challenge</em>: show the equality above`</li>
+</ul>
+<p>These normalized residuals are approximately distributed <span class="math inline">\(t~\sim N(0,1)\)</span> (this is the <em>General Normal distribution</em>, see also ‘Possible answers/Extra Reading’ under <a href="#simulation-solution">1.2.1</a>)</p>
+<p>Conveniently, The t-test is implemented in the R function <code>t.test</code></p>
+<ul>
+<li>Simulate a new data set from a linear model <span class="math inline">\(Y&#39; = \gamma_0 + \gamma_1 X&#39;\)</span>, for <span class="math inline">\(X&#39;=2\)</span> for all samples.
+<ul>
+<li>For simplicity, we will limit ourselves to the case <span class="math inline">\(X&#39;=2\)</span></li>
+</ul></li>
+<li>Use our previous model <span class="math inline">\(Y=\beta_0+\beta_1 X\)</span> as the NULL model.
+<ul>
+<li>Perform a one sample t-test (with <span class="math inline">\(\mu\)</span> from the NULL model) on new <span class="math inline">\(Y&#39;\)</span> data.</li>
+</ul></li>
+<li>Try some different values of <span class="math inline">\((\gamma_0, \gamma_1)\)</span> closer or further away from <span class="math inline">\((\beta_0, \beta_1)\)</span></li>
+</ul>
+<p><strong>Think about</strong></p>
+<ul>
+<li>Does the t-test reject the NULL model or not?</li>
+</ul>
+<pre class="r"><code># compute the mean, mu, from our model 
+b0 = 0.3
+b1 = 0.2
+
+mu = b0 + b1 * x
+
+# Let&#39;s simulate the data from another model
+c0 = 0.4
+c1 = 0.2
+N=100
+yp = c0 + c1 * rep(x,N) + rnorm(N, mean=0, sd=0.05) 
+# t-test
+t.test(yp, mu=mu)</code></pre>
+<details>
+<p><summary> Some possible answers </summary></p>
+<pre class="r"><code># compute the mean, mu, from our model 
+b0 = 0.3
+b1 = 0.2
+x = 2
+mu = b0 + b1 * x
+
+# Let&#39;s simulate the data from another model
+c0 = 0.4
+c1 = 0.2
+N=100
+yp = c0 + c1 * rep(x,N) + rnorm(N, mean=0, sd=0.05) 
+# t-test
+t.test(yp, mu=mu)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  yp
+## t = 20.886, df = 99, p-value &lt; 2.2e-16
+## alternative hypothesis: true mean is not equal to 0.7
+## 95 percent confidence interval:
+##  0.7918697 0.8111577
+## sample estimates:
+## mean of x 
+## 0.8015137</code></pre>
+</details>
+<ul>
+<li>The <em>t</em>-test appears quite sensitive, especially for changes of <span class="math inline">\(\gamma_1\)</span> (<code>c_1</code>)</li>
+</ul>
+<p><strong>The <em>t</em>-test can also be applied to other questions</strong></p>
+<ul>
+<li>Test if two samples are generated by the same (unknown) model using the standardized difference in means, typically, using the NULL hypothesis that this difference is 0. Example code below</li>
+</ul>
+<pre class="r"><code># data 1
+b0 = 0.3
+b1 = 0.2
+N=100
+y = b0 + b1 * rep(x,N) + rnorm(N, mean=0, sd=0.05) 
+
+#data 2
+c0 = 0.4
+c1 = 0.2
+N=100
+yp = c0 + c1 * rep(x,N) + rnorm(N, mean=0, sd=0.05) 
+
+t.test(y,yp)</code></pre>
+<ul>
+<li>Test if estimated parameters in a linear model are significantly different from 0 (see code). Example code below</li>
+</ul>
+<pre class="r"><code># reuse previously simulated data in sim1
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(x=round(runif(N,min=0,max=2)))
+sim1$y = b0 + b1 * sim1$x
+
+summary(lm(y~x, data=sim1))</code></pre>
+</div>
+</div>
+</div>
+<div id="final-words" class="section level1">
+<h1><span class="header-section-number">2</span> Final words</h1>
+<div id="types-of-models" class="section level2">
+<h2><span class="header-section-number">2.1</span> Types of models</h2>
+<ul>
+<li>Deterministic models
+<ul>
+<li>structure</li>
+<li>parameter values</li>
+</ul></li>
+<li>Statistical models
+<ul>
+<li>Additional random distribution</li>
+<li>Parameteric models
+<ul>
+<li>structure fixed <em>a priori</em>
+<ul>
+<li>Example: Normal family of distribution (incl. linear model)</li>
+</ul></li>
+</ul></li>
+<li>Non-parametric distribution
+<ul>
+<li>estimates structure from data
+<ul>
+<li>Example: histograms, Kernel density estimation</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="types-of-statistical-tests" class="section level2">
+<h2><span class="header-section-number">2.2</span> Types of statistical tests</h2>
+<ul>
+<li>parametric tests
+<ul>
+<li>assumes statistical distribution <em>a priori</em>
+<ul>
+<li>Student’s t-test</li>
+<li>ANOVA</li>
+</ul></li>
+</ul></li>
+<li>non-parametric tests
+<ul>
+<li>no assumption of statistical distribution</li>
+<li>typically uses ranking of values
+<ul>
+<li>Example: Mann-Whitney U tests</li>
+<li>Kruskal-Wallis test</li>
+</ul></li>
+</ul></li>
+</ul>
+<!-- --------------------- Do not edit this and below ---------------------- -->
+</div>
+</div>
+<div id="session-info" class="section level1">
+<h1><span class="header-section-number">3</span> Session info</h1>
+<pre><code>## R version 3.5.3 (2019-03-11)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS High Sierra 10.13.6
+## 
+## Matrix products: default
+## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] captioner_2.2.3 bookdown_0.11   knitr_1.23     
+## 
+## loaded via a namespace (and not attached):
+##  [1] compiler_3.5.3  magrittr_1.5    tools_3.5.3     htmltools_0.3.6
+##  [5] yaml_2.2.0      Rcpp_1.0.1      stringi_1.4.3   rmarkdown_1.13 
+##  [9] stringr_1.4.0   xfun_0.7        digest_0.6.19   evaluate_0.14</code></pre>
+<p style="text-align: left; font-size: small;">
+Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 12-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 17:09:30.
+</p>
+<hr/>
+<div style="padding-bottom: 1.5em">
+<p><span style="float:left; vertical-align:middle">
+<b>2019</b> • <a href="https://www.scilifelab.se/">SciLifeLab</a> • <a href="https://nbis.se/">NBIS</a> • <a href="https://nbisweden.github.io/workshop-RaukR-1906/">RaukR</a>
+</span>
+<span style="float:right; vertical-align:middle">
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://nbisweden.github.io/workshop-RaukR-1806/"><img src="assets/icons8-globe-26.png" alt="website" border="0" style="height:15px"></a>
+</span>
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://twitter.com/hashtag/RaukR?src=hash"><img src="assets/icons8-twitter-26.png" alt="twitter" border="0" style="height:15px"></a>
+</span>
+</span></p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

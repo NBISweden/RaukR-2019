@@ -1,0 +1,678 @@
+---
+title: "Basic Statistics | `Models`"
+subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
+author: "<b>Bengt Sennblad</b>"
+institute: NBIS, SciLifeLab
+keywords: r, RaukR, markdown
+output: 
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: false
+    chakra: 'assets/remark-latest.min.js'
+    css: 'assets/presentation.css'
+    lib_dir: libs
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "RaukR 2019 • %current%/%total%"
+---
+exclude: true
+count: false
+
+```{r,echo=FALSE,child="assets/header-presentation.Rmd"}
+```
+
+<!-- ----------------- Only edit title & author above this ----------------- -->
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+# load the packages you need
+
+#library(tidyverse)
+#library(ggplot2)
+```
+
+---
+name: models1
+## Models
+
+* What is a model?
+
+--
+  + simplification (abstraction) of reality that helps us address a specific problem
+      - enhance computation/estimation
+      - reflect biology
+  
+---
+
+## Models | `Example: R proficiency as a function of beer`
+.pull-left-50[
+We want to model how beer consumption affects the ability to program well in R
+
+* $x=$ number of beers drunk
+* $y=$ Ability to program in R
+]
+
+--
+
+.pull-right-50[
+```{r, beer1, echo=F, fig.height = 4.5}
+x = seq(0,10)
+b0 = 1.0
+b1=-0.1
+y = sapply(x, function(x) x*b1 + b0)
+plot(x,y, type='b', ylab = "y = R proficiency", xlab = "x= Beers drunk")
+```
+
+]
+
+--
+
+This is a *linear model*, $$y = \beta_0 + \beta_1 x,$$ where $y$ changes in proportion to $x$.
+
+***
+
+--
+
+__Notice that a model is always restricted by its assumptions:__
+* In the model plot above, I have used strong assumptions about $\beta_1$ and $\beta_0$ being exactly $\beta_1=-0.1$ and $\beta_0=1.0$. 
+* Therefore, people with a different susceptibility to alcohol $(\beta_1 \neq -0.1)$ or a different initial proficiency in R $(\beta_0 \neq 1.0)$ are *not* correctly modeled by this model.
+  
+
+---
+## Models | `Example: R proficiency as a function of beer`
+.center[ .large[How can we solve this? ] ]
+--
+
+Several possibilities:
+
+.pull-left-50[
+
+* Include population variation in the model (more later)
+
+* Create a hierarchical model comprising
+  + a main linear model $$y=\beta_0 + \beta_1 x,$$ whose parameters are modeled by
+  + linear submodels, including body mass $(m)$ and *hyperparameters*: 
+      - alcohol susceptibility, $\beta_1=am + b$ 
+      - initial proficiency, $\beta_0=cm+d$
+* Both these combined
+
+]
+
+--
+<br>
+<br>
+.pull-right-50[
+```{r beer2, echo=F, fig.height=5}
+x= seq(0,10)
+mass = c(90,80,70,60,50)
+b1 = -0.55 + mass * 0.005
+b0 = 0.1 + mass * 0.01
+lin=function(x,k,c){
+  return(k * x + c)
+}
+y = sapply(seq(1,5),function(i) lin(x, b1[i], b0[i]))
+plot(x,y[,1], type='b', ylim = c(min(y), max(1,0,max(y))), 
+     ylab = "y = R proficiency", xlab = "x= Beers drunk")
+for(i in seq(2,5)){
+  points(x,y[,i], type='b',col=i)
+  legend("bottomleft", legend = paste(mass, " kg"), fill=seq(1,5))
+  abline(h=0.0)
+}
+```
+]
+--
+
+
+.center[Still not quite right...]
+
+
+---
+
+## Models | `Example`
+.pull-left-50[  
+More realistic?
+```{r, beer3, echo=F, fig.height = 5}
+x = seq(0,10)
+b0 = 5
+b1=-3
+
+invlogit<-function(x, k, c){
+  return(1/(1+exp(-k*(x-c))))
+}
+y = invlogit(x, b1, b0)
+plot(x,y, type='b', 
+     ylab = "y = R proficiency", xlab = "x= Beers drunk")
+```
+
+* This is a logistic model $y = \frac{1}{1-e^{-(\beta_0 +\beta_1x)}}$, where there are saturation towards the extremes
+* By transforming $y$ into log-odds, we get a linear expression in the r.h.s.  $$\log\frac{y}{1+y} = \beta_0+ \beta_1 x$$
+]
+
+--
+
+.pull-right-50[  
+
+* Models can also be described as a graph ('graph models'):
+  + This is a graph model showing whether it is possible to fly to RaukR from a selection of cities of the world
+```{r models1, echo=F, fig.width=5}
+require(igraph)
+towns = c("RaukR/Visby", "Stockholm", "Oslo", "Helsinki","Copenhagen", "Berlin", "Rome", "Moscow", "New York","Toronto", "Rio de Janeiro", "Stånga")
+adj.matrix= matrix(rep(0, length(towns)*length(towns)), nr=length(towns), dimnames=list(towns, towns))
+edges=list(c("RaukR/Visby", "Stockholm"), 
+           c("Stockholm", "Oslo"), c("Stockholm", "Helsinki"), c("Stockholm","Copenhagen"), c("Stockholm","Berlin"), c("Stockholm","Berlin"),c("Stockholm","Rome"),c("Stockholm", "Moscow"), c("Stockholm","New York"),
+           c("Oslo", "Helsinki"), c("Oslo","Copenhagen"), c("Oslo","Berlin"), c("Oslo","Rome"), c("Oslo","Moscow"), c("Oslo","New York"),
+           c("Helsinki", "Copenhagen"), c("Helsinki","Berlin"), c("Helsinki","Rome"), c("Helsinki","Moscow"), c("Helsinki","New York"),
+           c("Copenhagen", "Berlin"), c("Copenhagen","Rome"), c("Copenhagen","Moscow"), c("Copenhagen","New York"),
+           c("Berlin", "Rome"), c("Berlin", "Moscow"), c("Berlin", "New York"), 
+           c("Rome", "Moscow"), c("Rome", "New York"), c("Rome", "Rio de Janeiro"), 
+           c("Moscow", "New York"), 
+           c("New York","Toronto"), c("New York","Rio de Janeiro")
+)
+
+for(i in edges){
+  adj.matrix[i[1],i[2]]=1
+  adj.matrix[i[2],i[1]]=1
+}
+g <- graph.adjacency(adj.matrix, mode="undirected")
+# How to set coordinates:
+# t=tkplot(g)
+# Manually adjust
+# paste(tk_coords(t), collapse=",")
+# Copy and paste coordinate vector below
+coords = matrix(c(383,274,221,240,147,112,319,75,332,411,389,420,352,256,135,0,248,43,74,147,178,230,138,394), nrow=12)
+#coords = matrix(c(438,313,233,240,122,92,371,158,344,375,463,451,275,257,146,0,62,157,183,261,76,12,142,322), nrow=12)
+plot(g, layout=coords)
+```  
+
+
+]
+
+
+---
+
+# But what can models be used for?
+--
+
+Perform 
+## Task | `Simulation`
+## Task | `Probability of data`
+## Task | `Statistical test`
+
+---
+name: Simulation1
+
+## Task | `Simulation`
+
+Generate 100 samples from $y = \beta_0 + \beta_1* x,$ with parameters $\beta_0=0.3$ and $\beta_1=0.2$
+
+**Think about**
+* Does the plotted results look biologically reasonable?
+    + if not: what could be the reason?
+
+--
+
+.pull-left-50[
+```{r, echo =TRUE, eval=FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(genos=round(runif(N,min=0,max=2)))
+
+sim1$phenos = b0 + b1 * sim1$genos
+
+plot(x=sim1$genos, y=sim1$phenos)
+```
+]
+
+.pull-right-50[
+```{r, echo =FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(genos=round(runif(N,min=0,max=2)))
+
+sim1$phenos = b0 + b1 * sim1$genos
+par(mfrow=c(2,1))
+
+plot(x=sim1$genos, y=sim1$phenos)
+```
+]
+
+---
+name: Simulation2
+
+## Task | `Simulation`
+
+### Deterministic vs statistical models
+* $y = \beta_1* x + \beta_0$ is a *deterministic* model
+    + does not model any variation
+    + Common, e.g., in classical physics ( $E=mc^3$ )
+* $y = \beta_1* x + \beta_0 +\epsilon,$ where the *residuals* $\epsilon ~\sim N(0,\sigma^2)$ is a *statistical* (equiv. *stochastic*, *random*) model
+    + attempts to model variation around a population mean (the *residuals*) determined by the model
+    + generates a stochastic variable and is used in statistic analysis
+
+--
+
+.pull-left-50[
+```{r, echo =TRUE, eval=FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(genos=round(runif(N,min=0,max=2)))
+
+sim1$phenos = b0 + b1 * sim1$genos + rnorm(N, mean=0, sd=0.05) 
+
+plot(x=sim1$genos, y=sim1$phenos)
+```
+]
+
+.pull-right-50[
+```{r, echo =FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N=100
+sim1 = data.frame(genos=round(runif(N,min=0,max=2)))
+
+sim1$phenos = b0 + b1 * sim1$genos + rnorm(N, mean=0, sd=0.05) 
+
+par(mfrow=c(2,1))
+plot(x=sim1$genos, y=sim1$phenos)
+```
+]
+
+---
+name: simulation3
+## Task | `Simulation`
+
+### Something about the $\sim$ notation
+* Statistical notation 
+    + $x\sim U(0,1)$ means that $x$ is a stochastic variable with a uniform distribution in the interval [0,1]
+* R formulas
+    + `y~x` in `lm` function is a shorthand for $y = \beta_0 + \beta_1 x$.
+
+
+---
+name: Simulation3
+
+## Task | `Simulation`
+
+**Think about**
+* When can simulated data be useful?
+
+--
+
+**Uses for simulated data**
+
+* *Oracle knowledge* when evaluating performance of methods, e.g., Type I and II errors 
+* Estimating probabilities and probability distributions of, e.g., data and summary statistics of data (next task)
+
+
+---
+name: Probability1
+
+## Task | `Probability of observed data`
+
+For the linear model $Y=\beta_0+\beta_1 X,$ with parameters $(\beta_0=0.3, \beta_1=0.2, \sigma^2=0.05$), estimate $$Pr[Y <= 0.65|x=2],$$ using a 
+
+#### Simulation solution
+
+and a
+
+#### Analytic solution
+
+
+---
+
+name: Probability2
+## Task | `Probability of observed data`
+#### Simulation solution
+
+**Think about**
+* What shape does the plotted value have? 
+* Where approximately is the mean?
+* Does this make sense in light of the generative model we used?
+
+.pull-left-50[
+```{r, echo=TRUE, eval=FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N = 1000
+x = 2
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+h=hist(y, frequency=TRUE, right=FALSE, 
+       breaks=seq(0,1.0,0.05), plot=FALSE)
+h$counts = h$counts/N
+plot(h, ylim =c(0,1), labels=TRUE)
+
+# compute requested probability from hist
+paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[1:13]))
+```
+]
+
+.pull-right-50[
+```{r, echo=FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N = 1000
+x = 2
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.5, 0.05), plot=FALSE)
+h$counts = h$counts/N
+par(mfrow=c(2,1))
+plot(h, ylim =c(0,1), labels=TRUE)
+
+# compute requested probability from hist
+paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[1:13]))
+```
+]
+
+---
+name: Probaility3
+## Task | `Probability of observed data`
+### Adding mean and multiplying sd
+
+$Y \sim N(mean=0,sd=1) \Leftrightarrow Y \sim  \mu+\sigma * N(mean = 0, sd=1)$
+```{r, echo=FALSE, fig.height=4}
+par(mfrow=c(1,2))
+
+x=seq(-4,4, length=1000)
+y0=dnorm(x, mean=0, sd=1)
+y1=dnorm(x, mean=1, sd=1)
+plot(x, y0, typ="l", lty=2, ylab="Pr[x]")
+lines(x,y1, lty=1)
+text(x=c(-2,3) ,y=c(0.1,0.1), c("N(0,1)","N(1,1)"), adj=0.5)
+title(main="Effect of mean")
+
+y2=dnorm(x, mean=0, sd=0.5)
+plot(x, y2, typ="l", lty=1, ylab="Pr[x]")
+lines(x,y0, lty=2)
+text(x=c(2,0),y=c(0.1,0.5), c("N(0,1)","N(0,0.5)"), adj=0.5)
+title(main="Effect of sd")
+```
+--
+
+* $N(mean=0, sd=1)$ is called the * General Normal distribution*
+
+???
+\begin{eqnarray*}
+Y &\sim& \mu + N(mean=0,sd=1)\\
+Y&\sim & N(mean = \mu, sd=\sigma)\\
+Y&\sim & \sigma * N(mean = \mu, sd=1)
+\end{eqnarray*}
+
+---
+name: Probability4
+
+## Task | `Probability of observed data`
+**Think about**
+* What have we plotted?
+
+
+.pull-left-50[
+
+We estimated the *probability density function* (PDF) of the model $Y\sim N(mean=\beta_0+\beta_1X, sd=\sigma)$
+
+```{r, echo=FALSE}
+#parameters
+b0 = 0.3
+b1 = 0.2
+N = 1000
+x = 2
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.5, 0.05), plot=FALSE)
+h$counts = h$counts/N
+#par(mfrow=c(2,1))
+plot(h, ylim =c(0,1), labels=TRUE)
+```
+]
+
+--
+
+.pull-right-50[
+...but we have actually used the *cumulative probability function* (CDF) to estimate $Pr[Y<=0.65|X=x, \theta]$
+
+```{r, echo=FALSE}
+# replace the histogram counts with the cumulative counts
+h$counts = cumsum(h$counts)
+#plot the CDF
+#par(mfrow=c(2,1))
+plot(h, labels=TRUE)
+```
+]
+
+
+
+---
+name: Probability5
+
+## Task | `Probability of observed data`
+
+### Analytic solution 
+
+**Think about**
+
+* Do the result fit that from the simulation?
+    + If not, how can we make the fit better?
+* What can this result be used for?
+
+--
+
+**p-values**
+* Probability fo finding a more extreme value or test statistic under the NULL model.
+    + p-values can refer to different meanings of *extreme*. Using our model as an NULL model:
+        - For a *left-tailed* p-value, $p(y) = Pr[Y<=y|X=x]$, i.e., the $CDF(y, \mu, \sigma)$
+        - For a *right-tailed* p-value, $p(y) = Pr[Y>=y|X=x]$, i.e., $1-CDF(y, \mu, \sigma)$
+        - For a *double-tailed* p-value, $p(y) = 2 \min\{Pr[Y<=y|X=x],Pr[Y>=y|X=x]\}$
+    + If the p-value is *significant*, i.e., below some threshold $\alpha$ (typically $\alpha = 0.05$) we can reject the NULL hypothesis that the data is generated from our model.
+
+
+
+---
+name: Probability6
+
+## Task | `Probability of observed data`
+
+** *Challenge*: Why look at intervals of $Y$ rather than specific values?**
+
+--
+
+* **For continuous $Y$, probabilities only exist for intervals; for any specific $y$, $Pr[Y=y] = 0$**
+--
+
+* Then what is the PDF?
+--
+
+* Let's look at the average probability over the interval of the histogram interval including 0.65 
+```{r, echo = FALSE, fig.height=3}
+
+par(mfrow=c(1,3))
+
+estpdf<-function(n){
+  x=seq(-4,4,length=n)
+  step = 0.5/n
+  y = pnorm(x+step) - pnorm(x-step)
+  plot(x,y, type="s")
+  title(paste("Pr[Y=0.65+-",step,"] = ",round((pnorm(0.65+step) - pnorm(0.65-step))/(2*step),5)))
+}
+x=array(data=c(5,10,20))
+p=apply(x, MARGIN=1, FUN=estpdf)
+
+```
+--
+
+* Asympotically approaches a limit, which is exactly the PDF for 0.65 = `r round(dnorm(0.65), 5)`
+--
+
+* PDF is the derivative of CDF
+* PDF is a (probability) *density*, but not a probability!
+
+---
+
+name: tests
+## Task | `Statistical tests`
+
+### Student's t-test for $y\sim N(mean=\mu,sd)$
+* The t-test uses normalized residuals as a test statistics: 
+\begin{eqnarray*}
+t  
+&= \sum_{i}\frac{y_i-\mu}{s/\sqrt{N}} 
+&= \frac{\bar{y}-\mu}{s/\sqrt{N}}
+\end{eqnarray*}
+where $s/\sqrt{N}$ is an estimate of the standard deviation, $\sigma$, from the observed data. 
+* Normalized residuals have a *General Normal distribution*, $N(mean=0,sd=1)$
+
+**Think about**
+
+* Does the t-test reject the NULL model or not?
+
+```{r, echo=FALSE}
+# compute mu from our model 
+b0 = 0.3
+b1 = 0.2
+x = 2
+mu = b0 + b1 * x
+
+# Let's simulate the data from another model
+c0 = 0.1
+c1 = 0.5
+N=100
+y = c0 + c1 * rep(x,100) + rnorm(N, mean=0, sd=0.05) 
+
+paste("generate data with c0 = ", c0, ", c1 = ", c1)
+# t-test
+t.test(y, mu=mu)
+```
+
+---
+name: tests
+## Task | `Statistical tests`
+
+* Test if two samples are generated by the same (unknown) model using the standardized difference in means, typically, using the NULL hypothesis that this difference is 0. Example code below
+
+.pull-left-50[
+```{r, echo = TRUE}
+# data 1
+b0 = 0.3
+b1 = 0.2
+x = rep(x,N)
+N=100
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+#data 2
+c0 = 0.4
+c1 = 0.2
+N=100
+yp = c0 + c1 *  + rnorm(N, mean=0, sd=0.05) 
+
+t.test(y,yp)
+```
+]
+.pull-right-50[
+```{r, echo = FALSE}
+# data 1
+b0 = 0.3
+b1 = 0.2
+x = rep(2,N)
+N=1000
+y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05) 
+
+#data 2
+c0 = 0.4
+c1 = 0.2
+N=100
+yp = c0 + c1 * x + rnorm(N, mean=0, sd=0.05) 
+
+plot(density(y), col=rgb(0,0,1,1), xlim=c(0,1), ylim = c(0,10))
+lines(density(yp), col=rgb(1,0,0,1))
+```
+]
+---
+
+name: tests
+## Task | `Statistical tests`
+
+* In `lm`, a *t*-test is used to test if the estimated parameters are significantly different from 0.
+
+```{r, echo=TRUE, eval=TRUE}
+
+summary(lm(phenos~genos, data=sim1))
+```
+
+---
+name: nonparam
+
+.pull-left-50[
+## Types of models
+
+* Deterministic models
+    + structure
+    + parameter values
+* Statistical models
+    + Additional *random distribution*
+    + Parameteric models
+        - structure fixed *a priori*
+            * Example: Normal family of distribution (incl. linear model)
+    + Non-parametric distribution
+        - estimates structure from data
+            * Example: histograms, Kernel density estimation
+]
+--
+
+.pull-right-50[
+## Types of statistical tests
+
+* parametric tests
+    + assumes statistical distribution *a priori*
+        - Student's t-test
+        - ANOVA
+* non-parametric tests
+    + no assumption of statistical distribution
+    + typically uses ranking of values
+        - Example: Mann-Whitney U tests
+        - Kruskal-Wallis test
+]
+
+---
+name: report
+
+## Session  
+
+* This presentation was created in RStudio using [`remarkjs`](https://github.com/gnab/remark) framework through R package [`xaringan`](https://github.com/yihui/xaringan).
+* For R Markdown, see <http://rmarkdown.rstudio.com>
+* For R Markdown presentations, see <https://rmarkdown.rstudio.com/lesson-11.html>
+
+```{r,echo=TRUE}
+R.version
+```
+
+<!-- --------------------- Do not edit this and below --------------------- -->
+
+---
+name: end-slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+```{r,echo=FALSE,child="assets/footer-presentation.Rmd"}
+```
+
+```{r,include=FALSE,eval=FALSE}
+# manually run this to render this document to HTML
+rmarkdown::render("presentation.Rmd")
+# manually run this to convert HTML to PDF
+#pagedown::chrome_print("presentation.html",output="presentation.pdf")
+```
+
