@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Mathematical Statistics in R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Nikolay Oskolkov" />
+    <meta name="keywords" content="r, RaukR, markdown" />
+    <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+    <link id="font-awesome-1-attachment" rel="attachment" href="libs/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+    <link rel="stylesheet" href="assets/presentation.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Mathematical Statistics in R
+## RaukR 2019 • Advanced R for Bioinformatics
+### <b>Nikolay Oskolkov</b>
+### NBIS, SciLifeLab
+
+---
+
+exclude: true
+count: false
+
+
+&lt;link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;amp;subset=latin-ext" rel="stylesheet"&gt;
+
+
+
+
+
+&lt;!-- ----------------- Only edit title &amp; author above this ----------------- --&gt;
+
+
+
+
+---
+name: Statistics
+
+## What is Mathematical Statistics?
+
+* Can Mathematical Statistics mean
+  * a statistical test? 
+  * a probability distribution? 
+  * or maybe a p-value?
+
+* Classic statistics **is not the only way** to analyze your data
+
+.center[
+&lt;img src="lies_and_statistics.png" style="width: 90%;" /&gt;]
+
+
+
+---
+name: Types of Analysis
+
+## Different Types of Data Analysis
+
+* Depends on the amount of data we have
+* Balance between the numbers of features and observations
+
+![Types of Analysis](AmountOfData.png)
+
+
+
+---
+name: Frequentist Statistics Failure
+
+## Frequentist Statistics Failure
+
+.center[
+&lt;img src="Anscombes_quartet.png" style="width: 90%;" /&gt;]
+
+
+
+---
+name: Frequentist Statistics Brain Damaging (Cont.)
+
+## Frequentist Statistics Brain Damaging
+
+.center[
+&lt;img src="DataSaurus.gif.png" style="width: 90%;" /&gt;]
+
+.center[
+&lt;img src="BoxViolinSmaller.gif.png" style="width: 90%;" /&gt;]
+
+
+
+
+---
+name: Maximum Likelihood Principle
+
+## Maximum Likelihood Principle
+
+* We maximize probability to observe the data `\(X_i\)`
+`$$\rm{L}\,(\,\rm{X_i} \,|\, \mu,\sigma\,) =
+\prod_{i=0}^{N}\frac{1}{\sqrt{2\pi\sigma²}} \exp^{\displaystyle -\frac{(X_i-\mu)^2}{2\sigma²}}\\
+\mu = \frac{1}{N}\sum_{i=0}^N \rm{X_i}\\
+\sigma^2 = \frac{1}{N}\sum_{i=0}^N (\rm{X_i}-\mu)^2$$`
+
+--
+* Maximum Likelihood has many assumptions:
+  * Large sample size
+  * Gaussian distribution
+  * Homoscedasticity
+  * Uncorrelated errors
+  * Convergence of covariance
+* Those assumptions are not fulfilled in the real world
+
+
+
+---
+name: Statistical Test
+
+## Two-Groups Statistical Test
+
+
+```r
+set.seed(12)
+X&lt;-c(rnorm(20,mean=5,sd=2),12,15,14,16)
+Y&lt;-c(rnorm(24,mean=7,sd=2))
+boxplot(X,Y,ylab="DIFFERENCE",names=c("X","Y"))
+```
+
+&lt;img src="Presentation_GeneralStats_files/figure-html/unnamed-chunk-3-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+name: Parametric Statistical Test
+
+## Parametric Statistical Test Fails
+
+
+```r
+t.test(X,Y)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  X and Y
+## t = -1.084, df = 31.678, p-value = 0.2865
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -2.8819545  0.8804344
+## sample estimates:
+## mean of x mean of y 
+##  5.989652  6.990412
+```
+&lt;img src="Presentation_GeneralStats_files/figure-html/unnamed-chunk-5-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+name: Resampling
+
+## Resampling
+
+
+```r
+observed &lt;- median(Y)-median(X)
+print(paste0("Observed difference = ",observed))
+res &lt;- vector(length=1000)
+for(i in 1:1000){Z&lt;-c(X,Y); Y_res&lt;-sample(Z,length(Y),FALSE);
+X_res&lt;-sample(Z,length(X),FALSE); res[i]&lt;-median(Y_res)-median(X_res)}
+hist(abs(res), breaks=100, main="Resampled", xlab="Difference")
+print(paste0("p-value = ", sum(abs(res) &gt;= abs(observed))/1000))
+```
+
+```
+## [1] "Observed difference = 2.33059085402647"
+## [1] "p-value = 0.001"
+```
+
+&lt;img src="Presentation_GeneralStats_files/figure-html/unnamed-chunk-6-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+---
+name: ML Does Not Stand Non-Independence
+
+## ML Does Not Stand Non-Independence
+
+
+```
+##            n1         n2          n3           n4         n5
+## p1 -0.6760258 -1.2307634  1.66039982  0.196033326 -0.2981471
+## p2 -1.5834993  0.6494188 -0.01267663 -1.064763128 -0.1792141
+## p3  0.3152418 -0.5791937 -1.79593465 -0.312303710  0.2671534
+## p4 -0.9359010  0.1212546 -0.36279328 -0.553364109  1.0598898
+## p5 -2.0411903  0.6899356 -1.03923098  0.008958754 -0.2249498
+```
+
+* Two types of non-independence in data
+  * between samples
+  * between features
+
+.center[
+.pull-left-50[
+### Random Effects
+&lt;img src="Random_Effects.jpg" style="width: 60%;" /&gt;]
+.pull-right-50[
+### Lasso
+&lt;img src="lasso.jpg" style="width: 40%;" /&gt;]]
+
+
+
+
+---
+name: Linear Model with Non-Independence
+
+## Linear Model with Non-Independence
+
+
+```r
+library("lme4")
+library("ggplot2")
+ggplot(sleepstudy,aes(x=Days,y=Reaction)) + geom_point() + 
+  geom_smooth(method="lm")
+```
+
+&lt;img src="Presentation_GeneralStats_files/figure-html/unnamed-chunk-8-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+---
+name: Fit Linear Model for Each Individual
+
+## Fit Linear Model for Each Individual
+
+
+```r
+ggplot(sleepstudy, aes(x = Days, y = Reaction)) + 
+  geom_smooth(method = "lm", level = 0.95) + geom_point() + 
+  facet_wrap( ~ Subject, nrow = 3, ncol = 6)
+```
+
+&lt;img src="Presentation_GeneralStats_files/figure-html/unnamed-chunk-9-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+---
+name: The Case of the Missing Heritability
+
+## Random Effects and Missing Heritability
+
+.center[
+&lt;img src="MissingHeritability.png" style="width: 80%;" /&gt;]
+
+
+---
+name: Random Effects Modelling
+
+## Random Effects Modelling
+
+* Allow individual level Slopes and Intercepts
+* This is nothing else than Bayesian Priors on coefficients
+
+
+`$$\rm{Reaction} = \alpha_i + \beta_i \rm{Days}$$`
+
+
+
+```r
+lmerfit &lt;- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
+```
+
+.pull-left-50[
+&lt;img src="Presentation_GeneralStats_files/figure-html/unnamed-chunk-11-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+.pull-right-50[
+&lt;img src="Presentation_GeneralStats_files/figure-html/unnamed-chunk-12-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+
+
+
+---
+name: Linear Mixed Models (LMM)
+
+## Linear Mixed Models (LMM)
+
+
+```r
+summary(lmer(Reaction ~ Days + (Days | Subject), sleepstudy))
+```
+
+```
+## Linear mixed model fit by REML ['lmerMod']
+## Formula: Reaction ~ Days + (Days | Subject)
+##    Data: sleepstudy
+## 
+## REML criterion at convergence: 1743.6
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -3.9536 -0.4634  0.0231  0.4633  5.1793 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev. Corr
+##  Subject  (Intercept) 611.90   24.737       
+##           Days         35.08    5.923   0.07
+##  Residual             654.94   25.592       
+## Number of obs: 180, groups:  Subject, 18
+## 
+## Fixed effects:
+##             Estimate Std. Error t value
+## (Intercept)  251.405      6.824  36.843
+## Days          10.467      1.546   6.771
+## 
+## Correlation of Fixed Effects:
+##      (Intr)
+## Days -0.138
+```
+
+
+---
+name: LMM Average Fit
+
+## LMM Average Fit
+
+&lt;img src="Presentation_GeneralStats_files/figure-html/unnamed-chunk-14-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+---
+name: LMM Individual Fit
+
+## LMM Individual Fit
+
+&lt;img src="Presentation_GeneralStats_files/figure-html/unnamed-chunk-15-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+---
+name: What is Bayesian Statistics for You?
+
+## What is Bayesian Statistics for You?
+
+.center[
+&lt;img src="BayesianStatistics.png" style="width: 90%;" /&gt;]
+
+.small[
+* **Handling Missing Data**
+* **Handling Non-Gaussian Data**
+* **Cause or Consequence**
+* **Lack of Statistical Power**
+* **Overfitting and Correction for Multiple Testing (FDR)**
+* **Testing for Significance and P-Value**
+]
+
+
+
+
+---
+name: Frequentist vs. Bayesian Fitting
+
+## Frequentist vs. Bayesian Linear Model
+
+.center[
+.pull-left-50[
+### Maximum Likelihood
+`$$y = \alpha+\beta x$$`
+&lt;br/&gt;
+`$$L(y) \sim e^{-\frac{(y-\alpha-\beta x)^2}{2\sigma^2}}$$`
+&lt;br/&gt;
+`$$\max_{\alpha,\beta,\sigma}L(y) \Longrightarrow \hat\alpha, \hat\beta, \hat\sigma$$`
+]]
+--
+.center[
+.pull-right-50[
+### Bayesian Linear Fitting
+`$$y \sim \it N(\mu,\sigma) \quad\textrm{- Likelihood L(y)}$$`
+&lt;br/&gt;
+`$$\mu = \alpha + \beta x$$`
+&lt;br/&gt;
+`$$\alpha \sim \it N(\mu_\alpha,\sigma_\alpha) \quad\textrm{- Prior on} \quad\alpha \\
+\beta \sim \it N(\mu_\beta,\sigma_\beta) \quad\textrm{- Prior on} \quad\beta$$`
+
+&lt;br/&gt;
+`$$P(\mu_\alpha,\sigma_\alpha,\mu_\beta,\sigma_\beta,\sigma) \sim  L(y)N(\mu_\alpha,\sigma_\alpha)N(\mu_\beta,\sigma_\beta)$$`
+
+&lt;br/&gt;
+`$$\max_{\mu_\alpha,\sigma_\alpha,\mu_\beta,\sigma_\beta,\sigma}P(\mu_\alpha,\sigma_\alpha,\mu_\beta,\sigma_\beta,\sigma) \Longrightarrow \hat\mu_\alpha,\hat\sigma_\alpha,\hat\mu_\beta,\hat\sigma_\beta,\hat\sigma$$`
+]]
+
+
+---
+name: Bayesian Linear Model
+
+## Bayesian Linear Model
+
+
+```r
+library("brms")
+options(mc.cores = parallel::detectCores())
+brmfit &lt;- brm(Reaction ~ Days + (Days | Subject), data = sleepstudy)
+summary(brmfit)
+```
+
+```
+##  Family: gaussian 
+##   Links: mu = identity; sigma = identity 
+## Formula: Reaction ~ Days + (Days | Subject) 
+##    Data: sleepstudy (Number of observations: 180) 
+## Samples: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
+##          total post-warmup samples = 4000
+## 
+## Group-Level Effects: 
+## ~Subject (Number of levels: 18) 
+##                     Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+## sd(Intercept)          26.90      6.70    15.93    42.23       2076 1.00
+## sd(Days)                6.61      1.50     4.21    10.04       1454 1.00
+## cor(Intercept,Days)     0.08      0.30    -0.49     0.69        881 1.00
+## 
+## Population-Level Effects: 
+##           Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+## Intercept   251.24      7.27   236.71   265.47       1651 1.00
+## Days         10.45      1.71     7.06    13.92       1372 1.00
+## 
+## Family Specific Parameters: 
+##       Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+## sigma    25.89      1.57    23.01    29.19       3801 1.00
+## 
+## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
+## is a crude measure of effective sample size, and Rhat is the potential 
+## scale reduction factor on split chains (at convergence, Rhat = 1).
+```
+
+
+---
+name: Bayesian Population-Level Fit
+
+## Bayesian Population-Level Fit
+
+&lt;img src="Presentation_GeneralStats_files/figure-html/unnamed-chunk-17-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+
+
+
+---
+name: Bayesian Group-Level Fit
+
+## Bayesian Group-Level Fit
+
+&lt;img src="Presentation_GeneralStats_files/figure-html/unnamed-chunk-18-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
+
+
+
+---
+name: Feature Non-Independence: LASSO
+
+## Feature Non-Independence: LASSO
+
+`$$Y = \beta_1X_1+\beta_2X_2+\epsilon \\
+\textrm{OLS} = (y-\beta_1X_1-\beta_2X_2)^2 \\
+\textrm{Penalized OLS} = (y-\beta_1X_1-\beta_2X_2)^2 + \lambda(|\beta_1|+|\beta_2|)$$`
+
+.center[
+&lt;img src="CV_lambda.png" style="width: 70%;" /&gt;]
+
+
+
+
+---
+name: Dimensionality Reduction
+
+## Dimensionality Reduction
+
+* Can Dimensionality Reduction mean
+  * PCA? 
+  * tSNE? 
+
+.pull-left-50[
+.pull-right-50[
+&lt;img src="PCA.png" style="width: 100%;" /&gt;]]
+.pull-right-50[
+&lt;img src="tSNE.png" style="width: 50%;" /&gt;]
+
+--
+.pull-left-50[
+.pull-right-50[
+&lt;img src="DarkMagic.jpg" style="width: 100%;" /&gt;]]
+.pull-right-50[
+No, this is about overcoming
+
+**The Curse of Dimenionality**
+
+also known as Rao's Paradox
+]
+
+
+
+---
+name: Low Dimensional Space
+
+## Low Dimensional Space
+
+
+```r
+set.seed(123); n &lt;- 20; p &lt;- 2
+Y &lt;- rnorm(n); X &lt;- matrix(rnorm(n*p),n,p); summary(lm(Y~X))
+```
+
+```
+## 
+## Call:
+## lm(formula = Y ~ X)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.0522 -0.6380  0.1451  0.3911  1.8829 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)  0.14950    0.22949   0.651    0.523
+## X1          -0.09405    0.28245  -0.333    0.743
+## X2          -0.11919    0.24486  -0.487    0.633
+## 
+## Residual standard error: 1.017 on 17 degrees of freedom
+## Multiple R-squared:  0.02204,	Adjusted R-squared:  -0.09301 
+## F-statistic: 0.1916 on 2 and 17 DF,  p-value: 0.8274
+```
+
+
+---
+name: Going to Higher Dimensions
+
+## Going to Higher Dimensions
+
+
+```r
+set.seed(123456); n &lt;- 20; p &lt;- 10
+Y &lt;- rnorm(n); X &lt;- matrix(rnorm(n*p),n,p); summary(lm(Y~X))
+```
+
+```
+## 
+## Call:
+## lm(formula = Y ~ X)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.0255 -0.4320  0.1056  0.4493  1.0617 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)  0.54916    0.26472   2.075   0.0679 .
+## X1           0.30013    0.21690   1.384   0.1998  
+## X2           0.68053    0.27693   2.457   0.0363 *
+## X3          -0.10675    0.26010  -0.410   0.6911  
+## X4          -0.21367    0.33690  -0.634   0.5417  
+## X5          -0.19123    0.31881  -0.600   0.5634  
+## X6           0.81074    0.25221   3.214   0.0106 *
+## X7           0.09634    0.24143   0.399   0.6992  
+## X8          -0.29864    0.19004  -1.571   0.1505  
+## X9          -0.78175    0.35408  -2.208   0.0546 .
+## X10          0.83736    0.36936   2.267   0.0496 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.8692 on 9 degrees of freedom
+## Multiple R-squared:  0.6592,	Adjusted R-squared:  0.2805 
+## F-statistic: 1.741 on 10 and 9 DF,  p-value: 0.2089
+```
+
+
+
+---
+name: Even Higher Dimensions
+
+## Even Higher Dimensions
+
+
+```r
+set.seed(123456); n &lt;- 20; p &lt;- 20
+Y &lt;- rnorm(n); X &lt;- matrix(rnorm(n*p),n,p); summary(lm(Y~X))
+```
+
+```
+## 
+## Call:
+## lm(formula = Y ~ X)
+## 
+## Residuals:
+## ALL 20 residuals are 0: no residual degrees of freedom!
+## 
+## Coefficients: (1 not defined because of singularities)
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)  1.34889         NA      NA       NA
+## X1           0.66218         NA      NA       NA
+## X2           0.76212         NA      NA       NA
+## X3          -1.35033         NA      NA       NA
+## X4          -0.57487         NA      NA       NA
+## X5           0.02142         NA      NA       NA
+## X6           0.40290         NA      NA       NA
+## X7           0.03313         NA      NA       NA
+## X8          -0.31983         NA      NA       NA
+## X9          -0.92833         NA      NA       NA
+## X10          0.18091         NA      NA       NA
+## X11         -1.37618         NA      NA       NA
+## X12          2.11438         NA      NA       NA
+## X13         -1.75103         NA      NA       NA
+## X14         -1.55073         NA      NA       NA
+## X15          0.01112         NA      NA       NA
+## X16         -0.50943         NA      NA       NA
+## X17         -0.47576         NA      NA       NA
+## X18          0.31793         NA      NA       NA
+## X19          1.43615         NA      NA       NA
+## X20               NA         NA      NA       NA
+## 
+## Residual standard error: NaN on 0 degrees of freedom
+## Multiple R-squared:      1,	Adjusted R-squared:    NaN 
+## F-statistic:   NaN on 19 and 0 DF,  p-value: NA
+```
+
+
+
+---
+name: Maximum Likelihood Blows Up
+
+## The Math Blows Up in High Dimensions
+
+Let us now take a closer look at why exactly the ML math blows up when n&lt;=p. Consider a linear model:
+
+`$$Y = \beta X$$`
+
+Let us make a few mathematical tricks in order to get a solution for the coefficients of the linear model:
+
+`$$X^TY = \beta X^TX \\
+(X^TX)^{-1}X^TY = \beta(X^TX)^{-1} X^TX \\
+(X^TX)^{-1}X^TY = \beta$$`
+
+The inverse matrix `\((X^TX)^{-1}\)` **diverges** when p=&gt;n as variables in X become correlated
+
+
+
+---
+name: No True Effects in High Dimensions
+
+## No True Effects in High Dimensions
+
+.pull-left-50[
+
+```r
+set.seed(12345)
+N &lt;- 100
+x &lt;- rnorm(N)
+y &lt;- 2*x+rnorm(N)
+df &lt;- data.frame(x,y)
+```
+]
+.pull-right-50[
+
+```r
+for(i in 1:10)
+{
+df[,paste0("PC",i)]&lt;-
+  Covar*(1-i/10)*y+rnorm(N)
+}
+```
+]
+.center[
+&lt;img src="Presentation_GeneralStats_files/figure-html/unnamed-chunk-24-1.svg" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+name: PCA
+
+## Principal Component Analysis (PCA)
+
+* Collapse p features (p&gt;&gt;n) to few latent features and keep variation
+
+* Rotation and shift of coordinate system toward maximal variance
+
+* PCA is an **eigen matrix decomposition** problem
+
+
+.pull-left-50[
+&lt;img src="pca_demo.gif" style="width: 100%;" /&gt;]
+.pull-right-50[
+`$$PC = u^T X = X^Tu$$`
+X is mean centered `\(\Longrightarrow &lt;PC&gt; = 0\)`
+`$$&lt;(PC-&lt;PC&gt;)^2&gt; = &lt;PC^2&gt; = u^T X X^Tu \\
+X X^T=A \\ 
+&lt; PC^2 &gt; = u^T Au$$`
+A is **variance-covariance** of X
+
+`$$\rm{max}(u^T Au + \lambda(1-u^Tu))=0 \\
+ Au = \lambda u$$`
+]
+
+
+
+---
+name: PCA on MNIST
+
+## PCA on MNIST
+
+
+&lt;img src="Presentation_GeneralStats_files/figure-html/PCA-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+name: tSNE
+
+## t-distributed Stochastic Neighbor Embedding (tSNE)
+
+.center[
+&lt;img src="tSNE_Scheme.png" style="width: 65%;" /&gt;]
+
+
+
+---
+name: tSNE on MNIST
+
+## tSNE on MNIST
+
+&lt;img src="Presentation_GeneralStats_files/figure-html/tSNE-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+
+
+
+&lt;!-- --------------------- Do not edit this and below --------------------- --&gt;
+
+---
+name: end-slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+
+&lt;p&gt;R version 3.6.0 (2019-04-26)&lt;br&gt;&lt;p&gt;Platform: x86_64-pc-linux-gnu (64-bit)&lt;/p&gt;&lt;p&gt;OS: Ubuntu 14.04.6 LTS&lt;/p&gt;&lt;br&gt;
+
+Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 13-jun-2019 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 08:50:29  
+
+__2019__ • [SciLifeLab](https://www.scilifelab.se/) • [NBIS](https://nbis.se/)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="assets/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "4:3",
+"highlightLanguage": "r",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "RaukR 2019 • %current%/%total%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
