@@ -115,8 +115,8 @@ Several possibilities:
 More realistic?
 &lt;img src="presentation1_files/figure-html/beer3-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
 
-* This is a logistic model `\(y = \frac{1}{1-e^{-(\beta_0 +\beta_1x)}}\)`, where there are saturation towards the extremes
-* By transforming `\(y\)` into log-odds, we get a linear expression in the r.h.s.  `$$\log\frac{y}{1+y} = \beta_0+ \beta_1 x$$`
+* This is a logistic model `\(y = \frac{1}{1+e^{-(\beta_0 +\beta_1x)}}\)`, where there are saturation towards the extremes
+* By transforming `\(y\)` into log-odds, we get a linear expression in the r.h.s.  `$$\log\frac{y}{1-y} = \beta_0 + \beta_1 x$$`
 ]
 
 --
@@ -282,7 +282,7 @@ paste("Pr[Y&lt;=0.65|X=2] = ", sum(h$counts[1:13]))
 .pull-right-50[
 
 ```
-## [1] "Pr[Y&lt;=0.65|X=2] =  0.174"
+## [1] "Pr[Y&lt;=0.65|X=2] =  0.178"
 ```
 
 &lt;img src="presentation1_files/figure-html/unnamed-chunk-8-1.svg" style="display: block; margin: auto auto auto 0;" /&gt;
@@ -407,13 +407,13 @@ where `\(s/\sqrt{N}\)` is an estimate of the standard deviation, `\(\sigma\)`, f
 ## 	One Sample t-test
 ## 
 ## data:  y
-## t = 94.236, df = 99, p-value &lt; 2.2e-16
+## t = 87.834, df = 99, p-value &lt; 2.2e-16
 ## alternative hypothesis: true mean is not equal to 0.7
 ## 95 percent confidence interval:
-##  1.092939 1.109843
+##  1.090287 1.108328
 ## sample estimates:
 ## mean of x 
-##  1.101391
+##  1.099307
 ```
 
 ---
@@ -446,13 +446,13 @@ t.test(y,yp)
 ## 	Welch Two Sample t-test
 ## 
 ## data:  y and yp
-## t = 64.188, df = 107.21, p-value &lt; 2.2e-16
+## t = 69.087, df = 108.92, p-value &lt; 2.2e-16
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.2875826 0.3059116
+##  0.2903866 0.3075400
 ## sample estimates:
 ## mean of x mean of y 
-## 0.6977599 0.4010128
+## 0.6992424 0.4002792
 ```
 ]
 .pull-right-50[
@@ -477,18 +477,18 @@ summary(lm(phenos~genos, data=sim1))
 ## 
 ## Residuals:
 ##       Min        1Q    Median        3Q       Max 
-## -0.167061 -0.033405  0.000952  0.031738  0.111776 
+## -0.146437 -0.033937  0.000849  0.029888  0.105286 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.293621   0.009323   31.50   &lt;2e-16 ***
-## genos       0.205142   0.007769   26.41   &lt;2e-16 ***
+## (Intercept) 0.303874   0.008337   36.45   &lt;2e-16 ***
+## genos       0.196674   0.006972   28.21   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.04911 on 98 degrees of freedom
-## Multiple R-squared:  0.8768,	Adjusted R-squared:  0.8755 
-## F-statistic: 697.3 on 1 and 98 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 0.04676 on 98 degrees of freedom
+## Multiple R-squared:  0.8904,	Adjusted R-squared:  0.8892 
+## F-statistic: 795.9 on 1 and 98 DF,  p-value: &lt; 2.2e-16
 ```
 
 ---
@@ -569,7 +569,7 @@ count: false
 
 &lt;p&gt;R version 3.5.3 (2019-03-11)&lt;br&gt;&lt;p&gt;Platform: x86_64-apple-darwin15.6.0 (64-bit)&lt;/p&gt;&lt;p&gt;OS: macOS High Sierra 10.13.6&lt;/p&gt;&lt;br&gt;
 
-Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 13-Jun-2019 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 11:36:12  
+Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 13-Jun-2019 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 16:29:01  
 
 __2019__ • [SciLifeLab](https://www.scilifelab.se/) • [NBIS](https://nbis.se/)
     </textarea>
