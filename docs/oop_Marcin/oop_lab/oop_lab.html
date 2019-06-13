@@ -25,56 +25,30 @@
 <script src="oop_lab_files/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="oop_lab_files/navigation-1.1/tabsets.js"></script>
 <script src="oop_lab_files/navigation-1.1/codefolding.js"></script>
+<link href="oop_lab_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="oop_lab_files/highlightjs-9.12.0/highlight.js"></script>
 <link href="oop_lab_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="oop_lab_files/pagedtable-1.1/js/pagedtable.js"></script>
-
+<link href="oop_lab_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="oop_lab_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="oop_lab_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-pre, code { background-color: #f8f8f8; }
-code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
-code > span.dt { color: #204a87; } /* DataType */
-code > span.dv { color: #0000cf; } /* DecVal */
-code > span.bn { color: #0000cf; } /* BaseN */
-code > span.fl { color: #0000cf; } /* Float */
-code > span.ch { color: #4e9a06; } /* Char */
-code > span.st { color: #4e9a06; } /* String */
-code > span.co { color: #8f5902; font-style: italic; } /* Comment */
-code > span.ot { color: #8f5902; } /* Other */
-code > span.al { color: #ef2929; } /* Alert */
-code > span.fu { color: #000000; } /* Function */
-code > span.er { color: #a40000; font-weight: bold; } /* Error */
-code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #000000; } /* Constant */
-code > span.sc { color: #000000; } /* SpecialChar */
-code > span.vs { color: #4e9a06; } /* VerbatimString */
-code > span.ss { color: #4e9a06; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #000000; } /* Variable */
-code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
-code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
-code > span.ex { } /* Extension */
-code > span.at { color: #c4a000; } /* Attribute */
-code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
-code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
-div.sourceCode {
-  overflow-x: visible;
-}
-</style>
 <style type="text/css">
   pre:not([class]) {
     background-color: white;
   }
 </style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
 
 
 <style type="text/css">
@@ -104,11 +78,9 @@ h6 {
 }
 </style>
 
-<link rel="stylesheet" href="assets/course.css" type="text/css" />
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -127,19 +99,84 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
 }
 </style>
 
 
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
 });
 </script>
 
@@ -152,7 +189,6 @@ $(document).ready(function () {
   window.initializeCodeFolding("hide" === "show");
 });
 </script>
-
 
 
 
@@ -230,8 +266,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -240,6 +274,16 @@ div.tocify {
 
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -266,15 +310,15 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Object-Oriented Programming in R</h1>
-<h3 class="subtitle"><em>A Quick Intro to R Classes Hands-on</em></h3>
-<h4 class="author"><em>Marcin Kierczak</em></h4>
-<h4 class="date"><em>11-Jun-2018</em></h4>
+<h3 class="subtitle">RaukR 2019 • Advanced R for Bioinformatics</h3>
+<h4 class="author">Marcin Kierczak</h4>
 
 </div>
 
 
+<p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet"></p>
 <p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
-<hr />
+<!-- <img src="assets/logo.svg" alt="logo_raukr" class="trlogo">-->
 <p class="abstract">
 <p>During this lab, we will go through the most important features of 3 out of the 4 existing OOP systems in R:</p>
 <ul>
@@ -290,44 +334,44 @@ While S3 and S4 are base-R OOP systems, R6 is provided by the <code>R6</code> pa
 <ul>
 <li>what is the class of the object returned by the <code>lm()</code> function?</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obj &lt;-<span class="st"> </span><span class="kw">lm</span>(speed <span class="op">~</span><span class="st"> </span>dist, <span class="dt">data =</span> cars) 
-<span class="kw">class</span>(obj)</code></pre></div>
+<pre class="r"><code>obj &lt;- lm(speed ~ dist, data = cars) 
+class(obj)</code></pre>
 <ul>
 <li>what basic data type is it build upon?</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">typeof</span>(obj)</code></pre></div>
+<pre class="r"><code>typeof(obj)</code></pre>
 <ul>
 <li>what attributes does the object of the <code>lm</code> class have?</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">attributes</span>(obj)</code></pre></div>
+<pre class="r"><code>attributes(obj)</code></pre>
 <ul>
 <li>what is the structure of the <code>lm</code> object?</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(obj)</code></pre></div>
+<pre class="r"><code>str(obj)</code></pre>
 <ul>
 <li>does the <code>lm</code> class implement own <code>str()</code>?</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(obj)
-<span class="co"># compare to:</span>
-<span class="kw">str</span>(<span class="kw">unclass</span>(obj)) 
+<pre class="r"><code>str(obj)
+# compare to:
+str(unclass(obj)) 
 
-<span class="co"># Answer: no</span></code></pre></div>
+# Answer: no</code></pre>
 <ul>
 <li>what is the class of a <code>tibble</code>? You have to loadt the <code>tidyverse</code> package and use on of the built-in datasets, e.g. <code>mtcars</code> as argument to <code>as_tibble()</code> to check the class.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(tidyverse)
-obj &lt;-<span class="st"> </span><span class="kw">as_tibble</span>(mtcars)
-<span class="kw">class</span>(obj)</code></pre></div>
+<pre class="r"><code>require(tidyverse)
+obj &lt;- as_tibble(mtcars)
+class(obj)</code></pre>
 <ul>
 <li>what is the underlying data type?</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">typeof</span>(obj)</code></pre></div>
+<pre class="r"><code>typeof(obj)</code></pre>
 <ul>
 <li>is the <code>str()</code> function used by tibbles the default <code>str()</code>?</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(obj)
-<span class="kw">str</span>(<span class="kw">unclass</span>(obj))
-<span class="co"># Answer: no</span></code></pre></div>
+<pre class="r"><code>str(obj)
+str(unclass(obj))
+# Answer: no</code></pre>
 <ul>
 <li>implement your own class <code>meta_frame</code> that is a <code>data.frame</code> with additional attributes:
 <ul>
@@ -337,19 +381,19 @@ obj &lt;-<span class="st"> </span><span class="kw">as_tibble</span>(mtcars)
 </ul>
 <p>Check that it works, i.e. that it has the expected attributes and that it is a separate class.</p>
 <p>How do you access the <code>description</code> field?</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">meta_frame &lt;-<span class="st"> </span><span class="cf">function</span>(df, descr, creation) {
-  <span class="kw">structure</span>(
-    <span class="kw">list</span>(
-      <span class="dt">df =</span> df, 
-      <span class="dt">descr =</span> descr, 
-      <span class="dt">creation =</span> creation
+<pre class="r"><code>meta_frame &lt;- function(df, descr, creation) {
+  structure(
+    list(
+      df = df, 
+      descr = descr, 
+      creation = creation
     ),
-    <span class="dt">class =</span> <span class="st">&quot;meta_frame&quot;</span>
+    class = &quot;meta_frame&quot;
   )
 }
-obj &lt;-<span class="st"> </span><span class="kw">meta_frame</span>(mtcars, <span class="st">&#39;The mtcars dataset&#39;</span>, <span class="st">&#39;10-06-2018&#39;</span>)
-<span class="kw">str</span>(obj)
-obj<span class="op">$</span>descr</code></pre></div>
+obj &lt;- meta_frame(mtcars, &#39;The mtcars dataset&#39;, &#39;10-06-2018&#39;)
+str(obj)
+obj$descr</code></pre>
 <ul>
 <li>design implementation of your own S3 class <code>protein</code> that stores the following information (you will implement the class in the next point, now just think and draw on paper if you wish):
 <ul>
@@ -363,148 +407,148 @@ obj<span class="op">$</span>descr</code></pre></div>
 <li>a list of PTMs.</li>
 </ul></li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Constructor</span>
-new_protein &lt;-<span class="st"> </span><span class="cf">function</span>(sequence, length, ptm_site, ptm_type) {
-  <span class="kw">stopifnot</span>(<span class="kw">is.character</span>(sequence))
-  <span class="kw">stopifnot</span>(<span class="kw">is.integer</span>(length))
-  <span class="kw">stopifnot</span>(<span class="kw">is.numeric</span>(ptm_site))
-  <span class="kw">stopifnot</span>(<span class="kw">is.character</span>(ptm_type))
-  <span class="kw">structure</span>(
+<pre class="r"><code># Constructor
+new_protein &lt;- function(sequence, length, ptm_site, ptm_type) {
+  stopifnot(is.character(sequence))
+  stopifnot(is.integer(length))
+  stopifnot(is.numeric(ptm_site))
+  stopifnot(is.character(ptm_type))
+  structure(
     sequence,
-    <span class="dt">length =</span> length,
-    <span class="dt">ptm_site =</span> ptm_site,
-    <span class="dt">ptm_type =</span> ptm_type,
-    <span class="dt">class =</span> <span class="st">&quot;protein&quot;</span>
+    length = length,
+    ptm_site = ptm_site,
+    ptm_type = ptm_type,
+    class = &quot;protein&quot;
   )
 }
 
-<span class="co"># Helper</span>
-protein &lt;-<span class="st"> </span><span class="cf">function</span>(sequence, ptm) {
-  sequence &lt;-<span class="st"> </span>sequence
-  len &lt;-<span class="st"> </span><span class="kw">nchar</span>(sequence)
-  ptm_site &lt;-<span class="st"> </span>ptm[[<span class="dv">1</span>]]
-  ptm_type =<span class="st"> </span>ptm[[<span class="dv">2</span>]]
-  <span class="kw">validate_protein</span>(<span class="kw">new_protein</span>(sequence, len, ptm_site, ptm_type))
+# Helper
+protein &lt;- function(sequence, ptm) {
+  sequence &lt;- sequence
+  len &lt;- nchar(sequence)
+  ptm_site &lt;- ptm[[1]]
+  ptm_type = ptm[[2]]
+  validate_protein(new_protein(sequence, len, ptm_site, ptm_type))
 }
 
-<span class="co"># Validator</span>
-validate_protein &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
-  sequence &lt;-<span class="st"> </span><span class="kw">unclass</span>(x)
-  len &lt;-<span class="st"> </span><span class="kw">attr</span>(x, <span class="st">&#39;length&#39;</span>)
-  ptm_site &lt;-<span class="st"> </span><span class="kw">attr</span>(x, <span class="st">&#39;ptm_site&#39;</span>)
-  ptm_type &lt;-<span class="st"> </span><span class="kw">attr</span>(x, <span class="st">&#39;ptm_type&#39;</span>)
-  <span class="cf">if</span> (<span class="kw">is.na</span>(sequence)) {
-    <span class="kw">stop</span>(<span class="st">&#39;Sequence is missing!&#39;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)
+# Validator
+validate_protein &lt;- function(x) {
+  sequence &lt;- unclass(x)
+  len &lt;- attr(x, &#39;length&#39;)
+  ptm_site &lt;- attr(x, &#39;ptm_site&#39;)
+  ptm_type &lt;- attr(x, &#39;ptm_type&#39;)
+  if (is.na(sequence)) {
+    stop(&#39;Sequence is missing!&#39;, call. = FALSE)
   }
-  <span class="cf">if</span> (<span class="kw">length</span>(ptm_site) <span class="op">!=</span><span class="st"> </span><span class="kw">length</span>(ptm_type)) {
-    <span class="kw">stop</span>(<span class="st">&#39;PTM type and site differ in length!&#39;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)
+  if (length(ptm_site) != length(ptm_type)) {
+    stop(&#39;PTM type and site differ in length!&#39;, call. = FALSE)
   }
-  <span class="cf">if</span> ((<span class="kw">sum</span>(<span class="op">!</span>ptm_type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;phosphorylation&#39;</span>, <span class="st">&#39;methylation&#39;</span>))) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) {
-    <span class="kw">stop</span>(<span class="st">&#39;Invalid PTM types detected!&#39;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)
+  if ((sum(!ptm_type %in% c(&#39;phosphorylation&#39;, &#39;methylation&#39;))) &gt; 0) {
+    stop(&#39;Invalid PTM types detected!&#39;, call. = FALSE)
   }
-  <span class="kw">return</span>(x)
-}</code></pre></div>
+  return(x)
+}</code></pre>
 <ul>
 <li><p>what would you improve in our implementation of <code>protein</code>. Is it really user friendly?</p></li>
-<li><p>write a generic <code>print</code> for the <code>protein</code> class. It should print e.g.:</p>
+<li>write a generic <code>print</code> for the <code>protein</code> class. It should print e.g.:</li>
+</ul>
 <pre><code>[1] &quot;============== Protein ==============&quot;
 [1] &quot;Sequence:ARNDKLLQWYTTARD&quot;
 [1] &quot;Length: 15 aa.&quot;
 [1] &quot;============== PTM section ==============&quot;
 [1] &quot;Site: 3&quot; &quot;Site: 5&quot;
-[1] &quot;Type: phosphorylation&quot; &quot;Type: methylation&quot;  </code></pre></li>
-</ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">print.protein &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
-  sequence &lt;-<span class="st"> </span><span class="kw">unclass</span>(x)
-  len &lt;-<span class="st"> </span><span class="kw">attr</span>(x, <span class="st">&#39;length&#39;</span>)
-  ptm_site &lt;-<span class="st"> </span><span class="kw">attr</span>(x, <span class="st">&#39;ptm_site&#39;</span>)
-  ptm_type &lt;-<span class="st"> </span><span class="kw">attr</span>(x, <span class="st">&#39;ptm_type&#39;</span>)
-  <span class="kw">print</span>(<span class="st">&quot;============== Protein ==============&quot;</span>)
-  <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Sequence:&quot;</span>, sequence))
-  <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Length: &quot;</span>, len, <span class="st">&quot; aa.&quot;</span>))
-  <span class="kw">print</span>(<span class="st">&quot;============== PTM section ==============&quot;</span>)
-  <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Site: &quot;</span>, ptm_site))
-  <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Type: &quot;</span>, ptm_type))
-}</code></pre></div>
+[1] &quot;Type: phosphorylation&quot; &quot;Type: methylation&quot;  </code></pre>
+<pre class="r"><code>print.protein &lt;- function(x) {
+  sequence &lt;- unclass(x)
+  len &lt;- attr(x, &#39;length&#39;)
+  ptm_site &lt;- attr(x, &#39;ptm_site&#39;)
+  ptm_type &lt;- attr(x, &#39;ptm_type&#39;)
+  print(&quot;============== Protein ==============&quot;)
+  print(paste0(&quot;Sequence:&quot;, sequence))
+  print(paste0(&quot;Length: &quot;, len, &quot; aa.&quot;))
+  print(&quot;============== PTM section ==============&quot;)
+  print(paste0(&quot;Site: &quot;, ptm_site))
+  print(paste0(&quot;Type: &quot;, ptm_type))
+}</code></pre>
 <ul>
 <li>test that the <code>protein</code> class works as it should and that generic <code>print</code> works as well.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_prot &lt;-<span class="st"> </span><span class="kw">protein</span>(<span class="st">&quot;ARNDKLLQWYTTARD&quot;</span>, 
-                   <span class="kw">list</span>(
-                     <span class="dt">site =</span> <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>), 
-                     <span class="dt">type =</span> <span class="kw">c</span>(<span class="st">&#39;phosphorylation&#39;</span>, <span class="st">&#39;methylation&#39;</span>)
+<pre class="r"><code>my_prot &lt;- protein(&quot;ARNDKLLQWYTTARD&quot;, 
+                   list(
+                     site = c(3, 5), 
+                     type = c(&#39;phosphorylation&#39;, &#39;methylation&#39;)
                     )
                   )
-<span class="kw">class</span>(my_prot)
-<span class="kw">typeof</span>(my_prot)
-<span class="kw">print</span>(my_prot)</code></pre></div>
+class(my_prot)
+typeof(my_prot)
+print(my_prot)</code></pre>
 </div>
 <div id="s4-classes" class="section level1">
 <h1><span class="header-section-number">2</span> S4 Classes</h1>
 <ul>
 <li>Re-write the <code>protein</code> class in S4 (with validation!).</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generator</span>
-.protein &lt;-<span class="st"> </span><span class="kw">setClass</span>(<span class="st">&#39;protein&#39;</span>,
-                     <span class="dt">slots =</span> <span class="kw">c</span>(
-                       <span class="dt">sequence =</span> <span class="st">&#39;character&#39;</span>,
-                       <span class="dt">length =</span> <span class="st">&#39;numeric&#39;</span>,
-                       <span class="dt">ptm_site =</span> <span class="st">&#39;numeric&#39;</span>,
-                       <span class="dt">ptm_type =</span> <span class="st">&#39;character&#39;</span>
+<pre class="r"><code># Generator
+.protein &lt;- setClass(&#39;protein&#39;,
+                     slots = c(
+                       sequence = &#39;character&#39;,
+                       length = &#39;numeric&#39;,
+                       ptm_site = &#39;numeric&#39;,
+                       ptm_type = &#39;character&#39;
                       )
                     )
 
-<span class="co"># Constructor</span>
-protein &lt;-<span class="st"> </span><span class="cf">function</span>(sequence, ptm) {
-  sequence &lt;-<span class="st"> </span>sequence
-  len &lt;-<span class="st"> </span><span class="kw">nchar</span>(sequence)
-  ptm_site &lt;-<span class="st"> </span>ptm[[<span class="dv">1</span>]]
-  ptm_type &lt;-<span class="st"> </span>ptm[[<span class="dv">2</span>]]
-  <span class="cf">if</span> (<span class="kw">is.na</span>(sequence)) {
-    <span class="kw">stop</span>(<span class="st">&#39;Sequence is missing!&#39;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)
+# Constructor
+protein &lt;- function(sequence, ptm) {
+  sequence &lt;- sequence
+  len &lt;- nchar(sequence)
+  ptm_site &lt;- ptm[[1]]
+  ptm_type &lt;- ptm[[2]]
+  if (is.na(sequence)) {
+    stop(&#39;Sequence is missing!&#39;, call. = FALSE)
   }
-  <span class="cf">if</span> (<span class="kw">length</span>(ptm_site) <span class="op">!=</span><span class="st"> </span><span class="kw">length</span>(ptm_type)) {
-    <span class="kw">stop</span>(<span class="st">&#39;PTM type and site differ in length!&#39;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)
+  if (length(ptm_site) != length(ptm_type)) {
+    stop(&#39;PTM type and site differ in length!&#39;, call. = FALSE)
   }
-  <span class="cf">if</span> ((<span class="kw">sum</span>(<span class="op">!</span>ptm_type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;phosphorylation&#39;</span>, <span class="st">&#39;methylation&#39;</span>))) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) {
-    <span class="kw">stop</span>(<span class="st">&#39;Invalid PTM types detected!&#39;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)
+  if ((sum(!ptm_type %in% c(&#39;phosphorylation&#39;, &#39;methylation&#39;))) &gt; 0) {
+    stop(&#39;Invalid PTM types detected!&#39;, call. = FALSE)
   }
-  pt &lt;-<span class="st"> </span><span class="kw">.protein</span>(<span class="dt">sequence =</span> sequence, 
-           <span class="dt">length =</span> len, 
-           <span class="dt">ptm_site =</span> ptm_site, 
-           <span class="dt">ptm_type =</span> ptm_type)
-  <span class="kw">return</span>(pt)
-}</code></pre></div>
+  pt &lt;- .protein(sequence = sequence, 
+           length = len, 
+           ptm_site = ptm_site, 
+           ptm_type = ptm_type)
+  return(pt)
+}</code></pre>
 <ul>
 <li>create an S4 object of the <code>protein</code> class and check whether it works.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_prot &lt;-<span class="st"> </span><span class="kw">protein</span>(<span class="st">&quot;ARNDKLLQWYTTARD&quot;</span>, 
-                   <span class="kw">list</span>(
-                     <span class="dt">site =</span> <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>), 
-                     <span class="dt">type =</span> <span class="kw">c</span>(<span class="st">&#39;phosphorylation&#39;</span>, <span class="st">&#39;methylation&#39;</span>)
+<pre class="r"><code>my_prot &lt;- protein(&quot;ARNDKLLQWYTTARD&quot;, 
+                   list(
+                     site = c(3, 5), 
+                     type = c(&#39;phosphorylation&#39;, &#39;methylation&#39;)
                     )
                   )
-<span class="kw">class</span>(my_prot)
-<span class="kw">typeof</span>(my_prot)
-<span class="kw">str</span>(my_prot)</code></pre></div>
+class(my_prot)
+typeof(my_prot)
+str(my_prot)</code></pre>
 <ul>
 <li>implement the generic <code>print</code> using S4 and check that it works.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setMethod</span>(<span class="st">&#39;print&#39;</span>, <span class="st">&#39;protein&#39;</span>, 
-  <span class="cf">function</span>(x) {
-    sequence &lt;-<span class="st"> </span>x<span class="op">@</span>sequence
-    len &lt;-<span class="st"> </span>x<span class="op">@</span>length
-    ptm_site &lt;-<span class="st"> </span>x<span class="op">@</span>ptm_site
-    ptm_type &lt;-<span class="st"> </span>x<span class="op">@</span>ptm_type
-    <span class="kw">print</span>(<span class="st">&quot;============== Protein ==============&quot;</span>)
-    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Sequence:&quot;</span>, sequence))
-    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Length: &quot;</span>, len, <span class="st">&quot; aa.&quot;</span>))
-    <span class="kw">print</span>(<span class="st">&quot;============== PTM section ==============&quot;</span>)
-    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Site: &quot;</span>, ptm_site))
-    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Type: &quot;</span>, ptm_type))
+<pre class="r"><code>setMethod(&#39;print&#39;, &#39;protein&#39;, 
+  function(x) {
+    sequence &lt;- x@sequence
+    len &lt;- x@length
+    ptm_site &lt;- x@ptm_site
+    ptm_type &lt;- x@ptm_type
+    print(&quot;============== Protein ==============&quot;)
+    print(paste0(&quot;Sequence:&quot;, sequence))
+    print(paste0(&quot;Length: &quot;, len, &quot; aa.&quot;))
+    print(&quot;============== PTM section ==============&quot;)
+    print(paste0(&quot;Site: &quot;, ptm_site))
+    print(paste0(&quot;Type: &quot;, ptm_type))
 })
 
-<span class="kw">print</span>(my_prot)</code></pre></div>
+print(my_prot)</code></pre>
 <ul>
 <li>implement a new S4 class <code>ext_protein</code> that extends <code>protein</code> with 3 slots:
 <ul>
@@ -513,22 +557,22 @@ protein &lt;-<span class="st"> </span><span class="cf">function</span>(sequence,
 <li>feature value.</li>
 </ul></li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">.ext_protein &lt;-<span class="st"> </span><span class="kw">setClass</span>(<span class="st">&#39;ext_protein&#39;</span>, 
-                         <span class="dt">contains =</span> <span class="kw">c</span>(<span class="st">&#39;protein&#39;</span>),
-                         <span class="dt">slots =</span> <span class="kw">c</span>(
-                           <span class="dt">prot =</span> <span class="st">&#39;protein&#39;</span>,
-                           <span class="dt">feature_type =</span> <span class="st">&#39;character&#39;</span>,
-                           <span class="dt">feature_position =</span> <span class="st">&#39;numeric&#39;</span>,
-                           <span class="dt">feature_value =</span> <span class="st">&#39;character&#39;</span>
+<pre class="r"><code>.ext_protein &lt;- setClass(&#39;ext_protein&#39;, 
+                         contains = c(&#39;protein&#39;),
+                         slots = c(
+                           prot = &#39;protein&#39;,
+                           feature_type = &#39;character&#39;,
+                           feature_position = &#39;numeric&#39;,
+                           feature_value = &#39;character&#39;
                          ))
-my_ext_prot &lt;-<span class="st"> </span><span class="kw">.ext_protein</span>(<span class="dt">prot =</span> my_prot,
-                           <span class="dt">feature_type =</span> <span class="st">&#39;modification&#39;</span>,
-                           <span class="dt">feature_position =</span> <span class="dv">11</span>,
-                           <span class="dt">feature_value =</span> <span class="st">&#39;absent&#39;</span>
+my_ext_prot &lt;- .ext_protein(prot = my_prot,
+                           feature_type = &#39;modification&#39;,
+                           feature_position = 11,
+                           feature_value = &#39;absent&#39;
                   )
-<span class="kw">class</span>(my_ext_prot)
-<span class="kw">typeof</span>(my_ext_prot)
-<span class="kw">str</span>(my_ext_prot)</code></pre></div>
+class(my_ext_prot)
+typeof(my_ext_prot)
+str(my_ext_prot)</code></pre>
 </div>
 <div id="r6-classes" class="section level1">
 <h1><span class="header-section-number">3</span> R6 Classes</h1>
@@ -536,41 +580,41 @@ my_ext_prot &lt;-<span class="st"> </span><span class="kw">.ext_protein</span>(<
 <li>install and load the <code>R6</code> package,</li>
 <li>implement the <code>protein</code> class using R6 model and check that it works as expected:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(R6)
-protein &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="dt">classname =</span> <span class="st">&#39;protein&#39;</span>,
-                        <span class="dt">public =</span> <span class="kw">list</span>(
-                          <span class="dt">seq =</span> <span class="ot">NA</span>,
-                          <span class="dt">length =</span> <span class="ot">NULL</span>,
-                          <span class="dt">ptm_site =</span> <span class="ot">NA</span>,
-                          <span class="dt">ptm_type =</span> <span class="ot">NA</span>,
-                          <span class="dt">initialize =</span> <span class="cf">function</span>(<span class="dt">seq =</span> <span class="ot">NA</span>, <span class="dt">ptm =</span> <span class="ot">NA</span>) {
-                            self<span class="op">$</span>seq &lt;-<span class="st"> </span>seq
-                            self<span class="op">$</span>length &lt;-<span class="st"> </span><span class="kw">nchar</span>(self<span class="op">$</span>seq)
-                            self<span class="op">$</span>ptm_site &lt;-<span class="st"> </span>ptm[[<span class="dv">1</span>]]
-                            self<span class="op">$</span>ptm_type &lt;-<span class="st"> </span>ptm[[<span class="dv">2</span>]]
-                            <span class="co"># Check types</span>
-                            <span class="kw">stopifnot</span>(<span class="kw">is.character</span>(seq))
+<pre class="r"><code>require(R6)
+protein &lt;- R6Class(classname = &#39;protein&#39;,
+                        public = list(
+                          seq = NA,
+                          length = NULL,
+                          ptm_site = NA,
+                          ptm_type = NA,
+                          initialize = function(seq = NA, ptm = NA) {
+                            self$seq &lt;- seq
+                            self$length &lt;- nchar(self$seq)
+                            self$ptm_site &lt;- ptm[[1]]
+                            self$ptm_type &lt;- ptm[[2]]
+                            # Check types
+                            stopifnot(is.character(seq))
                             
-                            <span class="co">#Validate</span>
-                            <span class="cf">if</span> (<span class="kw">is.na</span>(self<span class="op">$</span>seq)) {
-                              <span class="kw">stop</span>(<span class="st">&#39;Sequence is missing!&#39;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)
+                            #Validate
+                            if (is.na(self$seq)) {
+                              stop(&#39;Sequence is missing!&#39;, call. = FALSE)
                             }
-                            <span class="cf">if</span> (<span class="kw">length</span>(self<span class="op">$</span>ptm_site) <span class="op">!=</span><span class="st"> </span><span class="kw">length</span>(self<span class="op">$</span>ptm_type)) {
-                              <span class="kw">stop</span>(<span class="st">&#39;PTM type and site differ in length!&#39;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)
+                            if (length(self$ptm_site) != length(self$ptm_type)) {
+                              stop(&#39;PTM type and site differ in length!&#39;, call. = FALSE)
                             }
-                            <span class="cf">if</span> ((<span class="kw">sum</span>(<span class="op">!</span>self<span class="op">$</span>ptm_type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;phosphorylation&#39;</span>, <span class="st">&#39;methylation&#39;</span>))) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) {
-    <span class="kw">stop</span>(<span class="st">&#39;Invalid PTM types detected!&#39;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)
+                            if ((sum(!self$ptm_type %in% c(&#39;phosphorylation&#39;, &#39;methylation&#39;))) &gt; 0) {
+    stop(&#39;Invalid PTM types detected!&#39;, call. = FALSE)
   }
                           }
  )
 )
 
-my_new_prot &lt;-<span class="st"> </span>protein<span class="op">$</span><span class="kw">new</span>(<span class="dt">seq =</span> <span class="st">&quot;ARNDKLLQWYTTARD&quot;</span>, <span class="dt">ptm =</span> 
-                   <span class="kw">list</span>(
-                     <span class="dt">site =</span> <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>), 
-                     <span class="dt">type =</span> <span class="kw">c</span>(<span class="st">&#39;phosphorylation&#39;</span>, <span class="st">&#39;methylation&#39;</span>)
+my_new_prot &lt;- protein$new(seq = &quot;ARNDKLLQWYTTARD&quot;, ptm = 
+                   list(
+                     site = c(3, 5), 
+                     type = c(&#39;phosphorylation&#39;, &#39;methylation&#39;)
                     ))
-<span class="kw">str</span>(my_new_prot)</code></pre></div>
+str(my_new_prot)</code></pre>
 <p><strong>Congratulations! You are familiar with S3, S4 and R6 object models by now!</strong></p>
 </div>
 

@@ -1,10 +1,9 @@
 ---
-title: "Object-Oriented Programming in R"
-subtitle: "Advanced R for Bioinformatics. Visby, 2018."
-author: "Marcin Kierczak"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+title: "Object-Oriented Programming Models in R"
+subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
+author: "<b>Marcin Kierczak</b>"
 institute: NBIS, SciLifeLab
-keywords: r, RaukR, markdown, oop
+keywords: r, RaukR, markdown
 output: 
   xaringan::moon_reader:
     encoding: 'UTF-8'
@@ -18,22 +17,35 @@ output:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
-      slideNumberFormat: "RaukR 2018 . %current%/%total%"
-
+      slideNumberFormat: "RaukR 2019 • %current%/%total%"
 ---
-class: spaced 
+exclude: true
+count: false
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE,results='hide'}
-# run setup code
-source("assets/setup.R")
+```{r,echo=FALSE,child="assets/header-presentation.Rmd"}
+```
+
+<!-- ----------------- Only edit title & author above this ----------------- -->
+
+```{r setup,include=FALSE}
+knitr::opts_chunk$set(dev="CairoPNG",results="hold",fig.show="hold",fig.align="left",echo=TRUE,warning=FALSE,message=FALSE)
+
+# report related
+library(knitr)
+library(markdown)
+library(rmarkdown)
 ```
 
 ```{r,echo=FALSE,message=FALSE,warning=FALSE}
-# load the packages you need
+# only load the packages you need
 
-#library(tidyverse)
-#library(ggplot2) # static graphics
+library(tidyverse)
+library(purrr)
+library(ggplot2) # static graphics
 ```
+
+---
+name: oop
 
 ## Object Oriented Programming
 
@@ -60,6 +72,88 @@ name: oop_in_r
 * RC -- Reference Classes, the most advanced and close to, e.g. Java OOP, extension of S4,
 
 * **R6** -- simplified RC, extension of S3, `require(R6)`
+
+---
+name: S4_classes
+
+## S4 classes
+S4 classes are more advanced as you actually define the structure of the data within the object of your particular class:
+```{r S4, echo=T}
+setClass('gene', 
+         representation(name='character', 
+                        coords='numeric')
+         )
+
+.intragenic_region <- setClass(Class = 'intragenic_region', 
+                               slots = c(
+                                 name='character', 
+                                 coords='numeric'
+                               )
+                              )
+
+my.gene <- new('gene', name = 'ANK3', 
+               coords = c(1.4e6, 1.412e6))
+
+# but since SetClass returns a low-level constructor
+my.intra1 <- .intragenic_region(name = 'int1', 
+                  coords = c(1.7e6, 1.717e6))
+```
+
+---
+name: S4_inheritance
+## Inheritance in S4
+```{r}
+.ext_gene <- setClass(Class = 'ext_gene',
+                      contains = "gene",
+                      slots = c(
+                        gene = 'gene',
+                        feature_name = 'character',
+                        feature_value = 'character'
+                      ))
+
+ANK3 <- .ext_gene(name = 'ANK3', 
+                  coords = c(1.4e6, 1.412e6),
+                  feature_name = 'num_introns',
+                  feature_value = '5')
+str(ANK3)
+```
+
+---
+name: S4_sealed
+## Sealed Class
+
+Preventing double class definition:
+```{r, error=T}
+setClass('Not_Sealed')
+setClass('Not_Sealed')
+```
+
+But to prevent this:
+```{r, error=T}
+setClass('Sealed', sealed = T)
+setClass('Sealed')
+```
+---
+name: S4_slots
+## S4 class -- slots
+The variables within an S4 class are stored in the so-called **slots**. In the above example, we have 2 such slots: *name* and *coords*. Here is how to access them:
+```{r S4.slots, echo=T}
+my.gene@name # access using @ operator
+my.gene@coords[2] # access the 2nd element in slot coords
+```
+
+---
+name: S4_methods
+## S4 class -- methods
+The power of classes lies in the fact that they define both the data types in particular slots and operations (functions) we can perform on them. Let us define a *generic print function* for an S4 class:
+```{r S4.methods, echo=T}
+setMethod('print', 'gene', 
+          function(x) {
+              cat('GENE: ', x@name, ' --> ')
+              cat('[', x@coords, ']')
+          })
+print(my.gene) # and we use the newly defined print
+```
 
 ---
 name: S3_intro
@@ -251,87 +345,6 @@ point_in_space_class <- function(x, y, z) {
     class = "point_in_space_class"
   )
 }
-```
-
----
-name: S4_classes
-## S4 classes
-S4 classes are more advanced as you actually define the structure of the data within the object of your particular class:
-```{r S4, echo=T}
-setClass('gene', 
-         representation(name='character', 
-                        coords='numeric')
-         )
-
-.intragenic_region <- setClass(Class = 'intragenic_region', 
-                               slots = c(
-                                 name='character', 
-                                 coords='numeric'
-                               )
-                              )
-
-my.gene <- new('gene', name = 'ANK3', 
-               coords = c(1.4e6, 1.412e6))
-
-# but since SetClass returns a low-level constructor
-my.intra1 <- .intragenic_region(name = 'int1', 
-                  coords = c(1.7e6, 1.717e6))
-```
-
----
-name: S4_inheritance
-## Inheritance in S4
-```{r}
-.ext_gene <- setClass(Class = 'ext_gene',
-                      contains = "gene",
-                      slots = c(
-                        gene = 'gene',
-                        feature_name = 'character',
-                        feature_value = 'character'
-                      ))
-
-ANK3 <- .ext_gene(name = 'ANK3', 
-                  coords = c(1.4e6, 1.412e6),
-                  feature_name = 'num_introns',
-                  feature_value = '5')
-str(ANK3)
-```
-
----
-name: S4_sealed
-## Sealed Class
-
-Preventing double class definition:
-```{r, error=T}
-setClass('Not_Sealed')
-setClass('Not_Sealed')
-```
-
-But to prevent this:
-```{r, error=T}
-setClass('Sealed', sealed = T)
-setClass('Sealed')
-```
----
-name: S4_slots
-## S4 class -- slots
-The variables within an S4 class are stored in the so-called **slots**. In the above example, we have 2 such slots: *name* and *coords*. Here is how to access them:
-```{r S4.slots, echo=T}
-my.gene@name # access using @ operator
-my.gene@coords[2] # access the 2nd element in slot coords
-```
-
----
-name: S4_methods
-## S4 class -- methods
-The power of classes lies in the fact that they define both the data types in particular slots and operations (functions) we can perform on them. Let us define a *generic print function* for an S4 class:
-```{r S4.methods, echo=T}
-setMethod('print', 'gene', 
-          function(x) {
-              cat('GENE: ', x@name, ' --> ')
-              cat('[', x@coords, ']')
-          })
-print(my.gene) # and we use the newly defined print
 ```
 
 ---

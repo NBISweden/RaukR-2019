@@ -1,8 +1,7 @@
 ---
 title: "Object-Oriented Programming in R"
-subtitle: "A Quick Intro to R Classes Hands-on"
+subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
 author: "Marcin Kierczak"
-date: "`r format(Sys.Date(),format='%d-%b-%Y')`"
 output:
   bookdown::html_document2:
     toc: true
@@ -10,20 +9,18 @@ output:
     toc_depth: 3
     number_sections: true
     theme: united
-    highlight: tango
+    highlight: textmate
     df_print: paged
     code_folding: hide
     self_contained: false
     keep_md: false
     encoding: "UTF-8"
-    css: ["assets/course.css"]
+    css: ["assets/lab.css"]
 ---
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE,results='hide'}
-# run setup code
-source("assets/setup.R")
-library(R6)
+```{r,echo=FALSE,child="assets/header-lab.Rmd"}
 ```
+
 
 ```{r,echo=FALSE,results='hide'}
 ## LIBRARIES AND VARIABLES
@@ -31,6 +28,8 @@ library(R6)
 
 #library(ggplot2)
 library(tidyverse)
+library(R6)
+library(bsplus)
 
 # variables needed in this document
 # raukr colours
@@ -38,10 +37,7 @@ library(tidyverse)
 #rv_col_light <- "#e7eef3"
 ```
 
-<img src="assets/logo.svg" alt="logo_raukr" class="trlogo">
-
----
-
+<!-- <img src="assets/logo.svg" alt="logo_raukr" class="trlogo">-->
 <p class="abstract">
 During this lab, we will go through the most important features of 3 out of the 4 existing OOP systems in R:
 
