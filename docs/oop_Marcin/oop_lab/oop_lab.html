@@ -318,38 +318,37 @@ div.tocify {
 
 <p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet"></p>
 <p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
-<!-- <img src="assets/logo.svg" alt="logo_raukr" class="trlogo">-->
-<p class="abstract">
+<div class="abstract">
 <p>During this lab, we will go through the most important features of 3 out of the 4 existing OOP systems in R:</p>
 <ul>
-<li>S3,</li>
-<li>S4,</li>
-<li>R6.</li>
+<li>S3</li>
+<li>S4</li>
+<li>R6</li>
 </ul>
-While S3 and S4 are base-R OOP systems, R6 is provided by the <code>R6</code> package. Both S3 and S4 follow the <em>functional OOP style</em> while <code>R6</code> is more similar to OOP models known from Java or C++. We will not cover the Reference Classes (a.k.a. RC) which is yet another base-R OOP model. Why? Well, it is really tricky to use and its documentation is not always complete…
-</p>
-<hr />
+<p>While S3 and S4 are base-R OOP systems, R6 is provided by the <code>R6</code> package. Both S3 and S4 follow the <em>functional OOP style</em> while <code>R6</code> is more similar to OOP models known from Java or C++. We will not cover the Reference Classes (a.k.a. RC) which is yet another base-R OOP model. Why? Well, it is really tricky to use and its documentation is not always complete…</p>
+</div>
+<p><br></p>
 <div id="s3-classes" class="section level1">
 <h1><span class="header-section-number">1</span> S3 Classes</h1>
 <ul>
-<li>what is the class of the object returned by the <code>lm()</code> function?</li>
+<li>What is the class of the object returned by the <code>lm()</code> function?</li>
 </ul>
 <pre class="r"><code>obj &lt;- lm(speed ~ dist, data = cars) 
 class(obj)</code></pre>
 <ul>
-<li>what basic data type is it build upon?</li>
+<li>What basic data type is it build upon?</li>
 </ul>
 <pre class="r"><code>typeof(obj)</code></pre>
 <ul>
-<li>what attributes does the object of the <code>lm</code> class have?</li>
+<li>What attributes does the object of the <code>lm</code> class have?</li>
 </ul>
 <pre class="r"><code>attributes(obj)</code></pre>
 <ul>
-<li>what is the structure of the <code>lm</code> object?</li>
+<li>What is the structure of the <code>lm</code> object?</li>
 </ul>
 <pre class="r"><code>str(obj)</code></pre>
 <ul>
-<li>does the <code>lm</code> class implement own <code>str()</code>?</li>
+<li>Does the <code>lm</code> class implement own <code>str()</code>?</li>
 </ul>
 <pre class="r"><code>str(obj)
 # compare to:
@@ -357,23 +356,23 @@ str(unclass(obj))
 
 # Answer: no</code></pre>
 <ul>
-<li>what is the class of a <code>tibble</code>? You have to loadt the <code>tidyverse</code> package and use on of the built-in datasets, e.g. <code>mtcars</code> as argument to <code>as_tibble()</code> to check the class.</li>
+<li>What is the class of a <code>tibble</code>? You have to loadt the <code>tidyverse</code> package and use on of the built-in datasets, e.g. <code>mtcars</code> as argument to <code>as_tibble()</code> to check the class.</li>
 </ul>
 <pre class="r"><code>require(tidyverse)
 obj &lt;- as_tibble(mtcars)
 class(obj)</code></pre>
 <ul>
-<li>what is the underlying data type?</li>
+<li>What is the underlying data type?</li>
 </ul>
 <pre class="r"><code>typeof(obj)</code></pre>
 <ul>
-<li>is the <code>str()</code> function used by tibbles the default <code>str()</code>?</li>
+<li>Is the <code>str()</code> function used by tibbles the default <code>str()</code>?</li>
 </ul>
 <pre class="r"><code>str(obj)
 str(unclass(obj))
 # Answer: no</code></pre>
 <ul>
-<li>implement your own class <code>meta_frame</code> that is a <code>data.frame</code> with additional attributes:
+<li>Implement your own class <code>meta_frame</code> that is a <code>data.frame</code> with additional attributes:
 <ul>
 <li>character attribute <code>descr</code> (a description),</li>
 <li><code>creation</code> attribute whic will hold the creation date.</li>
@@ -395,15 +394,16 @@ obj &lt;- meta_frame(mtcars, &#39;The mtcars dataset&#39;, &#39;10-06-2018&#39;)
 str(obj)
 obj$descr</code></pre>
 <ul>
-<li>design implementation of your own S3 class <code>protein</code> that stores the following information (you will implement the class in the next point, now just think and draw on paper if you wish):
+<li>Design implementation of your own S3 class <code>protein</code> that stores the following information (you will implement the class in the next point, now just think and draw on paper if you wish):
 <ul>
-<li>protein sequence,</li>
-<li>protein length,</li>
-<li>post-translational modification (PTM) site coords,</li>
-<li>PTM type that can be either of: “phosphorylation”, or “methylation”.</li>
+<li>protein sequence</li>
+<li>protein length</li>
+<li>post-translational modification (PTM) site coords</li>
+<li>PTM type that can be either of: “phosphorylation”, or “methylation”</li>
 </ul></li>
-<li>implement the <code>protein</code> class from the previous point using the <em>constructor, validator and helper</em> design pattern. Try to reduce the number of input arguments to: + + asequence and
+<li><p>Implement the <code>protein</code> class from the previous point using the <em>constructor, validator and helper</em> design pattern. Try to reduce the number of input arguments to:</p>
 <ul>
+<li>a sequence and</li>
 <li>a list of PTMs.</li>
 </ul></li>
 </ul>
@@ -449,8 +449,8 @@ validate_protein &lt;- function(x) {
   return(x)
 }</code></pre>
 <ul>
-<li><p>what would you improve in our implementation of <code>protein</code>. Is it really user friendly?</p></li>
-<li>write a generic <code>print</code> for the <code>protein</code> class. It should print e.g.:</li>
+<li>What would you improve in our implementation of <code>protein</code>. Is it really user friendly?</li>
+<li>Write a generic <code>print</code> for the <code>protein</code> class. It should print e.g.:</li>
 </ul>
 <pre><code>[1] &quot;============== Protein ==============&quot;
 [1] &quot;Sequence:ARNDKLLQWYTTARD&quot;
@@ -471,7 +471,7 @@ validate_protein &lt;- function(x) {
   print(paste0(&quot;Type: &quot;, ptm_type))
 }</code></pre>
 <ul>
-<li>test that the <code>protein</code> class works as it should and that generic <code>print</code> works as well.</li>
+<li>Test that the <code>protein</code> class works as it should and that generic <code>print</code> works as well.</li>
 </ul>
 <pre class="r"><code>my_prot &lt;- protein(&quot;ARNDKLLQWYTTARD&quot;, 
                    list(
@@ -481,7 +481,7 @@ validate_protein &lt;- function(x) {
                   )
 class(my_prot)
 typeof(my_prot)
-print(my_prot)</code></pre>
+str(my_prot)</code></pre>
 </div>
 <div id="s4-classes" class="section level1">
 <h1><span class="header-section-number">2</span> S4 Classes</h1>
@@ -520,7 +520,7 @@ protein &lt;- function(sequence, ptm) {
   return(pt)
 }</code></pre>
 <ul>
-<li>create an S4 object of the <code>protein</code> class and check whether it works.</li>
+<li>Create an S4 object of the <code>protein</code> class and check whether it works.</li>
 </ul>
 <pre class="r"><code>my_prot &lt;- protein(&quot;ARNDKLLQWYTTARD&quot;, 
                    list(
@@ -532,7 +532,7 @@ class(my_prot)
 typeof(my_prot)
 str(my_prot)</code></pre>
 <ul>
-<li>implement the generic <code>print</code> using S4 and check that it works.</li>
+<li>Implement the generic <code>print</code> using S4 and check that it works.</li>
 </ul>
 <pre class="r"><code>setMethod(&#39;print&#39;, &#39;protein&#39;, 
   function(x) {
@@ -550,11 +550,11 @@ str(my_prot)</code></pre>
 
 print(my_prot)</code></pre>
 <ul>
-<li>implement a new S4 class <code>ext_protein</code> that extends <code>protein</code> with 3 slots:
+<li>Implement a new S4 class <code>ext_protein</code> that extends <code>protein</code> with 3 slots:
 <ul>
-<li>feature type,</li>
-<li>feature position, and</li>
-<li>feature value.</li>
+<li>feature type</li>
+<li>feature position</li>
+<li>feature value</li>
 </ul></li>
 </ul>
 <pre class="r"><code>.ext_protein &lt;- setClass(&#39;ext_protein&#39;, 
@@ -577,10 +577,10 @@ str(my_ext_prot)</code></pre>
 <div id="r6-classes" class="section level1">
 <h1><span class="header-section-number">3</span> R6 Classes</h1>
 <ul>
-<li>install and load the <code>R6</code> package,</li>
-<li>implement the <code>protein</code> class using R6 model and check that it works as expected:</li>
+<li>Install and load the <code>R6</code> package,</li>
+<li>Implement the <code>protein</code> class using R6 model and check that it works as expected:</li>
 </ul>
-<pre class="r"><code>require(R6)
+<pre class="r"><code>library(R6)
 protein &lt;- R6Class(classname = &#39;protein&#39;,
                         public = list(
                           seq = NA,

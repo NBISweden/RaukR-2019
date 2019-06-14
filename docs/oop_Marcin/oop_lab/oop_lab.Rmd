@@ -29,48 +29,50 @@ output:
 #library(ggplot2)
 library(tidyverse)
 library(R6)
-library(bsplus)
-
-# variables needed in this document
-# raukr colours
-#rv_col_dark <- "#125687"
-#rv_col_light <- "#e7eef3"
 ```
 
-<!-- <img src="assets/logo.svg" alt="logo_raukr" class="trlogo">-->
-<p class="abstract">
+<div class="abstract">
 During this lab, we will go through the most important features of 3 out of the 4 existing OOP systems in R:
 
-* S3,
-* S4,
-* R6.
+* S3
+* S4
+* R6
 
 While S3 and S4 are base-R OOP systems, R6 is provided by the `R6` package. Both S3 and S4 follow the *functional OOP style* while `R6` is more similar to OOP models known from Java or C++. We will not cover the Reference Classes (a.k.a. RC) which is yet another base-R OOP model. Why? Well, it is really tricky to use and its documentation is not always complete... 
-</p>
+</div>
 
----
+<br>
 
 # S3 Classes
 
-* what is the class of the object returned by the `lm()` function?
-```{r results='hide'}
+* What is the class of the object returned by the `lm()` function?
+
+```{r,results='hide'}
 obj <- lm(speed ~ dist, data = cars) 
 class(obj)
 ```
-* what basic data type is it build upon?
-```{r results='hide'}
+
+* What basic data type is it build upon?
+
+```{r,results='hide'}
 typeof(obj)
 ```
-* what attributes does the object of the `lm` class have?
-```{r results='hide'}
+
+* What attributes does the object of the `lm` class have?
+
+```{r,results='hide'}
 attributes(obj)
 ```
-* what is the structure of the `lm` object?
-```{r results='hide'}
+
+* What is the structure of the `lm` object?
+
+```{r,results='hide'}
 str(obj)
 ```
-* does the `lm` class implement own `str()`?
-```{r results='hide'}
+
+* Does the `lm` class implement own `str()`?
+
+```{r,results='hide'}
 str(obj)
 # compare to:
 str(unclass(obj)) 
@@ -78,26 +80,29 @@ str(unclass(obj))
 # Answer: no
 ```
 
-* what is the class of a `tibble`? You have to loadt the `tidyverse` package and use on of the built-in datasets, e.g. `mtcars` as argument to `as_tibble()` to check the class.
-```{r results='hide'}
+* What is the class of a `tibble`? You have to loadt the `tidyverse` package and use on of the built-in datasets, e.g. `mtcars` as argument to `as_tibble()` to check the class.
+
+```{r,results='hide'}
 require(tidyverse)
 obj <- as_tibble(mtcars)
 class(obj)
 ```
 
-* what is the underlying data type?
-```{r results='hide'}
+* What is the underlying data type?
+
+```{r,results='hide'}
 typeof(obj)
 ```
 
-* is the `str()` function used by tibbles the default `str()`?
-```{r results='hide'}
+* Is the `str()` function used by tibbles the default `str()`?
+
+```{r,results='hide'}
 str(obj)
 str(unclass(obj))
 # Answer: no
 ```
 
-* implement your own class `meta_frame` that is a `data.frame` with additional attributes:
+* Implement your own class `meta_frame` that is a `data.frame` with additional attributes:
     + character attribute `descr` (a description),
     + `creation` attribute whic will hold the creation date.
 
@@ -105,7 +110,7 @@ Check that it works, i.e. that it has the expected attributes and that it is a s
 
 How do you access the `description` field?
 
-```{r results='hide'}
+```{r,results='hide'}
 meta_frame <- function(df, descr, creation) {
   structure(
     list(
@@ -121,13 +126,15 @@ str(obj)
 obj$descr
 ```
 
-* design implementation of your own S3 class `protein` that stores the following information (you will implement the class in the next point, now just think and draw on paper if you wish):
-    + protein sequence,
-    + protein length,
-    + post-translational modification (PTM) site coords,
-    + PTM type that can be either of: "phosphorylation", or "methylation".
+* Design implementation of your own S3 class `protein` that stores the following information (you will implement the class in the next point, now just think and draw on paper if you wish):  
+    + protein sequence
+    + protein length
+    + post-translational modification (PTM) site coords
+    + PTM type that can be either of: "phosphorylation", or "methylation"
     
-* implement the `protein` class from the previous point using the *constructor, validator and helper* design pattern. Try to reduce the number of input arguments to: +     + asequence and 
+* Implement the `protein` class from the previous point using the *constructor, validator and helper* design pattern. Try to reduce the number of input arguments to:
+
+    + a sequence and 
     + a list of PTMs.
     
 ```{r, results='hide'}
@@ -173,9 +180,10 @@ validate_protein <- function(x) {
   return(x)
 }
 ```
-* what would you improve in our implementation of `protein`. Is it really user friendly?
 
-* write a generic `print` for the `protein` class. It should print e.g.:
+* What would you improve in our implementation of `protein`. Is it really user friendly?
+* Write a generic `print` for the `protein` class. It should print e.g.:
+
 ```
 [1] "============== Protein =============="
 [1] "Sequence:ARNDKLLQWYTTARD"
@@ -200,7 +208,8 @@ print.protein <- function(x) {
 }
 ```
 
-* test that the `protein` class works as it should and that generic `print` works as well.
+* Test that the `protein` class works as it should and that generic `print` works as well.
+
 ```{r, results='hide'}
 my_prot <- protein("ARNDKLLQWYTTARD", 
                    list(
@@ -210,7 +219,7 @@ my_prot <- protein("ARNDKLLQWYTTARD",
                   )
 class(my_prot)
 typeof(my_prot)
-print(my_prot)
+str(my_prot)
 ```
 
 # S4 Classes
@@ -251,7 +260,8 @@ protein <- function(sequence, ptm) {
 }
 ```
 
-* create an S4 object of the `protein` class and check whether it works.
+* Create an S4 object of the `protein` class and check whether it works.
+
 ```{r, results='hide'}
 my_prot <- protein("ARNDKLLQWYTTARD", 
                    list(
@@ -264,7 +274,8 @@ typeof(my_prot)
 str(my_prot)
 ```
 
-* implement the generic `print` using S4 and check that it works.
+* Implement the generic `print` using S4 and check that it works.
+
 ```{r, results='hide'}
 setMethod('print', 'protein', 
   function(x) {
@@ -283,10 +294,10 @@ setMethod('print', 'protein',
 print(my_prot)
 ```
 
-* implement a new S4 class `ext_protein` that extends `protein` with 3 slots: 
-    + feature type,
-    + feature position, and
-    + feature value.
+* Implement a new S4 class `ext_protein` that extends `protein` with 3 slots:   
+    + feature type
+    + feature position
+    + feature value
     
 ```{r, results='hide'}
 .ext_protein <- setClass('ext_protein', 
@@ -309,10 +320,11 @@ str(my_ext_prot)
 
 # R6 Classes
 
-* install and load the `R6` package,
-* implement the `protein` class using R6 model and check that it works as expected:
+* Install and load the `R6` package,
+* Implement the `protein` class using R6 model and check that it works as expected:
+
 ```{r, results='hide'}
-require(R6)
+library(R6)
 protein <- R6Class(classname = 'protein',
                         public = list(
                           seq = NA,
