@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Overfitting | Lab: Basic Statistics | Models</title>
+  <meta name="description" content="5 Overfitting | Lab: Basic Statistics | Models" />
+  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Overfitting | Lab: Basic Statistics | Models" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Overfitting | Lab: Basic Statistics | Models" />
+  
+  
+  
+
+<meta name="author" content="Bengt Sennblad" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="parameter-estimation-of-statistical-models.html">
+<link rel="next" href="regularization.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="libs/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="tasks.html"><a href="tasks.html"><i class="fa fa-check"></i><b>1</b> Tasks</a><ul>
+<li class="chapter" data-level="1.1" data-path="tasks.html"><a href="tasks.html#task-simulation"><i class="fa fa-check"></i><b>1.1</b> Task | <code>Simulation</code></a><ul>
+<li class="chapter" data-level="1.1.1" data-path="tasks.html"><a href="tasks.html#deterministic-model"><i class="fa fa-check"></i><b>1.1.1</b> Deterministic model</a></li>
+<li class="chapter" data-level="1.1.2" data-path="tasks.html"><a href="tasks.html#statistical-model"><i class="fa fa-check"></i><b>1.1.2</b> Statistical model</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="tasks.html"><a href="tasks.html#task-probability-of-observed-data"><i class="fa fa-check"></i><b>1.2</b> Task | <code>Probability of observed data</code></a><ul>
+<li class="chapter" data-level="1.2.1" data-path="tasks.html"><a href="tasks.html#simulation-solution"><i class="fa fa-check"></i><b>1.2.1</b> Simulation solution</a></li>
+<li class="chapter" data-level="1.2.2" data-path="tasks.html"><a href="tasks.html#analytical-solution"><i class="fa fa-check"></i><b>1.2.2</b> Analytical solution</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="tasks.html"><a href="tasks.html#task-statistical-tests"><i class="fa fa-check"></i><b>1.3</b> Task | <code>Statistical tests</code></a><ul>
+<li class="chapter" data-level="1.3.1" data-path="tasks.html"><a href="tasks.html#students-t-test"><i class="fa fa-check"></i><b>1.3.1</b> Student’s t-test</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>2</b> Final words</a><ul>
+<li class="chapter" data-level="2.1" data-path="final-words.html"><a href="final-words.html#types-of-models"><i class="fa fa-check"></i><b>2.1</b> Types of models</a></li>
+<li class="chapter" data-level="2.2" data-path="final-words.html"><a href="final-words.html#types-of-statistical-tests"><i class="fa fa-check"></i><b>2.2</b> Types of statistical tests</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="session-info.html"><a href="session-info.html"><i class="fa fa-check"></i><b>3</b> Session info</a></li>
+<li class="chapter" data-level="4" data-path="parameter-estimation-of-statistical-models.html"><a href="parameter-estimation-of-statistical-models.html"><i class="fa fa-check"></i><b>4</b> Parameter estimation of statistical models</a><ul>
+<li class="chapter" data-level="4.1" data-path="parameter-estimation-of-statistical-models.html"><a href="parameter-estimation-of-statistical-models.html#bayesian-approach"><i class="fa fa-check"></i><b>4.1</b> Bayesian approach</a></li>
+<li class="chapter" data-level="4.2" data-path="parameter-estimation-of-statistical-models.html"><a href="parameter-estimation-of-statistical-models.html#likelihood"><i class="fa fa-check"></i><b>4.2</b> Likelihood – The frequentist approach</a></li>
+<li class="chapter" data-level="4.3" data-path="parameter-estimation-of-statistical-models.html"><a href="parameter-estimation-of-statistical-models.html#bayesians-vs-frequentists"><i class="fa fa-check"></i><b>4.3</b> Bayesians vs frequentists</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="overfitting.html"><a href="overfitting.html"><i class="fa fa-check"></i><b>5</b> Overfitting</a><ul>
+<li class="chapter" data-level="5.1" data-path="overfitting.html"><a href="overfitting.html#overfitting-example-data"><i class="fa fa-check"></i><b>5.1</b> Overfitting | <code>Example data</code></a><ul>
+<li class="chapter" data-level="5.1.1" data-path="overfitting.html"><a href="overfitting.html#task-simulation-of-example-data"><i class="fa fa-check"></i><b>5.1.1</b> Task | <code>simulation of example data</code></a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="overfitting.html"><a href="overfitting.html#overfitting-model-comparison"><i class="fa fa-check"></i><b>5.2</b> Overfitting | <code>Model comparison</code></a><ul>
+<li class="chapter" data-level="5.2.1" data-path="overfitting.html"><a href="overfitting.html#task-plot-two-likelihoods"><i class="fa fa-check"></i><b>5.2.1</b> Task | <code>plot two likelihoods</code></a></li>
+<li class="chapter" data-level="5.2.2" data-path="overfitting.html"><a href="overfitting.html#task-plot-all-likelihoods"><i class="fa fa-check"></i><b>5.2.2</b> Task | <code>plot all likelihoods</code></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="regularization.html"><a href="regularization.html"><i class="fa fa-check"></i><b>6</b> Regularization</a><ul>
+<li class="chapter" data-level="6.1" data-path="regularization.html"><a href="regularization.html#regularization-bayesian-interpretation"><i class="fa fa-check"></i><b>6.1</b> Regularization | <code>Bayesian interpretation</code></a></li>
+<li class="chapter" data-level="6.2" data-path="regularization.html"><a href="regularization.html#regularization-aic-and-model-testing"><i class="fa fa-check"></i><b>6.2</b> Regularization | <code>AIC and model testing</code></a><ul>
+<li class="chapter" data-level="6.2.1" data-path="regularization.html"><a href="regularization.html#task-aic-analysis"><i class="fa fa-check"></i><b>6.2.1</b> Task | <code>AIC analysis</code></a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="regularization.html"><a href="regularization.html#regularization-lasso-and-feature-selection"><i class="fa fa-check"></i><b>6.3</b> Regularization | <code>LASSO and Feature selection</code></a><ul>
+<li class="chapter" data-level="6.3.1" data-path="regularization.html"><a href="regularization.html#task-lasso-using-the-glmnet-r-package"><i class="fa fa-check"></i><b>6.3.1</b> Task | <code>Lasso using the glmnet R-package</code></a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="regularization.html"><a href="regularization.html#cross-validation"><i class="fa fa-check"></i><b>6.4</b> Cross-validation</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="regularization.html"><a href="regularization.html#cross-validation-how-to-test-for-overfitting"><i class="fa fa-check"></i><b>6.4.1</b> Cross-validation | <code>How to test for overfitting</code></a></li>
+<li class="chapter" data-level="6.4.2" data-path="regularization.html"><a href="regularization.html#task-determine-optimal-lassolambdausing-cross-validation"><i class="fa fa-check"></i><b>6.4.2</b> Task | <code>Determine optimal LASSO</code><span class="math inline">\(\lambda\)</span><code>using cross-validation</code></a></li>
+<li class="chapter" data-level="6.4.3" data-path="regularization.html"><a href="regularization.html#task-final-lasso-effect-sizes"><i class="fa fa-check"></i><b>6.4.3</b> Task| <code>Final LASSO effect sizes</code></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="session-info-1.html"><a href="session-info-1.html"><i class="fa fa-check"></i><b>7</b> Session info</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Lab: Basic Statistics | <code>Models</code></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="overfitting" class="section level1">
+<h1><span class="header-section-number">5</span> Overfitting</h1>
+<p>We will now look at a general problem in statistical modeling that can be visualized quite well with Likelihoods. We will later look at some solutions to this problem.</p>
+<div id="overfitting-example-data" class="section level2">
+<h2><span class="header-section-number">5.1</span> Overfitting | <code>Example data</code></h2>
+<p>First, you need some test data to play around with. For simplicity and convenience, you will simulate a toy data from a linear model and use this in the exercises. The advantage for us using simulated data is that we know the ‘truth’, i.e., how the data was simulated and we therefore have <em>oracle knowledge</em> about the true parameter values, e.g., for <span class="math inline">\(\beta\)</span>.</p>
+<div id="task-simulation-of-example-data" class="section level3">
+<h3><span class="header-section-number">5.1.1</span> Task | <code>simulation of example data</code></h3>
+<ul>
+<li>The data should comprise 100 samples.</li>
+<li>First generate 10 variables <span class="math inline">\((x_1,x_2,\ldots, x_{0})\)</span> from a uniform distribution (use the function <code>runif</code>) and store them in a Matrix <span class="math inline">\(X\)</span>.</li>
+<li>Use an intercept <span class="math inline">\(\beta_0=3\)</span></li>
+<li>Generate effect sizes <span class="math inline">\(\beta_1, \beta_2, \beta_3\)</span> from a Uniform distribution in the interval <span class="math inline">\((0.5, 1.0)\)</span> for the 3 first <span class="math inline">\(X\)</span> variable (use the function <code>runif</code>); record the ‘true’ effect sizes for reference.</li>
+<li>Finally generate outcome variable <span class="math inline">\(Y\)</span> using a linear model <span class="math inline">\(Y = \beta_0 + \beta_1 x_i + \beta_2 x_2 + \beta_3 x_3 + \epsilon\)</span>, with <span class="math inline">\(\epsilon\sim N(0,\sigma^2=1)\)</span> (i.e., the residuals are drawn from a Normal distribution with mean=0 and standard deviation=1, <em>Tip:</em> use the R function <code>rnorm</code>).</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># To obtain exactly the same result as in the demo, set seed to 85</span>
+<span class="kw">set.seed</span>(<span class="dv">85</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">N=<span class="dv">100</span> <span class="co"># number of samples</span>
+P=<span class="dv">10</span> <span class="co"># number of variables</span>
+
+<span class="co"># Draw variables, x_{i,1},...,x_{i,P} for all N individuals, from a uniform distribution in interval (0,1) (this is the default interval for runif)</span>
+X=<span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">runif</span>(N<span class="op">*</span>(P<span class="op">+</span><span class="dv">1</span>),<span class="dt">min=</span><span class="dv">0</span>, <span class="dt">max=</span><span class="dv">2</span>)), <span class="dt">nrow=</span>N, <span class="dt">ncol=</span>P)
+
+<span class="co"># generate a y variable from a multivarite lm of 3 first X variables only</span>
+<span class="co"># intercept</span>
+b0=<span class="dv">3</span>
+<span class="co"># effect sizes for first three variables</span>
+b=<span class="kw">c</span>(<span class="kw">runif</span>(<span class="dv">3</span>, <span class="dt">min=</span><span class="fl">0.5</span>, <span class="dt">max=</span><span class="fl">1.0</span>))
+
+<span class="co"># generate y</span>
+Y =<span class="st"> </span>b0 <span class="op">+</span><span class="st"> </span>X[,<span class="dv">1</span>] <span class="op">*</span><span class="st"> </span>b[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>X[,<span class="dv">2</span>] <span class="op">*</span><span class="st"> </span>b[<span class="dv">2</span>] <span class="op">+</span><span class="st"> </span>X[,<span class="dv">3</span>] <span class="op">*</span><span class="st"> </span>b[<span class="dv">3</span>] <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N)</code></pre>
+</div>
+</div>
+<div id="overfitting-model-comparison" class="section level2">
+<h2><span class="header-section-number">5.2</span> Overfitting | <code>Model comparison</code></h2>
+<p>Now consider the following two linear models for our data</p>
+<p><span class="math display">\[\begin{eqnarray}
+y &amp; \sim &amp; \beta_0 + \beta_1 x_1 &amp; (1) \\
+y &amp; \sim &amp;  \beta_0 + \beta_1 x_1 + \beta_2 x_2 &amp; (2)
+\end{eqnarray}\]</span></p>
+<p>What are the max Likelihood estimates of the two models? (we can use the R function <code>logLik</code> in the <code>stats</code> package)</p>
+<div id="task-plot-two-likelihoods" class="section level3">
+<h3><span class="header-section-number">5.2.1</span> Task | <code>plot two likelihoods</code></h3>
+<ul>
+<li>Create linear models (use <code>lm</code>) for the two models, and</li>
+<li>store the likelihood (use <code>logLik</code>) in a vector</li>
+<li>plot the likelihoods</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(stats)
+ll=<span class="st"> </span><span class="kw">vector</span>()
+<span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">2</span>)){
+  Xi=X[,<span class="kw">seq</span>(<span class="dv">1</span>,i)]
+  ll[i] &lt;-<span class="st"> </span><span class="kw">logLik</span>(<span class="kw">lm</span>(Y<span class="op">~</span>Xi))
+}
+<span class="co"># plot likelihoods for models with 1 and 2 vaiables</span>
+<span class="kw">plot</span>(ll, <span class="dt">ylab=</span><span class="st">&quot;log L&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;model #&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;b&quot;</span>, <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">1</span>,P), <span class="dt">ylim=</span><span class="kw">c</span>(<span class="kw">floor</span>(<span class="kw">min</span>(ll)),<span class="kw">ceiling</span>(<span class="kw">max</span>(ll)))) 
+<span class="co"># xlim and ylim not really necessary here, but I can reuse the plot statement below, so the plots look similar</span></code></pre>
+<details>
+<p><summary> <em>Show result</em></summary>
+<img src="_main_files/figure-html/unnamed-chunk-19-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<hr />
+</details>
+<p>… 2 variables are clearly better than 1 variable – What if we add more variables?</p>
+</div>
+<div id="task-plot-all-likelihoods" class="section level3">
+<h3><span class="header-section-number">5.2.2</span> Task | <code>plot all likelihoods</code></h3>
+<ul>
+<li>Now repeat this for the sequence of models obtained by creating the next model by simply adding the next <span class="math inline">\(X\)</span> variable in order.</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># compute loglikelihood (ll) for all models including variables</span>
+<span class="co"># 1-i, for i &lt;= P; store results in vector ll</span>
+ll=<span class="st"> </span><span class="kw">vector</span>()
+<span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq</span>(<span class="dv">1</span>,P)){
+  Xi=X[,<span class="kw">seq</span>(<span class="dv">1</span>,i)]
+  ll[i] &lt;-<span class="st"> </span><span class="kw">logLik</span>(<span class="kw">lm</span>(Y<span class="op">~</span>Xi))
+}
+
+<span class="co"># plot ll for all models</span>
+<span class="kw">plot</span>(ll, <span class="dt">ylab=</span><span class="st">&quot;log L&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;model #&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;b&quot;</span>, <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">1</span>,P), <span class="dt">ylim=</span><span class="kw">c</span>(<span class="kw">floor</span>(<span class="kw">min</span>(ll)),<span class="kw">ceiling</span>(<span class="kw">max</span>(ll)))) </code></pre>
+<details>
+<p><summary> <em>Show result</em></summary>
+<img src="_main_files/figure-html/unnamed-chunk-21-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<hr />
+</details>
+<div id="think-about-2" class="section level4">
+<h4><span class="header-section-number">5.2.2.1</span> Think about:</h4>
+<ul>
+<li><p>How does the Likelihood behave as more variables are added?</p></li>
+<li><p>Which is the maximum likelihood model? Is this correct given our <em>oracle knowledge</em>?</p></li>
+<li><p>What could be the problem with this behaviour? How would we like it to behave?</p></li>
+<li><p>How can we obtain the desired behaviour?</p></li>
+</ul>
+<details>
+<summary> Some possible answers </summary>
+<h4>
+Some possible answers
+</h4>
+<p><em>Nested models</em></p>
+<ul>
+<li><p>Model (1) can be described as a special case of Model (2) with the constraints on <span class="math inline">\(\beta_2=0\)</span></p></li>
+<li><p>Therefore Model (2) will always have equal or better ML than Model (1)</p></li>
+<li><p>We say that model (1) is nested in Model (2) (which is nested in Model (3) etc.)</p></li>
+</ul>
+<p><em>Overfitting</em></p>
+<ul>
+<li>Using our <em>oracle knowledge</em>, we know that the simulated data was generated from the 3 first variables
+<ul>
+<li>thus, the subsequent variables increase ML by modeling noise in data</li>
+</ul></li>
+<li><p>This is difficult to detect by just looking at the likelihoods</p></li>
+<li>Solutions
+<ul>
+<li>Seek the simplest model that is “good enough” -&gt; Regularization/Bayesian</li>
+</ul></li>
+</ul>
+<hr />
+</details>
+<details>
+<summary> Extra Reading </summary>
+<h2>
+Model comparison | <code>Likelihood ratio test</code>
+</h1>
+<p><em>(Read <strong>Extra reading</strong> about likelihood ratios under <a href="parameter-estimation-of-statistical-models.html#likelihood">4.2</a> first)</em>
+For nested models <span class="math inline">\(-2 \max LRT\)</span> is <span class="math inline">\(\chi^2(d)\)</span>-distributed, with <span class="math inline">\(d=\)</span> the difference in free params in the two models.</p>
+<table class="table table-striped" style="font-size: 14px; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Compared models
+</th>
+<th style="text-align:right;">
+logL 1st model
+</th>
+<th style="text-align:right;">
+logL 2nd model
+</th>
+<th style="text-align:left;">
+logLR
+</th>
+<th style="text-align:left;">
+P-value
+</th>
+<th style="text-align:left;">
+Sign at 0.05
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1 vs 2 variables
+</td>
+<td style="text-align:right;">
+-155.80
+</td>
+<td style="text-align:right;">
+-146.90
+</td>
+<td style="text-align:left;">
+-8.9
+</td>
+<td style="text-align:left;">
+2.45e-05
+</td>
+<td style="text-align:left;">
+yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2 vs 3 variables
+</td>
+<td style="text-align:right;">
+-146.90
+</td>
+<td style="text-align:right;">
+-136.73
+</td>
+<td style="text-align:left;">
+-10.17
+</td>
+<td style="text-align:left;">
+6.48e-06
+</td>
+<td style="text-align:left;">
+yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3 vs 4 variables
+</td>
+<td style="text-align:right;">
+-136.73
+</td>
+<td style="text-align:right;">
+-136.69
+</td>
+<td style="text-align:left;">
+-0.04215
+</td>
+<td style="text-align:left;">
+0.772
+</td>
+<td style="text-align:left;">
+no
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4 vs 5 variables
+</td>
+<td style="text-align:right;">
+-136.69
+</td>
+<td style="text-align:right;">
+-136.23
+</td>
+<td style="text-align:left;">
+-0.4601
+</td>
+<td style="text-align:left;">
+0.337
+</td>
+<td style="text-align:left;">
+no
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5 vs 6 variables
+</td>
+<td style="text-align:right;">
+-136.23
+</td>
+<td style="text-align:right;">
+-135.83
+</td>
+<td style="text-align:left;">
+-0.4016
+</td>
+<td style="text-align:left;">
+0.37
+</td>
+<td style="text-align:left;">
+no
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6 vs 7 variables
+</td>
+<td style="text-align:right;">
+-135.83
+</td>
+<td style="text-align:right;">
+-135.35
+</td>
+<td style="text-align:left;">
+-0.4803
+</td>
+<td style="text-align:left;">
+0.327
+</td>
+<td style="text-align:left;">
+no
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7 vs 8 variables
+</td>
+<td style="text-align:right;">
+-135.35
+</td>
+<td style="text-align:right;">
+-135.31
+</td>
+<td style="text-align:left;">
+-0.04266
+</td>
+<td style="text-align:left;">
+0.77
+</td>
+<td style="text-align:left;">
+no
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8 vs 9 variables
+</td>
+<td style="text-align:right;">
+-135.31
+</td>
+<td style="text-align:right;">
+-135.30
+</td>
+<td style="text-align:left;">
+-0.0002981
+</td>
+<td style="text-align:left;">
+0.981
+</td>
+<td style="text-align:left;">
+no
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9 vs 10 variables
+</td>
+<td style="text-align:right;">
+-135.30
+</td>
+<td style="text-align:right;">
+-134.55
+</td>
+<td style="text-align:left;">
+-0.7536
+</td>
+<td style="text-align:left;">
+0.22
+</td>
+<td style="text-align:left;">
+no
+</td>
+</tr>
+</tbody>
+</table>
+<p>In our simple test case, the LRT also succeed in picking the correct model. It should be noted that certain issues, such as <em>lnkage disequilibriium</em>, may cause problems for LRT (<em>the example is not optimized to show this</em>).</p>
+<hr />
+</details>
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="parameter-estimation-of-statistical-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="regularization.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
