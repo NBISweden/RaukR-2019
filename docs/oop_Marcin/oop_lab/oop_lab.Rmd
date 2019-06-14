@@ -80,10 +80,10 @@ str(unclass(obj))
 # Answer: no
 ```
 
-* What is the class of a `tibble`? You have to loadt the `tidyverse` package and use on of the built-in datasets, e.g. `mtcars` as argument to `as_tibble()` to check the class.
+* What is the class of a `tibble`? You have to load the `tidyverse` package and use one of the built-in datasets. e.g. `mtcars` as argument to `as_tibble()` to check the class.
 
 ```{r,results='hide'}
-require(tidyverse)
+library(tidyverse)
 obj <- as_tibble(mtcars)
 class(obj)
 ```
@@ -104,7 +104,7 @@ str(unclass(obj))
 
 * Implement your own class `meta_frame` that is a `data.frame` with additional attributes:
     + character attribute `descr` (a description),
-    + `creation` attribute whic will hold the creation date.
+    + `creation` attribute which will hold the creation date.
 
 Check that it works, i.e. that it has the expected attributes and that it is a separate class.
 
@@ -144,6 +144,7 @@ new_protein <- function(sequence, length, ptm_site, ptm_type) {
   stopifnot(is.integer(length))
   stopifnot(is.numeric(ptm_site))
   stopifnot(is.character(ptm_type))
+  
   structure(
     sequence,
     length = length,
@@ -168,6 +169,7 @@ validate_protein <- function(x) {
   len <- attr(x, 'length')
   ptm_site <- attr(x, 'ptm_site')
   ptm_type <- attr(x, 'ptm_type')
+  
   if (is.na(sequence)) {
     stop('Sequence is missing!', call. = FALSE)
   }
@@ -177,11 +179,12 @@ validate_protein <- function(x) {
   if ((sum(!ptm_type %in% c('phosphorylation', 'methylation'))) > 0) {
     stop('Invalid PTM types detected!', call. = FALSE)
   }
+  
   return(x)
 }
 ```
 
-* What would you improve in our implementation of `protein`. Is it really user friendly?
+* What would you improve our implementation of `protein`. Is it really user-friendly?
 * Write a generic `print` for the `protein` class. It should print e.g.:
 
 ```
@@ -241,8 +244,10 @@ str(my_prot)
 protein <- function(sequence, ptm) {
   sequence <- sequence
   len <- nchar(sequence)
+  
   ptm_site <- ptm[[1]]
   ptm_type <- ptm[[2]]
+  
   if (is.na(sequence)) {
     stop('Sequence is missing!', call. = FALSE)
   }
@@ -252,10 +257,12 @@ protein <- function(sequence, ptm) {
   if ((sum(!ptm_type %in% c('phosphorylation', 'methylation'))) > 0) {
     stop('Invalid PTM types detected!', call. = FALSE)
   }
+  
   pt <- .protein(sequence = sequence, 
            length = len, 
            ptm_site = ptm_site, 
            ptm_type = ptm_type)
+  
   return(pt)
 }
 ```
