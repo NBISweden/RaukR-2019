@@ -356,9 +356,9 @@ str(unclass(obj))
 
 # Answer: no</code></pre>
 <ul>
-<li>What is the class of a <code>tibble</code>? You have to loadt the <code>tidyverse</code> package and use on of the built-in datasets, e.g. <code>mtcars</code> as argument to <code>as_tibble()</code> to check the class.</li>
+<li>What is the class of a <code>tibble</code>? You have to load the <code>tidyverse</code> package and use one of the built-in datasets. e.g. <code>mtcars</code> as argument to <code>as_tibble()</code> to check the class.</li>
 </ul>
-<pre class="r"><code>require(tidyverse)
+<pre class="r"><code>library(tidyverse)
 obj &lt;- as_tibble(mtcars)
 class(obj)</code></pre>
 <ul>
@@ -375,7 +375,7 @@ str(unclass(obj))
 <li>Implement your own class <code>meta_frame</code> that is a <code>data.frame</code> with additional attributes:
 <ul>
 <li>character attribute <code>descr</code> (a description),</li>
-<li><code>creation</code> attribute whic will hold the creation date.</li>
+<li><code>creation</code> attribute which will hold the creation date.</li>
 </ul></li>
 </ul>
 <p>Check that it works, i.e. that it has the expected attributes and that it is a separate class.</p>
@@ -413,6 +413,7 @@ new_protein &lt;- function(sequence, length, ptm_site, ptm_type) {
   stopifnot(is.integer(length))
   stopifnot(is.numeric(ptm_site))
   stopifnot(is.character(ptm_type))
+  
   structure(
     sequence,
     length = length,
@@ -437,6 +438,7 @@ validate_protein &lt;- function(x) {
   len &lt;- attr(x, &#39;length&#39;)
   ptm_site &lt;- attr(x, &#39;ptm_site&#39;)
   ptm_type &lt;- attr(x, &#39;ptm_type&#39;)
+  
   if (is.na(sequence)) {
     stop(&#39;Sequence is missing!&#39;, call. = FALSE)
   }
@@ -446,10 +448,11 @@ validate_protein &lt;- function(x) {
   if ((sum(!ptm_type %in% c(&#39;phosphorylation&#39;, &#39;methylation&#39;))) &gt; 0) {
     stop(&#39;Invalid PTM types detected!&#39;, call. = FALSE)
   }
+  
   return(x)
 }</code></pre>
 <ul>
-<li>What would you improve in our implementation of <code>protein</code>. Is it really user friendly?</li>
+<li>What would you improve our implementation of <code>protein</code>. Is it really user-friendly?</li>
 <li>Write a generic <code>print</code> for the <code>protein</code> class. It should print e.g.:</li>
 </ul>
 <pre><code>[1] &quot;============== Protein ==============&quot;
@@ -502,8 +505,10 @@ str(my_prot)</code></pre>
 protein &lt;- function(sequence, ptm) {
   sequence &lt;- sequence
   len &lt;- nchar(sequence)
+  
   ptm_site &lt;- ptm[[1]]
   ptm_type &lt;- ptm[[2]]
+  
   if (is.na(sequence)) {
     stop(&#39;Sequence is missing!&#39;, call. = FALSE)
   }
@@ -513,10 +518,12 @@ protein &lt;- function(sequence, ptm) {
   if ((sum(!ptm_type %in% c(&#39;phosphorylation&#39;, &#39;methylation&#39;))) &gt; 0) {
     stop(&#39;Invalid PTM types detected!&#39;, call. = FALSE)
   }
+  
   pt &lt;- .protein(sequence = sequence, 
            length = len, 
            ptm_site = ptm_site, 
            ptm_type = ptm_type)
+  
   return(pt)
 }</code></pre>
 <ul>
