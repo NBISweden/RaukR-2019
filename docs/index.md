@@ -1,6 +1,6 @@
 # RaukR 2019 • Course content
 
-The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISweden/RaukR-2019). Course materials are listed below.
+Course materials are listed below. (The GitHub repo for RaukR 2019 can be accessed by teachers [here](https://github.com/NBISweden/RaukR-2019).)
 
 ---
 ### Week 1
@@ -40,13 +40,21 @@ The GitHub repo for RaukR 2019 can be accessed [here](https://github.com/NBISwed
     + [Data](ggmap_Sebastian/lab/data/pubs.rda)
 
 #### 14-Jun-2019 (Fri)
-
 * **shiny** (*Author:* Roy Francis, *Reviewer:* Marcin Kierczak)
     + [Presentation](shiny/presentation/shiny_presentation.html)
     + [Lab](shiny/lab/shiny_lab.html)
-
+* **object-oriented programming** (*Author:* Marcin Kierczak)
+    + [Presentation](oop_Marcin/oop_presentation/oop_presentation.html)
+    + [Lab](oop_Marcin/oop_lab/oop_lab.html)
+    
 ### Week 2
 #### 17-Jun-2019 (Mon)
+* **Basic statistics** -- Models
+    + [Presentation](basic_stats_Bengt/presentation/presentation1.html)
+    + [Lab](basic_stats_Bengt/lab/lab1.html)
+* **Basic statistics** -- Model estimation
+    + [Tutorial](basic_stats_Bengt/lab/lab2.html)
+
 #### 18-Jun-2019 (Tue)
 #### 19-Jun-2019 (Wed)
 #### 20-Jun-2019 (Thu)
