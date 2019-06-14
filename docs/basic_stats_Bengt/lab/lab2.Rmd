@@ -29,7 +29,7 @@ output:
 <details>
 <summary> Lecture notes </summary>
 
-Consider a generative model, with parameters $\theta$, for how some data $D$. We would like to test if $\theta$ are 
+Consider a generative model, with parameters $\theta$, for how some data $D$ are generated. We would like to test if $\theta$ are 
 good parameters or if some other parameters are better. Given the model, we can compute $$Pr[D| \theta],$$ i.e., the probability that the model with parameters
 $\theta$ generates $D$. 
 
@@ -114,7 +114,7 @@ What happens in Bayes rule is that we first, in the numerator, perform $Pr[B|A]*
 <details>
 <summary> Lecture notes </summary>
 
-Likelihood (Introduced by Fisher, 1925, formalized by Edwards, 1972) builds on the intuition that if $\theta$ is close to the 'truth', then $Pr[Y| X, \theta]$ will be higher than for wrong $\theta$. We should therefore select the $\theta$ that maximizes $Pr[Y| X, \theta]$; this is called maximum likelihood estimation (MLE) of $\theta$.
+Likelihood (Introduced by Fisher, 1925, formalized by Edwards, 1972) builds on the intuition that if $\theta$ is close to the 'truth', then $Pr[D| \theta]$ will be higher than for wrong $\theta$. We should therefore select the $\theta$ that maximizes $Pr[D| \theta]$; this is called maximum likelihood estimation (MLE) of $\theta$.
 
 Since statistical model contain an element of randomness, the reasoning above might not always be correct for any single obeservation. However, if we sum over a large number of observations it will be true on average. Hence the need for datasets that are large enough.
 
@@ -500,9 +500,9 @@ Coming from a _information theory_ base, Hirotugu Akaike (1974) came up with a v
 
 The Akaike information criterion (AIC), for a model $m$ with variables $X$, is defined as
 
-  $$AIC_m = 2\# X - 2\log \max L[{\beta}|X,Y]$$
+  $$AIC_m =  2\# X - \max_\beta 2\log L[{\beta}|X,Y]$$
 
-We see that $AIC_m = -2 \left(\log \max L[{\beta}|X,Y] - \#X\right)$, i.e., $-2$ times the the simple $\log rL$, we just looked at in our first regularization example. 
+We see that $AIC_m = -2 \left(\max_\beta \log L[{\beta}|X,Y] - \#X\right)$, i.e., $-2$ times the the (maximized) simple $\log rL$, we just looked at in our first regularization example. 
 
 In the information theory context, the difference in $AIC$ between two models is claimed to estimate the information lost by selecting the worse model.
 
@@ -531,7 +531,7 @@ where $AIC_{min}$ is the minimum AIC among a set of compared models
 
 ### Task | `AIC analysis`
 
-* A typical AIC analyss strategy is to select the model, $m$ with $AIC_m=AIC_{min}$ and then evaluate how much better it is than the other candidate models, e.g., using the $relL$.
+* A typical AIC analysis strategy is to select the model, $m$ with $AIC_m=AIC_{min}$ and then evaluate how much better it is than the other candidate models, e.g., using the $relL$.
 
 * Apply this AIC strategy applied to our example data using the R funcion `AIC`
 * create a table with the AIC and the $relL$ for the set of models comprising $\{X_1, .\ldots, X_i\} \textrm{ for } i \in [1, \ldots, 10]$; indicate also if a model is the minimum AIC model.
@@ -636,7 +636,7 @@ plot(aic$rl, xlim=c(1,P), ylab="relL", xlab="model #", type = "b")
 ***
 </details>
 
-* Now, I this case we happened to know that the first 3 variables was the right one, so the order we choose to include them was correct. However, in the general case, we do not know this. How solve this?
+* Now, in this case we happened to know that the first 3 variables were the right ones, so the order we choose to include them was correct. However, in the general case, we do not know this. How solve this?
   - Best subset method; involves testing all possible subsets, which is computationally time-consuming and sometimes unfeasible
   - Lasso
 
@@ -690,7 +690,7 @@ We note, BTW, that you might already have encountered an $\ell_2-norm$: since $R
 ***
 </details>
 
-The optimal values of $\beta$ for different values of $\lambda$ are then estimated, using some algorithm (lars or coordinate descent). A convenient way to think about this is that at very high $\lambda$ values, all $\beta_s$ are 0; by sequentially lowering $\lambda$ more and more $\beta_i$ become non-zero, the most important variables $i$ are included first.
+The optimal values of $\beta$ for different values of $\lambda$ are then estimated, using some algorithm (lars or coordinate descent). A convenient way to think about this is that at very high $\lambda$ values, all $\beta_s$ are 0. Then by sequentially lowering $\lambda$ more and more $\beta_i$ become non-zero; the most important variables $X_i$ are included first.
 
 <details>
 <summary> Extra Reading </summary>

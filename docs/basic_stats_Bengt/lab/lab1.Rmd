@@ -51,7 +51,7 @@ $Y = \beta_0 + \beta_1* X$ is a *generating* model -- it describes how to genera
 * Generate 100 samples of $x,y$ by
   - generate genotypes $x$ for each sample from a uniform distribution on integers $0,1,2$ (tip: use `runif`)
   - set $\beta_0=0.3$ and $\beta_1=0.2$
-  - generate $y$ for each sample of using the  model $y = \beta_0 + \beta_1* x$ 
+  - generate a phenotype $y$ for each sample of using the  model $y = \beta_0 + \beta_1* x$ 
   - plot $y$ against $x$.
 
 #### Think about
@@ -100,9 +100,9 @@ Go on and read more below under **Statistical model**
 
 * $Y = \beta_0 + \beta_1* X$ is a *deterministic* model
     + does not model any variation
-    + Common, e.g., in classical physics ( $E=mc^3$ )
+    + Common, e.g., in classical physics (velocity $v = \frac{\Delta x}{\Delta t}$)
     
-* $Y = \beta_0 + \beta_1* X +\epsilon,$ where $\epsilon~\sim N(0,\sigma)$ is a *statistical* (equiv. *stochastic*, *random*) linear model ($\sim$ means '*is drawn from*')
+* $Y = \beta_0 + \beta_1* X +\epsilon,$ where $\epsilon~\sim N(mean =0,sd=\sigma)$ is a *statistical* (equiv. *stochastic*, *random*) linear model ($\sim$ means '*is drawn from*')
     + attempts to model variation around a population mean (the *residuals*) determined by the model
         - the residual of sample $i$ is $y_i-(\beta_0 + \beta_1* X)$.
     + used in statistic analysis
@@ -168,10 +168,10 @@ Our task here is to, for the linear model $$Y=\beta_0+\beta_1 X$$ with parameter
 
 **Think About**
 
-* What shape does the plotted value have? 
+* What shape does the plotted histogram have? 
 * Where approximately is the mean?
 * Does this make sense in light of the generative model we used?
-* *Challenge* What have we plotted? (tip: google, e.g., 'probability distribution')
+* Can we plot $Pr[Y<=y|X,\theta]$ more directly? (tip: google, e.g., 'probability distribution')
 
 ```{r, echo=TRUE, eval=FALSE}
 #parameters
@@ -184,7 +184,7 @@ y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05)
 
 h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.0, 0.05), plot=FALSE)
 h$counts = h$counts/N
-plot(h, ylim =c(0,1), labels=TRUE)
+plot(h, xlim=c(0,1.0), ylim =c(0,1), labels=TRUE)
 
 # compute requested probability from hist
 paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[1:13]))
@@ -207,10 +207,11 @@ paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[1:13]))
     + The reason is that ($\Leftrightarrow$ means 'is equivalent to') $$N(mean = \mu, sd =\sigma) \Leftrightarrow N(mean = 0, sd = \sigma) + \mu,$$ meaning that adding $\mu$ moves the whole distribution to a new mean $=\mu$.
         - this means that our model can equivalently be written $Y = N(\beta_0+\beta_1*X, \sigma)$
         
-**What have we plotted**
+**What have we plotted; can we plot $Pr[Y<=y|X,\theta]$ more directly?**
 
-* We have plotted an estimate of the distribution of the *probability density function (PDF)* of $N(\beta_0+\beta_1*X, \sigma)$.
-* Another important distribution in statistics is the distribution of the *cumulative distribution function (CDF)*, which is exactly the probability we estimated above, namely $Pr[Y <= y| \mu, \sigma]$ for a normal distribution $N(mean = \mu, sd=\sigma)$. The code below plots the estimated *CDF* from our simulation; notice the typical sigmoid shape.
+* We have plotted the distribution of interval probabilities of  $N(\beta_0+\beta_1*X, \sigma)$.
+* An important distribution in statistics is the distribution of the *cumulative distribution function (CDF)*, which is exactly the probability we estimated above, namely $Pr[Y <= y| \mu, \sigma]$ for a normal distribution $N(mean = \mu, sd=\sigma)$. The code below plots the estimated *CDF* from our simulation; notice the typical sigmoid shape.
+    + From this distribution, we can directly read $Pr[Y<=0.65|X,\theta]$ from the ppropriate bar.
 
 
 ```{r, echo=TRUE}
@@ -245,7 +246,7 @@ paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[13]))
 
 ### Analytical solution 
 * Conveniently, R has both the PDF and CDF implemented, making a 
-* Calculate $Pr[Y<=0.65|X=2]$using R's *cumulative distribution function (CDF)* for the Normal distribution (tip: look up help for `Normal`)
+* Calculate $Pr[Y<=0.65|X=2]$ using R's *cumulative distribution function (CDF)* for the Normal distribution (tip: look up help for `Normal`)
     + The *CDF* of the value $y$ is the probability that the stochastic variable $Y<=y$. 
 * *Challenge*: try both approaches with other values of $y$ or try to compute $Pr[Y>y|X=2]$.
 
@@ -260,7 +261,7 @@ paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[13]))
 b0 = 0.3
 b1 = 0.2
 x = 2
-y = 0.6
+y = 0.65
 mu = b0 + b1 * x
 
 paste("Pr[Y<=.6|X=2] = ",pnorm(y, mean = mu, sd=0.05))
@@ -285,13 +286,14 @@ paste("Pr[Y<=.6|X=2] = ",pnorm(y, mean = mu, sd=0.05))
 
 This is a bit tricky to explain. 
 
-* For discrete $Y$, say heads or tails, we can compute an exact probability for, e.g. heads.
+* For discrete variable $Y$, say heads or tails, we can compute an exact probability for, e.g. heads.
 * However, for continuous $Y$, it is not possible compute the probability of an exact value of $Y$, since exact must be defined using an inifite number of decimals. Thus, in effect makes $Pr[Y] = 0$!
     - Hence, only intervals of continuous variables can be assigned proper probabilities.
-* However, it is, in statistics, very convenient to be able to talk about and work with $Pr[Y=y]$ also for continuous variables.
-    + If we reduce the interval centered around $Y=y$ decrementally, we can get a better and better approximation of $Pr[Y]$, we will in the limit end up with the (probability) *density* of $Y=y$, which gives the PDF of $Y$
+* However, it is, in statistics, very convenient to be able to talk about and work with exact values $Pr[Y=y]y$  also for continuous variables.
+    + If we reduce the interval centered around $Y=y$ decrementally and each time compute the mean probability over the histogram interval of intererest, we can get a better and better approximation of $Pr[Y=y]$, we will in the limit end up with the *Probability density* of $Y=y$.
+    + The distribution of probability densities for $Y$ is called the *Probability density function* (PDF) of $Y$
     + Mathematically, the PDF can be viewed as the derivative of the CDF
-    + Notice that the density of $Y$ is not a probability (e.g., it can be higher than 1.0). Sometimes this is marked by using a different notation for the density, e.g., $f(Y)$; here however, we will use $Pr[Y]$ for the density.
+    + Notice that the density of $Y$ is not a probability (e.g., it can be higher than 1.0). Sometimes this is marked by using a different notation for the density, e.g., $f(Y)$; here however, we will use $Pr[Y]$ also for the density.
 </details>
 
 
@@ -349,28 +351,9 @@ yp = c0 + c1 * rep(x,N) + rnorm(N, mean=0, sd=0.05)
 # t-test
 t.test(yp, mu=mu)
 ```
+
 <details>
 <summary> Some possible answers </summary>
-
-
-```{r, echo=TRUE}
-
-# compute the mean, mu, from our model 
-b0 = 0.3
-b1 = 0.2
-x = 2
-mu = b0 + b1 * x
-
-# Let's simulate the data from another model
-c0 = 0.4
-c1 = 0.2
-N=100
-yp = c0 + c1 * rep(x,N) + rnorm(N, mean=0, sd=0.05) 
-# t-test
-t.test(yp, mu=mu)
-```
-</details>
-
 * The *t*-test appears quite sensitive, especially for changes of $\gamma_1$ (`c_1`)
 
 **The *t*-test can also be applied to other questions**
@@ -404,6 +387,7 @@ sim1$y = b0 + b1 * sim1$x
 
 summary(lm(y~x, data=sim1))
 ```
+</details>
 
 
 # Final words
