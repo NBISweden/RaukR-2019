@@ -42,6 +42,7 @@ name: models1
 
 --
   + simplification (abstraction) of reality that helps us address a specific problem
+  + Aims 
       - enhance computation/estimation
       - reflect biology
   
@@ -51,8 +52,8 @@ name: models1
 .pull-left-50[
 We want to model how beer consumption affects the ability to program well in R
 
-* $x=$ number of beers drunk
-* $y=$ Ability to program in R
+* $x=$ Number of beers drunk
+* $y=$ Proficiency to program in R
 ]
 
 --
@@ -70,14 +71,13 @@ plot(x,y, type='b', ylab = "y = R proficiency", xlab = "x= Beers drunk")
 
 --
 
-This is a *linear model*, $$y = \beta_0 + \beta_1 x,$$ where $y$ changes in proportion to $x$.
+This is a *linear model*, $$y = \beta_0 + \beta_1 x$$ where $y$ changes in proportion to $x$, according to its parameters $\beta_0=1.0, \beta_1 = -0.1$
 
 ***
-
 --
 
 __Notice that a model is always restricted by its assumptions:__
-* In the model plot above, I have used strong assumptions about $\beta_1$ and $\beta_0$ being exactly $\beta_1=-0.1$ and $\beta_0=1.0$. 
+* In the model plot above, I have used strong assumptions about $\beta_1$ and $\beta_0$ being exactly $\beta_0=1.0$ and $\beta_1=-0.1$. 
 * Therefore, people with a different susceptibility to alcohol $(\beta_1 \neq -0.1)$ or a different initial proficiency in R $(\beta_0 \neq 1.0)$ are *not* correctly modeled by this model.
   
 
@@ -196,17 +196,20 @@ plot(g, layout=coords)
 # But what can models be used for?
 --
 
-Perform 
+Perform the lab tasks:
 ## Task | `Simulation`
 ## Task | `Probability of data`
 ## Task | `Statistical test`
+
+**Note**:
+* Don't get stuck on *Challenges* or *Extra reading*
 
 ---
 name: Simulation1
 
 ## Task | `Simulation`
 
-Generate 100 samples from $y = \beta_0 + \beta_1* x,$ with parameters $\beta_0=0.3$ and $\beta_1=0.2$
+Generate 100 samples from $Y = \beta_0 + \beta_1* X,$ with parameters $\beta_0=0.3$ and $\beta_1=0.2$
 
 **Think about**
 * Does the plotted results look biologically reasonable?
@@ -249,12 +252,12 @@ name: Simulation2
 ## Task | `Simulation`
 
 ### Deterministic vs statistical models
-* $y = \beta_1* x + \beta_0$ is a *deterministic* model
+* $Y = \beta_1* X + \beta_0$ is a *deterministic* model
     + does not model any variation
-    + Common, e.g., in classical physics ( $E=mc^3$ )
-* $y = \beta_1* x + \beta_0 +\epsilon,$ where the *residuals* $\epsilon ~\sim N(0,\sigma^2)$ is a *statistical* (equiv. *stochastic*, *random*) model
+    + Common, e.g., in classical physics (velocity $v = \frac{\Delta s}{\Delta t}$)
+* $Y = \beta_1* X + \beta_0 +\epsilon,$ where the *residuals* $\epsilon ~\sim N(mean=0,sd=\sigma^2)$ is a *statistical* (equiv. *stochastic*, *random*) model
     + attempts to model variation around a population mean (the *residuals*) determined by the model
-    + generates a stochastic variable and is used in statistic analysis
+    + generates a stochastic variable, $Y$, and is used in statistical analysis
 
 --
 
@@ -274,6 +277,7 @@ plot(x=sim1$genos, y=sim1$phenos)
 
 .pull-right-50[
 ```{r, echo =FALSE}
+set.seed(85)
 #parameters
 b0 = 0.3
 b1 = 0.2
@@ -335,7 +339,7 @@ name: Probability2
 #### Simulation solution
 
 **Think about**
-* What shape does the plotted value have? 
+* What shape does the plotted histogram have? 
 * Where approximately is the mean?
 * Does this make sense in light of the generative model we used?
 
@@ -351,7 +355,7 @@ y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05)
 h=hist(y, frequency=TRUE, right=FALSE, 
        breaks=seq(0,1.0,0.05), plot=FALSE)
 h$counts = h$counts/N
-plot(h, ylim =c(0,1), labels=TRUE)
+plot(h, xlim=c(0,1.0), ylim =c(0,0.6), labels=TRUE)
 
 # compute requested probability from hist
 paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[1:13]))
@@ -359,7 +363,8 @@ paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[1:13]))
 ]
 
 .pull-right-50[
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.height=4}
+set.seed(85)
 #parameters
 b0 = 0.3
 b1 = 0.2
@@ -369,8 +374,7 @@ y = b0 + b1 * x + rnorm(N, mean=0, sd=0.05)
 
 h=hist(y, frequency=TRUE, right=FALSE, breaks=seq(0,1.5, 0.05), plot=FALSE)
 h$counts = h$counts/N
-par(mfrow=c(2,1))
-plot(h, ylim =c(0,1), labels=TRUE)
+plot(h, xlim=c(0,1.0), ylim =c(0,0.6), labels=TRUE)
 
 # compute requested probability from hist
 paste("Pr[Y<=0.65|X=2] = ", sum(h$counts[1:13]))
@@ -384,6 +388,7 @@ name: Probaility3
 
 $Y \sim N(mean=0,sd=1) \Leftrightarrow Y \sim  \mu+\sigma * N(mean = 0, sd=1)$
 ```{r, echo=FALSE, fig.height=4}
+set.seed(85)
 par(mfrow=c(1,2))
 
 x=seq(-4,4, length=1000)
@@ -416,14 +421,15 @@ name: Probability4
 
 ## Task | `Probability of observed data`
 **Think about**
-* What have we plotted?
+* What have we plotted; can we plot $Pr[Y<=y|X,\theta]$ more directly? 
 
 
 .pull-left-50[
 
-We estimated the *probability density function* (PDF) of the model $Y\sim N(mean=\beta_0+\beta_1X, sd=\sigma)$
+We estimated the interval probabilities of the model $Y\sim N(mean=\beta_0+\beta_1 X, sd=\sigma)$...
 
 ```{r, echo=FALSE}
+set.seed(85)
 #parameters
 b0 = 0.3
 b1 = 0.2
@@ -441,9 +447,10 @@ plot(h, ylim =c(0,1), labels=TRUE)
 --
 
 .pull-right-50[
-...but we have actually used the *cumulative probability function* (CDF) to estimate $Pr[Y<=0.65|X=x, \theta]$
+...but we could actually have plotted the *cumulative probability function* (CDF) to directly estimate $Pr[Y<=0.65|X=x, \theta]$
 
 ```{r, echo=FALSE}
+set.seed(85)
 # replace the histogram counts with the cumulative counts
 h$counts = cumsum(h$counts)
 #plot the CDF
@@ -461,24 +468,41 @@ name: Probability5
 
 ### Analytic solution 
 
+.pull-left-50[
 **Think about**
 
+Use R's function `pnorm` for calculate the CDF
+
 * Do the result fit that from the simulation?
-    + If not, how can we make the fit better?
+    + If not, how can we improve the fit?
 * What can this result be used for?
-
+]
 --
-
+<br>
+.pull-right[
+```{r, echo=FALSE}
+set.seed(85)
+```
+```{r, echo=TRUE, eval = TRUE}
+b0 = 0.3
+b1 = 0.2
+x = 2
+y = 0.65
+mu = b0 + b1 * x
+paste("Pr[Y<=.6|X=2] = ",
+      pnorm(y, mean = mu, sd=0.05))
+```
+]
+--
+.pull-left-100[
 **p-values**
 * Probability fo finding a more extreme value or test statistic under the NULL model.
     + p-values can refer to different meanings of *extreme*. Using our model as an NULL model:
-        - For a *left-tailed* p-value, $p(y) = Pr[Y<=y|X=x]$, i.e., the $CDF(y, \mu, \sigma)$
-        - For a *right-tailed* p-value, $p(y) = Pr[Y>=y|X=x]$, i.e., $1-CDF(y, \mu, \sigma)$
-        - For a *double-tailed* p-value, $p(y) = 2 \min\{Pr[Y<=y|X=x],Pr[Y>=y|X=x]\}$
+        - *left-tailed* p-value
+        - *right-tailed* p-value
+        - *double-tailed* p-value
     + If the p-value is *significant*, i.e., below some threshold $\alpha$ (typically $\alpha = 0.05$) we can reject the NULL hypothesis that the data is generated from our model.
-
-
-
+]
 ---
 name: Probability6
 
@@ -491,12 +515,12 @@ name: Probability6
 * **For continuous $Y$, probabilities only exist for intervals; for any specific $y$, $Pr[Y=y] = 0$**
 --
 
-* Then what is the PDF?
+* But it's handy to calculate probabilities for specific values?
 --
 
 * Let's look at the average probability over the interval of the histogram interval including 0.65 
 ```{r, echo = FALSE, fig.height=3}
-
+set.seed(85)
 par(mfrow=c(1,3))
 
 estpdf<-function(n){
@@ -504,19 +528,19 @@ estpdf<-function(n){
   step = 0.5/n
   y = pnorm(x+step) - pnorm(x-step)
   plot(x,y, type="s")
-  title(paste("Pr[Y=0.65+-",step,"] = ",round((pnorm(0.65+step) - pnorm(0.65-step))/(2*step),5)))
+  title(paste("Pr[Y=0.65+-",step,"] = ",round((pnorm(0.65+step, mean=0.7, sd=0.05) - pnorm(0.65-step, mean=0.7, sd=0.05))/(2*step),5)))
 }
-x=array(data=c(5,10,20))
+x=array(data=c(10,100,1000))
 p=apply(x, MARGIN=1, FUN=estpdf)
 
 ```
 --
 
-* Asympotically approaches a limit, which is exactly the PDF for 0.65 = `r round(dnorm(0.65), 5)`
+* Asympotically approaches a limit, which is defined as the *Probability density function* (PDF);  PDF for 0.65 = `r round(dnorm(0.65, mean=0.7,sd = 0.05), 5)`
 --
 
 * PDF is the derivative of CDF
-* PDF is a (probability) *density*, but not a probability!
+* PDF is not a proper probability!
 
 ---
 
@@ -538,6 +562,7 @@ where $s/\sqrt{N}$ is an estimate of the standard deviation, $\sigma$, from the 
 * Does the t-test reject the NULL model or not?
 
 ```{r, echo=FALSE}
+set.seed(85)
 # compute mu from our model 
 b0 = 0.3
 b1 = 0.2
@@ -581,6 +606,7 @@ t.test(y,yp)
 ]
 .pull-right-50[
 ```{r, echo = FALSE}
+set.seed(85)
 # data 1
 b0 = 0.3
 b1 = 0.2
@@ -603,7 +629,7 @@ lines(density(yp), col=rgb(1,0,0,1))
 name: tests
 ## Task | `Statistical tests`
 
-* In `lm`, a *t*-test is used to test if the estimated parameters are significantly different from 0.
+* In linear models, e.g., in R's `lm`, a *t*-test is used to test if the estimated parameters are significantly different from 0.
 
 ```{r, echo=TRUE, eval=TRUE}
 
@@ -612,7 +638,6 @@ summary(lm(phenos~genos, data=sim1))
 
 ---
 name: nonparam
-
 .pull-left-50[
 ## Types of models
 
@@ -633,12 +658,12 @@ name: nonparam
 .pull-right-50[
 ## Types of statistical tests
 
-* parametric tests
+* Parametric tests
     + assumes statistical distribution *a priori*
         - Student's t-test
         - ANOVA
-* non-parametric tests
-    + no assumption of statistical distribution
+* Non-parametric tests
+    + no assumption of statistical distribution of data
     + typically uses ranking of values
         - Example: Mann-Whitney U tests
         - Kruskal-Wallis test
