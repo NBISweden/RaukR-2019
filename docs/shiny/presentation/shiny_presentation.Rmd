@@ -50,8 +50,18 @@ class: spaced
 ## Contents
 
 * [Introduction](#intro)
-* [Usage](#usage)
-* [Structure](#structure)
+* [Code Structure](#code-structure)
+* [App execution](#running)
+* [UI](#ui-layout)
+* [Code execution](#runtime)
+* [Reactivity](#reactivity-1)
+* [Updating widgets](#updating)
+* [Isolate](#isolate)
+* [Error validation](#validation)
+* [Download](#download-data)
+* [Deploy](#deploy)
+* [Interactive documents](#interactive-docs)
+* [Extensions](#extensions)
 
 ---
 name: intro
@@ -750,8 +760,8 @@ class: spaced
 
 ### Other topics
 
-* [Applications of action buttons](http://shiny.rstudio.com/articles/action-buttons.html)
-* [Progress indicators](http://shiny.rstudio.com/articles/progress.html)
+* [Applications of action buttons](http://shiny.rstudio.com/articles/action-buttons.html)  
+* [Progress indicators](http://shiny.rstudio.com/articles/progress.html)  
 ...
 
 <!-- --------------------- Do not edit this and below --------------------- -->
