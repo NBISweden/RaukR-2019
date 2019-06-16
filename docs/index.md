@@ -54,6 +54,12 @@ Course materials are listed below. (The GitHub repo for RaukR 2019 can be access
     + [Lab](basic_stats_Bengt/lab/lab1.html)
 * **Basic statistics** -- Model estimation
     + [Tutorial](basic_stats_Bengt/lab/lab2.html)
+* **Advanced Statistics**
+    + [Presentation](GeneralStats/Presentation_GeneralStats/Presentation_GeneralStats.html)
+    + [Lab](GeneralStats/Lab_GeneralStats/Lab_GeneralStats.html)
+* **Machine Learning**
+    + [Presentation](MachineLearning/Presentation_MachineLearning/Presentation_MachineLearning.html)
+    + [Lab](MachineLearning/Lab_MachineLearning/Lab_MachineLearning.html)
 
 #### 18-Jun-2019 (Tue)
 #### 19-Jun-2019 (Wed)
