@@ -1,0 +1,2475 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Roy Francis" />
+
+
+<title>Interactive web apps with Shiny</title>
+
+<script src="shiny_lab_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="shiny_lab_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="shiny_lab_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="shiny_lab_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="shiny_lab_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="shiny_lab_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="shiny_lab_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="shiny_lab_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="shiny_lab_files/navigation-1.1/tabsets.js"></script>
+<link href="shiny_lab_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="shiny_lab_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="shiny_lab_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="shiny_lab_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="shiny_lab_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Interactive web apps with Shiny</h1>
+<h3 class="subtitle">RaukR 2019 • Advanced R for Bioinformatics</h3>
+<h4 class="author">Roy Francis</h4>
+
+</div>
+
+
+<p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<!-- ------------ Only edit title, subtitle & author above this ------------ -->
+<br>
+<div class="abstract spaced">
+<p>This is an introduction to shiny web applications with R. Please follow the exercise to familiarise yourself with the fundamentals. And then you can follow instructions to build one of the two complete apps. Code chunks starting with <code>shinyApps()</code> can be copy-pasted completely and executed in an R console.</p>
+</div>
+<p><br></p>
+<div id="ui-layout" class="section level1">
+<h1><span class="header-section-number">1</span> UI • Layout</h1>
+<p>This is an example to show the layout of widgets on a webpage using shiny functions. <code>fluidPage()</code> is used to define a responsive webpage. <code>titlePanel()</code> is used to define the top bar. <code>sidebarLayout()</code> is used to create a layout that includes a region on the left called side bar panel and a main panel on the right. The contents of these panels are further defined under <code>sidebarPanel()</code> and <code>mainPanel()</code>.</p>
+<p>In the main panel, the use of tab panels are demonstrated. The function <code>tabsetPanel()</code> is used to define a tab panel set and individual tabs are defined using <code>tabPanel()</code>. <code>fluidRow()</code> and <code>column()</code> are used to structure elements within each tab. The width of each column is specified. Total width of columns must add up to 12.</p>
+<pre class="r"><code>ui &lt;- fluidPage(
+  titlePanel(&quot;Title Panel&quot;),
+  sidebarLayout(
+    sidebarPanel(
+      helpText(&quot;Sidebar Panel&quot;)
+    ),
+    mainPanel(tabsetPanel(
+      tabPanel(&quot;tab1&quot;,
+               fluidRow(
+                 column(6,helpText(&quot;Col1&quot;)),
+                 column(6,
+                        helpText(&quot;Col2&quot;),
+                        fluidRow(
+                          column(4,style=&quot;background-color:#b0c6fb&quot;,
+                                 helpText(&quot;Col1&quot;)
+                          ),
+                          column(4,style=&quot;background-color:#ffa153&quot;,
+                                 helpText(&quot;Col2&quot;)
+                          ),
+                          column(4,style=&quot;background-color:#b1f6c6&quot;,
+                                 helpText(&quot;Col3&quot;)
+                          )
+                        )
+                 )
+               )
+      ),
+      tabPanel(&quot;tab2&quot;,
+               inputPanel(helpText(&quot;Input Panel&quot;))
+      ),
+      tabPanel(&quot;tab3&quot;,
+               wellPanel(helpText(&quot;Well Panel&quot;))
+      )
+    )
+    )
+  )
+)
+
+server &lt;- function(input,output){}
+shinyApp(ui=ui,server=server)</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="ui-widgets-input" class="section level1">
+<h1><span class="header-section-number">2</span> UI • Widgets • Input</h1>
+<p>Input widgets are used to accept content interactively from the user. These widgets usually end in <code>Input</code> like <code>selectInput()</code>. Below are usage examples of several of shiny’s built-in widgets. Every widget has a variable name which is accessible through <code>input$</code> in the server function. For example, the value of a variable named <code>text-input</code> would be accessed through <code>input$text-input</code>.</p>
+<pre class="r"><code>shinyApp(
+ui=fluidPage(
+  fluidRow(
+    column(6,
+           fileInput(&quot;file-input&quot;,&quot;fileInput:&quot;),
+           selectInput(&quot;select-input&quot;,label=&quot;selectInput&quot;,choices=c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;)),
+           numericInput(&quot;numeric-input&quot;,label=&quot;numericInput&quot;,value=5,min=1,max=10),
+           sliderInput(&quot;slider-input&quot;,label=&quot;sliderInput&quot;,value=5,min=1,max=10),
+           textInput(&quot;text-input&quot;,label=&quot;textInput&quot;),
+           textAreaInput(&quot;text-area-input&quot;,label=&quot;textAreaInput&quot;),
+           dateInput(&quot;date-input&quot;,label=&quot;dateInput&quot;),
+           dateRangeInput(&quot;date-range-input&quot;,label=&quot;dateRangeInput&quot;),
+           radioButtons(&quot;radio-button&quot;,label=&quot;radioButtons&quot;,choices=c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;),inline=T),
+           checkboxInput(&quot;checkbox&quot;,&quot;checkboxInput&quot;,value=FALSE),
+           actionButton(&quot;action-button&quot;,&quot;Action&quot;),
+           hr(),
+           submitButton()
+    )
+  )
+),
+server=function(input,output){},
+options=list(height=900))</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="ui-widgets-outputs" class="section level1">
+<h1><span class="header-section-number">3</span> UI • Widgets • Outputs</h1>
+<p>Similar to input widgets, output widgets are used to display information to the user on the webpage. These widgets usually end in <code>Output</code> like <code>textOutput()</code>. Every widget has a variable name accessible under <code>output$</code> to which content is written in the server function. Render functions are used to write content to output widgets. For example <code>renderText()</code> is used to write text data to <code>textOutput()</code> widget.</p>
+<pre class="r"><code>shinyApp(
+  ui=fluidPage(fluidRow(column(6,
+             textInput(&quot;text_input&quot;,label=&quot;textInput&quot;,value=&quot;&lt;h3 style=&#39;color:red&#39;&gt;Red text&lt;/h3&gt;&quot;),
+             hr(),
+             htmlOutput(&quot;html_output&quot;),
+             textOutput(&quot;text_output&quot;),
+             verbatimTextOutput(&quot;verbatim_text_output&quot;),
+             tableOutput(&quot;table_output&quot;),
+             plotOutput(&quot;plot_output&quot;,width=&quot;300px&quot;,height=&quot;300px&quot;)
+      ))),
+  server=function(input, output) {
+    output$html_output &lt;- renderText({input$text_input})
+    output$text_output &lt;- renderText({input$text_input})
+    output$verbatim_text_output &lt;- renderText({input$text_input})
+    output$table_output &lt;- renderTable({iris[1:3,1:3]})
+    output$plot_output &lt;- renderPlot({
+      plot(iris[,1],iris[,2])
+    })
+},
+options=list(height=700))</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>In this example, we have a text input box which takes user text and outputs it in three different variations. The first output is html output <code>htmlOutput()</code>. Since the default text is html content, the output is red coloured text. A normal non-html text would just look like normal text. The second output is normal text output <code>textOutput()</code>. The third variation is <code>verbatimTextOutput()</code> which displays text in monospaced code style. This example further shows table output and plot output.</p>
+</div>
+<div id="dynamic-ui" class="section level1">
+<h1><span class="header-section-number">4</span> Dynamic UI</h1>
+<p>Sometimes we want to add, remove or change currently loaded UI widgets conditionally based on dynamic changes in code execution or user input. Conditional UI can be defined using <code>conditionalPanel()</code>, <code>uiOutput()</code>/<code>renderUI()</code>, <code>insertUI()</code> or <code>removeUI</code>. In this example, we will use <code>uiOutput()</code>/<code>renderUI()</code>.</p>
+<p>In the example below, the output plot is only displayed if selected dataset is iris.</p>
+<pre class="r"><code>shinyApp(
+ui=fluidPage(
+  selectInput(&quot;data_input&quot;,label=&quot;Select data&quot;,
+              choices=c(&quot;mtcars&quot;,&quot;faithful&quot;,&quot;iris&quot;)),
+  tableOutput(&quot;table_output&quot;),
+  uiOutput(&quot;ui&quot;)
+),
+
+server=function(input,output) {
+  getdata &lt;- reactive({ get(input$data_input, &#39;package:datasets&#39;) })
+  
+  output$ui &lt;- renderUI({
+    if(input$data_input==&quot;iris&quot;) plotOutput(&quot;plot_output&quot;,width=&quot;400px&quot;)
+  })
+  
+  output$plot_output &lt;- renderPlot({hist(getdata()[, 1])})
+  output$table_output &lt;- renderTable({head(getdata())})
+})</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Here, conditional UI is used to selectively display an output widget (plot). Similarily, this idea can be used to selectively display any input or output widget.</p>
+</div>
+<div id="updating-widgets" class="section level1">
+<h1><span class="header-section-number">5</span> Updating widgets</h1>
+<p>Widgets can be updated with new values dynamically. <code>observe()</code> and <code>observeEvent()</code> functions can monitor the values of interest and update relevant widgets.</p>
+<pre class="r"><code>shinyApp(
+ui=fluidPage(
+  selectInput(&quot;data_input&quot;,label=&quot;Select data&quot;,choices=c(&quot;mtcars&quot;,&quot;faithful&quot;,&quot;iris&quot;)),
+  selectInput(&quot;header_input&quot;,label=&quot;Select column name&quot;,choices=NULL),
+  plotOutput(&quot;plot_output&quot;,width=&quot;400px&quot;)
+),
+
+server=function(input,output,session) {
+  getdata &lt;- reactive({ get(input$data_input, &#39;package:datasets&#39;) })
+  
+  observe({
+    updateSelectInput(session,&quot;header_input&quot;,label=&quot;Select column name&quot;,choices=colnames(getdata()))
+  })
+  
+  output$plot_output &lt;- renderPlot({
+    #shiny::req(input$header_input)
+    #validate(need(input$header_input %in% colnames(getdata()),message=&quot;Incorrect column name.&quot;))
+    hist(getdata()[, input$header_input],xlab=input$header_input,main=input$data_input)
+  })
+},
+options=list(height=600))</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>In this example, the user selects a dataset and a column from the selected dataset to be plotted as a histogram. The column name selection widget must automatically update it’s choices depending on the selected dataset. This achieved using <code>observe()</code> where the <code>updateSelectInput()</code> function updates the selection choices. Notice that a third option <code>session</code> is in use in the server function. ie: <code>server=function(input,output,session)</code>. And <code>session</code> is also the first argument in <code>updateSelectInput()</code>. Session keeps track of values in the current session.</p>
+<p>When changing the datasets, we can see that there is a short red error message. This is because, after we have selected a new dataset, the old column name from the previous dataset is searched for in the new dataset. This occurs for a short time and causes the error. This can be fixed using careful error handling. We will discuss this in the next section.</p>
+</div>
+<div id="isolate" class="section level1">
+<h1><span class="header-section-number">6</span> Isolate</h1>
+<p>You might’ve noticed that shiny tends to update changes immediately as the input widgets change. This may not be desirable in all circumstances. For example, if the apps runs a heavy calculation, it is more efficient to grab all the changes and execute in one step rather than executing the heavy calculation after every input change. To illustrate this, we have an example below where we plot an image which has 3 input variables.</p>
+<pre class="r"><code>shinyApp(
+  ui=fluidPage(
+    textInput(&quot;in_title&quot;,label=&quot;Title&quot;,value=&quot;Title&quot;),
+    textInput(&quot;in_xlab&quot;,label=&quot;X axis label&quot;,value=&quot;X axis&quot;),
+    textInput(&quot;in_ylab&quot;,label=&quot;X axis label&quot;,value=&quot;Y axis&quot;),
+    plotOutput(&quot;out_plot&quot;)),
+  
+  server=function(input,output) {
+    output$out_plot &lt;- renderPlot({
+      plot(iris[,1],iris[,2],xlab=input$in_xlab,ylab=input$in_ylab,main=input$in_title)
+    })
+  }
+)</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>The plot changes as soon as the input text field is changed. We can add an action button such that the plot is changed only when the button is clicked.</p>
+<pre class="r"><code>shinyApp(
+  ui=fluidPage(
+    textInput(&quot;in_title&quot;,label=&quot;Title&quot;,value=&quot;Title&quot;),
+    textInput(&quot;in_xlab&quot;,label=&quot;X axis label&quot;,value=&quot;X axis&quot;),
+    textInput(&quot;in_ylab&quot;,label=&quot;X axis label&quot;,value=&quot;Y axis&quot;),
+    actionButton(&quot;btn_go&quot;,&quot;Go!&quot;),
+    plotOutput(&quot;out_plot&quot;)),
+  
+  server=function(input,output) {
+    output$out_plot &lt;- renderPlot({
+      input$btn_go
+      plot(iris[,1],iris[,2],xlab=isolate(input$in_xlab),
+           ylab=isolate(input$in_ylab),main=isolate(input$in_title))
+    })
+  }
+)</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Now, changes to any of the input fields do not initiate the plot function. The plot is redrawn only when the action button is clicked. When the action button is click, the current values in the input fields are collected and used in the plotting function.</p>
+</div>
+<div id="error-validation" class="section level1">
+<h1><span class="header-section-number">7</span> Error validation</h1>
+<p>Shiny returns an error when a variable is NULL, NA or empty. This is similar to normal R operation. The errors show up as bright red text. By using careful error handling, we can print more informative and less distracting error messages. We also have the option of hiding error messages.</p>
+<pre class="r"><code>shinyApp(
+ui=fluidPage(
+  selectInput(&quot;data_input&quot;,label=&quot;Select data&quot;,
+              choices=c(&quot;&quot;,&quot;mtcars&quot;,&quot;faithful&quot;,&quot;iris&quot;)),
+  tableOutput(&quot;table_output&quot;)
+),
+
+server=function(input, output) {
+  getdata &lt;- reactive({ get(input$data_input,&#39;package:datasets&#39;) })
+  output$table_output &lt;- renderTable({head(getdata())})
+},
+options=list(height=&quot;350px&quot;))</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>In this example, we have a list of datasets to select which is then printed as a table. The first and default option is an empty string which cannot be printed as a table and therefore returns an error.</p>
+<p>We can add an extra line to the above app so that the selected string is validated before running downstream commands in the <code>getdata({})</code> reactive function. The function <code>validate()</code> is used to validate inputs. <code>validate()</code> can be used with <code>need()</code> function or a custom function.</p>
+<p>Below we use the <code>need()</code> function to check the input. It checks if the input is NULL, NA or an empty string and returns a specified message if TRUE. <code>try()</code> is optional and is used to catch any other unexpected errors.</p>
+<pre class="r"><code>shinyApp(
+ui=fluidPage(
+  selectInput(&quot;data_input&quot;,label=&quot;Select data&quot;,
+              choices=c(&quot;&quot;,&quot;mtcars&quot;,&quot;faithful&quot;,&quot;iris&quot;)),
+  tableOutput(&quot;table_output&quot;)
+),
+
+server=function(input, output) {
+  
+  getdata &lt;- reactive({
+    validate(need(try(input$data_input),&quot;Please select a data set&quot;))
+    get(input$data_input,&#39;package:datasets&#39;)
+  })
+  
+  output$table_output &lt;- renderTable({head(getdata())})
+},
+options=list(height=&quot;350px&quot;))</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Now we see an informative grey message asking the user to select a dataset.</p>
+<p>We can use a custom function instead of using <code>need()</code>. Below, we have created a function called <code>valfun()</code> that checks if the input is NULL, NA or an empty string. This is then used in <code>validate()</code>.</p>
+<pre class="r"><code>valfn &lt;- function(x) if(is.null(x) | is.na(x) | x==&quot;&quot;) return(&quot;Input data is incorrect.&quot;)
+
+shinyApp(
+ui=fluidPage(
+  selectInput(&quot;data_input&quot;,label=&quot;Select data&quot;,
+              choices=c(&quot;&quot;,&quot;mtcars&quot;,&quot;faithful&quot;,&quot;iris&quot;)),
+  tableOutput(&quot;table_output&quot;)
+),
+
+server=function(input, output) {
+  
+  getdata &lt;- reactive({
+    validate(valfn(try(input$data_input)))
+    get(input$data_input,&#39;package:datasets&#39;)
+  })
+  
+  output$table_output &lt;- renderTable({head(getdata())})
+},
+options=list(height=&quot;350px&quot;))</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>The last option is to simple hide the error. This may be used in situations where there is no input needed from the user. We use <code>req()</code> to check if the input is valid, else stop execution there till the condition becomes true.</p>
+<pre class="r"><code>shinyApp(
+ui=fluidPage(
+  selectInput(&quot;data_input&quot;,label=&quot;Select data&quot;,
+              choices=c(&quot;&quot;,&quot;mtcars&quot;,&quot;faithful&quot;,&quot;iris&quot;)),
+  tableOutput(&quot;table_output&quot;)
+),
+
+server=function(input, output) {
+  
+  getdata &lt;- reactive({
+    shiny::req(try(input$data_input))
+    get(input$data_input,&#39;package:datasets&#39;)
+  })
+  
+  output$table_output &lt;- renderTable({head(getdata())})
+},
+options=list(height=&quot;350px&quot;))</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>As expected there is no errors or any message at all. This is perhaps not the best situation to use this option as we need the user to do something.</p>
+<p>Finally we can try to resolve the errors from the previous section. <code>shiny::req(input$header_input)</code> is added to ensure that a valid column name string is available before running any of the <code>renderPlot()</code> commands. Second, we add <code>validate(need(input$header_input %in% colnames(getdata()),message=&quot;Incorrect column name.&quot;))</code> to ensure that the column name is actually a column in the currently selected dataset.</p>
+<pre class="r"><code>shinyApp(
+ui=fluidPage(
+  selectInput(&quot;data_input&quot;,label=&quot;Select data&quot;,choices=c(&quot;mtcars&quot;,&quot;faithful&quot;,&quot;iris&quot;)),
+  selectInput(&quot;header_input&quot;,label=&quot;Select column name&quot;,choices=NULL),
+  plotOutput(&quot;plot_output&quot;,width=&quot;400px&quot;)
+),
+
+server=function(input,output,session) {
+  getdata &lt;- reactive({ get(input$data_input, &#39;package:datasets&#39;) })
+  
+  observe({
+    updateSelectInput(session,&quot;header_input&quot;,label=&quot;Select column name&quot;,choices=colnames(getdata()))
+  })
+  
+  output$plot_output &lt;- renderPlot({
+    shiny::req(input$header_input)
+    validate(need(input$header_input %in% colnames(getdata()),message=&quot;Incorrect column name.&quot;))
+    hist(getdata()[, input$header_input],xlab=input$header_input,main=input$data_input)
+  })
+},
+options=list(height=600))</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Now, we do not see any error messages. Note that shiny apps on shinyapps.io do not display the complete regular R error message for security reasons. It returns a generic error message in the app. One needs to inspect the error logs to view the actual error message.</p>
+</div>
+<div id="download-data" class="section level1">
+<h1><span class="header-section-number">8</span> Download • Data</h1>
+<p>It is often desirable to let the user down data tables and plots as images. This is done using <code>downloadHandler()</code>.</p>
+<p>In the example below, we are downloading a table as a csv text file. We define a button that accepts the action input from the user. The <code>downloadHandler()</code> function has the file name argument, and the content argument where we specify the <code>write.csv()</code> command. Note that this example will only work in a browser and not in the RStudio preview.</p>
+<pre class="r"><code>shinyApp(
+  ui=fluidPage(
+    selectInput(&quot;data_input&quot;,label=&quot;Select data&quot;,
+                choices=c(&quot;mtcars&quot;,&quot;faithful&quot;,&quot;iris&quot;)),
+    textOutput(&quot;text_output&quot;),
+    downloadButton(&quot;button_download&quot;,&quot;Download&quot;)
+  ),
+
+  server=function(input, output) {
+    
+    getdata &lt;- reactive({ get(input$data_input, &#39;package:datasets&#39;) })
+    output$text_output &lt;- renderText(paste0(&quot;Selected dataset: &quot;,input$data_input))
+    
+    output$button_download &lt;- downloadHandler(
+      filename = function() {
+        paste0(input$data_input,&quot;.csv&quot;)
+      },
+      content = function(file) {
+        write.csv(getdata(),file,row.names=FALSE,quote=F)
+      })
+  },
+  options=list(height=&quot;200px&quot;)
+)</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="download-plot" class="section level1">
+<h1><span class="header-section-number">9</span> Download • Plot</h1>
+<p>In this next example, we are downloading a plot. In the content part of <code>downloadHandler()</code>, we specify commands to export a png image. Note that this example will only work in a browser and not in the RStudio preview.</p>
+<pre class="r"><code>shinyApp(
+  ui=fluidPage(
+    selectInput(&quot;data_input&quot;,label=&quot;Select data&quot;,
+                choices=c(&quot;mtcars&quot;,&quot;faithful&quot;,&quot;iris&quot;)),
+    textOutput(&quot;text_output&quot;),
+    plotOutput(&quot;plot_output&quot;,height=&quot;300px&quot;,width=&quot;300px&quot;),
+    downloadButton(&quot;button_download&quot;,&quot;Download&quot;)
+  ),
+
+  server=function(input, output) {
+    
+    getdata &lt;- reactive({ get(input$data_input, &#39;package:datasets&#39;) })
+    output$text_output &lt;- renderText(paste0(&quot;Selected dataset: &quot;,input$data_input))
+    
+    output$plot_output &lt;- renderPlot({hist(getdata()[,1])})
+  
+  output$button_download &lt;- downloadHandler(
+    filename = function() {
+      paste0(input$data_input,&quot;.png&quot;)
+    },
+    content = function(file) {
+      png(file)
+      hist(getdata()[, 1])
+      dev.off()
+    })
+  },
+  options=list(height=&quot;500px&quot;)
+)</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+</div>
+<div id="shiny-in-rmd" class="section level1">
+<h1><span class="header-section-number">10</span> Shiny in Rmd</h1>
+<p>Shiny interactive widgets can be embedded into Rmarkdown documents. These documents need to be live and can handle interactivity. The important addition is the line <code>runtime: shiny</code> to the YAML matter. Here is an example:</p>
+<pre><code>---
+runtime: shiny
+output: html_document
+---
+
+```{r}
+library(shiny)
+```
+
+This is a standard RMarkdown document. Here is some code:
+
+```{r}
+head(iris)
+```
+
+```{r}
+plot(iris$Sepal.Length,iris$Petal.Width)
+```
+
+But, here are two shiny widgets.
+
+```{r,echo=FALSE}
+selectInput(&quot;n_breaks&quot;,label=&quot;Number of bins:&quot;,choices=c(10,20,35,50), selected=20)
+sliderInput(&quot;bw_adjust&quot;,label=&quot;Bandwidth adjustment:&quot;,min=0.2,max=2,value=1,step=0.2)
+```</code></pre>
+<p>This code can be copied to a new file in RStudio and saved as an .Rmd file. Then click ‘Knit’.</p>
+</div>
+<div id="calendar-app" class="section level1">
+<h1><span class="header-section-number">11</span> Calendar app</h1>
+<p><strong>Topics covered</strong></p>
+<ul>
+<li>UI layout using pre-defined function (pageWithSidebar)</li>
+<li>Input and output widgets and reactivity</li>
+<li>Use of date-time</li>
+<li>Customised ggplot</li>
+<li>Download image files</li>
+<li>Update inputs using observe</li>
+<li>Validating inputs with custom error messages</li>
+</ul>
+<p>The following R packages will be required for this app: <code>ggplot2, shiny, colourpicker</code>.</p>
+<p>A shiny app to create a calendar planner plot. Below is a preview of the finished app.</p>
+<div class="figure">
+<img src="raukr_shiny_assets/calendar-preview.png" />
+
+</div>
+<p>The idea of this app is to create and display a calendar styled planner. Below is a preview of the expected output.</p>
+<div class="figure">
+<img src="raukr_shiny_assets/calendar_plot.png" />
+
+</div>
+<p>The image is a plot created in ggplot. X axis showing week numbers, y axis showing weekdays, facet titles showing months and dates are coloured by categories. We can split this into two parts. The first part is preparing the code for the core task at hand (ie; generating the plot) and the second part is creating a graphical user interface around it using shiny apps to enable the user to input values and adjust dates, categories, plot parameters etc.</p>
+<div id="creating-the-plot" class="section level2">
+<h2><span class="header-section-number">11.1</span> Creating the plot</h2>
+<p>The first step is to figure out how to create this plot in ggplot. The data will be contained in a data.frame. The data.frame is created based on start and end dates.</p>
+<pre class="r"><code>start_date &lt;- as.Date(&quot;2019-06-01&quot;)
+end_date &lt;- as.Date(&quot;2019-07-05&quot;)
+dfr &lt;- data.frame(date=seq(start_date,end_date,by=1))
+head(dfr)</code></pre>
+<pre><code>##         date
+## 1 2019-06-01
+## 2 2019-06-02
+## 3 2019-06-03
+## 4 2019-06-04
+## 5 2019-06-05
+## 6 2019-06-06</code></pre>
+<p>We can add some code to get specific information from these dates such as the day, week, month and numeric date. Finally we</p>
+<pre class="r"><code>dfr$day &lt;- factor(strftime(dfr$date,format=&quot;%a&quot;),levels=rev(c(&quot;Mon&quot;,&quot;Tue&quot;,&quot;Wed&quot;,&quot;Thu&quot;,&quot;Fri&quot;,&quot;Sat&quot;,&quot;Sun&quot;)))
+dfr$week &lt;- factor(strftime(dfr$date,format=&quot;%V&quot;))
+dfr$month &lt;- strftime(dfr$date,format=&quot;%B&quot;)
+dfr$month &lt;- factor(dfr$month,levels=unique(dfr$month))
+dfr$ddate &lt;- factor(strftime(dfr$date,format=&quot;%d&quot;))
+head(dfr)</code></pre>
+<pre><code>##         date day week month ddate
+## 1 2019-06-01 Sat   22  June    01
+## 2 2019-06-02 Sun   22  June    02
+## 3 2019-06-03 Mon   23  June    03
+## 4 2019-06-04 Tue   23  June    04
+## 5 2019-06-05 Wed   23  June    05
+## 6 2019-06-06 Thu   23  June    06</code></pre>
+<p>Finally, we add a column called track which will hold the categorical information for colouring dates by activity.</p>
+<pre class="r"><code>dfr$track &lt;- &quot;Available&quot;
+dfr$track[dfr$day==&quot;Sat&quot;|dfr$day==&quot;Sun&quot;] &lt;- &quot;Weekend&quot;
+head(dfr)</code></pre>
+<pre><code>##         date day week month ddate     track
+## 1 2019-06-01 Sat   22  June    01   Weekend
+## 2 2019-06-02 Sun   22  June    02   Weekend
+## 3 2019-06-03 Mon   23  June    03 Available
+## 4 2019-06-04 Tue   23  June    04 Available
+## 5 2019-06-05 Wed   23  June    05 Available
+## 6 2019-06-06 Thu   23  June    06 Available</code></pre>
+<p>This is enough information to plot.</p>
+<pre class="r"><code>ggplot(dfr,aes(x=week,y=day))+
+      geom_tile(aes(fill=track))+
+      geom_text(aes(label=ddate))+
+      facet_grid(~month,scales=&quot;free&quot;,space=&quot;free&quot;)+
+      theme_bw()</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-21-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>We can add more activities to the track column. Or in other words, I refer to it as adding more tracks.</p>
+<pre class="r"><code>dfr$track[dfr$date&gt;=as.Date(&quot;2019-06-10&quot;) &amp; dfr$date&lt;=as.Date(&quot;2019-06-20&quot;)] &lt;- &quot;RaukR&quot;
+dfr$track[dfr$date==as.Date(&quot;2019-06-21&quot;)] &lt;- &quot;Midsummer&quot;
+
+ggplot(dfr,aes(x=week,y=day))+
+      geom_tile(aes(fill=track))+
+      geom_text(aes(label=ddate))+
+      facet_grid(~month,scales=&quot;free&quot;,space=&quot;free&quot;)+
+      theme_bw()</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-22-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Now, we can customise the plot as you prefer. I am modifying the axes labels, changing colours and removing most of the plot elements.</p>
+<pre class="r"><code>all_cols &lt;- c(&quot;#bebada&quot;,&quot;#fb8072&quot;,&quot;#80b1d3&quot;,&quot;#fdb462&quot;)
+  
+ggplot(dfr,aes(x=week,y=day))+
+      geom_tile(aes(fill=track))+
+      geom_text(aes(label=ddate))+
+      scale_fill_manual(values=all_cols)+
+      facet_grid(~month,scales=&quot;free&quot;,space=&quot;free&quot;)+
+      labs(x=&quot;Week&quot;,y=&quot;&quot;)+
+      theme_bw(base_size=14)+
+      theme(legend.title=element_blank(),
+            panel.grid=element_blank(),
+            panel.border=element_blank(),
+            axis.ticks=element_blank(),
+            axis.title=element_text(colour=&quot;grey30&quot;),
+            strip.background=element_blank(),
+            legend.key.size=unit(0.3,&quot;cm&quot;),
+            legend.spacing.x=unit(0.2,&quot;cm&quot;))</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-23-1.svg" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Our plot is now ready and we have the code to create this plot. The next step is to build a shiny app around it.</p>
+</div>
+<div id="building-the-app" class="section level2">
+<h2><span class="header-section-number">11.2</span> Building the app</h2>
+<div id="layout" class="section level3">
+<h3><span class="header-section-number">11.2.1</span> Layout</h3>
+<p>We need to first have a plan for the app page, which UI elements to include and how they will be laid out and structured. My plan is as shown in the preview image.</p>
+<div class="figure">
+<img src="raukr_shiny_assets/calendar-preview.png" />
+
+</div>
+<p>There is a horizontal top bar for the title and two columns below. The left column will contain the input widgets and control. The right column will contain the plot output. Since, this is a commonly used layout, it is available as a predefined function in shiny called <code>pageWithSidebar()</code>. It takes three arguments <code>headerPanel</code>, <code>sidebarPanel</code> and <code>mainPanel</code> which is self explanatory.</p>
+<pre class="r"><code>shinyApp(
+ui=fluidPage(
+  pageWithSidebar(
+    headerPanel(),
+    sidebarPanel(),
+    mainPanel())
+  ),
+server=function(input,output){}
+)</code></pre>
+</div>
+<div id="ui" class="section level3">
+<h3><span class="header-section-number">11.2.2</span> UI</h3>
+<p>Then we fill in the panels with widgets and contents.</p>
+<pre class="r"><code>shinyApp(
+ui=fluidPage(
+  pageWithSidebar(
+    headerPanel(title=&quot;Calendar Planner&quot;,windowTitle=&quot;Calendar Planner&quot;),
+    sidebarPanel(
+      h3(&quot;Duration&quot;),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              dateInput(&quot;in_duration_date_start&quot;,&quot;From&quot;,value=format(Sys.time(),&quot;%Y-%m-%d&quot;))
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              dateInput(&quot;in_duration_date_end&quot;,&quot;To&quot;,value=format(as.Date(Sys.time())+30,&quot;%Y-%m-%d&quot;))
+          )
+      )
+    ),
+    mainPanel())
+  ),
+server=function(input,output){}
+)</code></pre>
+<p>The app as it is now, when previewed, should look like below:</p>
+<div class="figure">
+<img src="raukr_shiny_assets/calendar-1.png" />
+
+</div>
+<p>We have defined a part of the side bar panel with a title <strong>Duration</strong>. <code>fluidRow()</code> is an html tag used to create rows. Above, in the side bar panel, a row is defined and two columns are defined inside. Each column is filled with date input widgets for start and end dates. We use the columns here to place date input widgets side by side. To place widgets one below the other, the columns can simply be removed. The default value for the start date is set to current date and the end date is set to current date + 30 days.</p>
+<p>Now we add more sections to the side bar panel, namely track input variables and plot settings variables. We also added custom colours. Custom colours can be selected using the input widget <code>colourpicker::colourInput()</code>.</p>
+<pre class="r"><code>cols &lt;- toupper(c(
+  &quot;#bebada&quot;,&quot;#fb8072&quot;,&quot;#80b1d3&quot;,&quot;#fdb462&quot;,&quot;#b3de69&quot;,&quot;#fccde5&quot;,&quot;#FDBF6F&quot;,&quot;#A6CEE3&quot;,
+  &quot;#56B4E9&quot;,&quot;#B2DF8A&quot;,&quot;#FB9A99&quot;,&quot;#CAB2D6&quot;,&quot;#A9C4E2&quot;,&quot;#79C360&quot;,&quot;#FDB762&quot;,&quot;#9471B4&quot;,
+  &quot;#A4A4A4&quot;,&quot;#fbb4ae&quot;,&quot;#b3cde3&quot;,&quot;#ccebc5&quot;,&quot;#decbe4&quot;,&quot;#fed9a6&quot;,&quot;#ffffcc&quot;,&quot;#e5d8bd&quot;,
+  &quot;#fddaec&quot;,&quot;#f2f2f2&quot;,&quot;#8dd3c7&quot;,&quot;#d9d9d9&quot;))
+  
+shinyApp(
+ui=fluidPage(
+  pageWithSidebar(
+    headerPanel(title=&quot;Calendar Planner&quot;,windowTitle=&quot;Calendar Planner&quot;),
+    sidebarPanel(
+      h3(&quot;Duration&quot;),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              dateInput(&quot;in_duration_date_start&quot;,&quot;From&quot;,value=format(Sys.time(),&quot;%Y-%m-%d&quot;))
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              dateInput(&quot;in_duration_date_end&quot;,&quot;To&quot;,value=format(as.Date(Sys.time())+30,&quot;%Y-%m-%d&quot;))
+          )
+      ),
+      h3(&quot;Tracks&quot;),
+      fluidRow(
+          column(3,style=list(&quot;padding-right: 3px;&quot;),
+              textInput(&quot;in_track_name_1&quot;,label=&quot;Name&quot;,value=&quot;Vacation&quot;,placeholder=&quot;Vacation&quot;)
+          ),
+          column(3,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+              dateInput(&quot;in_track_date_start_1&quot;,label=&quot;From&quot;,value=format(Sys.time(),&quot;%Y-%m-%d&quot;))
+          ),
+          column(3,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+              dateInput(&quot;in_track_date_end_1&quot;,label=&quot;To&quot;,value=format(as.Date(Sys.time())+30,&quot;%Y-%m-%d&quot;))
+          ),
+          column(3,style=list(&quot;padding-left: 3px;&quot;),
+              colourpicker::colourInput(&quot;in_track_colour_1&quot;,label=&quot;Colour&quot;,
+                                        palette=&quot;limited&quot;,allowedCols=cols,value=cols[1])
+          )
+      ),
+      fluidRow(
+          column(3,style=list(&quot;padding-right: 3px;&quot;),
+              textInput(&quot;in_track_name_2&quot;,label=&quot;Name&quot;,value=&quot;Offline&quot;,placeholder=&quot;Offline&quot;)
+          ),
+          column(3,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+              dateInput(&quot;in_track_date_start_2&quot;,label=&quot;From&quot;,value=format(Sys.time(),&quot;%Y-%m-%d&quot;))
+          ),
+          column(3,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+              dateInput(&quot;in_track_date_end_2&quot;,label=&quot;To&quot;,value=format(as.Date(Sys.time())+30,&quot;%Y-%m-%d&quot;))
+          ),
+          column(3,style=list(&quot;padding-left: 3px;&quot;),
+              colourpicker::colourInput(&quot;in_track_colour_2&quot;,label=&quot;Colour&quot;,
+                                        palette=&quot;limited&quot;,allowedCols=cols,value=cols[2])
+          )
+      ),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              colourpicker::colourInput(&quot;in_track_colour_available&quot;,label=&quot;Track colour (Available)&quot;,
+                                        palette=&quot;limited&quot;,allowedCols=cols,value=cols[length(cols)-1])
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              colourpicker::colourInput(&quot;in_track_colour_weekend&quot;,label=&quot;Track colour (Weekend)&quot;,
+                                        palette=&quot;limited&quot;,allowedCols=cols,value=cols[length(cols)])
+          )
+      ),
+      tags$br(),
+      h3(&quot;Settings&quot;),
+      selectInput(&quot;in_legend_position&quot;,label=&quot;Legend position&quot;,
+                  choices=c(&quot;top&quot;,&quot;right&quot;,&quot;left&quot;,&quot;bottom&quot;),selected=&quot;right&quot;,multiple=F),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              selectInput(&quot;in_legend_justification&quot;,label=&quot;Legend justification&quot;,
+                          choices=c(&quot;left&quot;,&quot;right&quot;),selected=&quot;right&quot;,multiple=F)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              selectInput(&quot;in_legend_direction&quot;,label=&quot;Legend direction&quot;,
+                          choices=c(&quot;vertical&quot;,&quot;horizontal&quot;),selected=&quot;vertical&quot;,multiple=F)
+          )
+      ),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              numericInput(&quot;in_themefontsize&quot;,label=&quot;Theme font size&quot;,value=8,step=0.5)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              numericInput(&quot;in_datefontsize&quot;,label=&quot;Date font size&quot;,value=2.5,step=0.1)
+          )
+      ),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              numericInput(&quot;in_monthfontsize&quot;,label=&quot;Month font size&quot;,value=8,step=0.5)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              numericInput(&quot;in_legendfontsize&quot;,label=&quot;Legend font size&quot;,value=5,step=0.5)
+          )
+      )
+    ),
+    mainPanel(
+      plotOutput(&quot;out_plot&quot;)
+    ))
+  ),
+server=function(input,output){}
+)</code></pre>
+<div class="figure">
+<img src="raukr_shiny_assets/calendar-2.png" />
+
+</div>
+<p>The track start and end dates are by default set to the same as that of duration start and end dates. We will adjust this later. Under the settings section, we have added a few useful plot variables to adjust sizes and spacing of plot elements. They are set to reasonable defaults. These variables will be passed on to the ggplot plotting function.</p>
+<p>We can end with column with the download options. Input fields are height, width, resolution and file format. Last we add a button for download.</p>
+<pre class="r"><code>h3(&quot;Download&quot;),
+helpText(&quot;Width is automatically calculated based on the number of weeks. File type is only applicable to download and does not change preview.&quot;),
+fluidRow(
+    column(6,style=list(&quot;padding-right: 5px;&quot;),
+        numericInput(&quot;in_height&quot;,&quot;Height (cm)&quot;,step=0.5,value=5.5)
+    ),
+    column(6,style=list(&quot;padding-left: 5px;&quot;),
+        numericInput(&quot;in_width&quot;,&quot;Width (cm)&quot;,step=0.5,value=NA)
+    )
+),
+fluidRow(
+    column(6,style=list(&quot;padding-right: 5px;&quot;),
+        selectInput(&quot;in_res&quot;,&quot;Res/DPI&quot;,choices=c(&quot;200&quot;,&quot;300&quot;,&quot;400&quot;,&quot;500&quot;),selected=&quot;200&quot;)
+    ),
+    column(6,style=list(&quot;padding-left: 5px;&quot;),
+        selectInput(&quot;in_format&quot;,&quot;File type&quot;,choices=c(&quot;png&quot;,&quot;tiff&quot;,&quot;jpeg&quot;,&quot;pdf&quot;),selected=&quot;png&quot;,multiple=FALSE,selectize=TRUE)
+    )
+),
+downloadButton(&quot;btn_downloadplot&quot;,&quot;Download Plot&quot;),
+tags$hr(),
+helpText(&quot;2019 | RaukR&quot;)</code></pre>
+<p>In the main panel, we add the plot output function that will hold the output plot. We also add a slider for image preview scaling and the output image. The idea behind the preview scaling is to allow the user to increase or decrease the size of the plot in the browser without affecting the download size. The part of the UI code to add the preview slider is below:</p>
+<pre class="r"><code>mainPanel(
+  sliderInput(&quot;in_scale&quot;,&quot;Image preview scale&quot;,min=0.1,max=3,step=0.10,value=1),
+  helpText(&quot;Scale only controls preview here and does not affect download.&quot;),
+  tags$br(),
+  imageOutput(&quot;out_plot&quot;)
+)</code></pre>
+<p>This should now look like this.</p>
+<pre class="r"><code>## load colours
+cols &lt;- toupper(c(
+  &quot;#bebada&quot;,&quot;#fb8072&quot;,&quot;#80b1d3&quot;,&quot;#fdb462&quot;,&quot;#b3de69&quot;,&quot;#fccde5&quot;,&quot;#FDBF6F&quot;,&quot;#A6CEE3&quot;,
+  &quot;#56B4E9&quot;,&quot;#B2DF8A&quot;,&quot;#FB9A99&quot;,&quot;#CAB2D6&quot;,&quot;#A9C4E2&quot;,&quot;#79C360&quot;,&quot;#FDB762&quot;,&quot;#9471B4&quot;,
+  &quot;#A4A4A4&quot;,&quot;#fbb4ae&quot;,&quot;#b3cde3&quot;,&quot;#ccebc5&quot;,&quot;#decbe4&quot;,&quot;#fed9a6&quot;,&quot;#ffffcc&quot;,&quot;#e5d8bd&quot;,
+  &quot;#fddaec&quot;,&quot;#f2f2f2&quot;,&quot;#8dd3c7&quot;,&quot;#d9d9d9&quot;))
+
+shinyApp(
+  ui=fluidPage(
+    pageWithSidebar(
+      headerPanel(title=&quot;Calendar Planner&quot;,windowTitle=&quot;Calendar Planner&quot;),
+      sidebarPanel(
+        h3(&quot;Duration&quot;),
+        fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+                 dateInput(&quot;in_duration_date_start&quot;,&quot;From&quot;,value=format(Sys.time(),&quot;%Y-%m-%d&quot;))
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+                 dateInput(&quot;in_duration_date_end&quot;,&quot;To&quot;,value=format(as.Date(Sys.time())+30,&quot;%Y-%m-%d&quot;))
+          )
+        ),
+        h3(&quot;Tracks&quot;),
+        fluidRow(
+          column(3,style=list(&quot;padding-right: 3px;&quot;),
+                 textInput(&quot;in_track_name_1&quot;,label=&quot;Name&quot;,value=&quot;Vacation&quot;,placeholder=&quot;Vacation&quot;)
+          ),
+          column(3,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+                 dateInput(&quot;in_track_date_start_1&quot;,label=&quot;From&quot;,value=format(Sys.time(),&quot;%Y-%m-%d&quot;))
+          ),
+          column(3,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+                 dateInput(&quot;in_track_date_end_1&quot;,label=&quot;To&quot;,value=format(as.Date(Sys.time())+30,&quot;%Y-%m-%d&quot;))
+          ),
+          column(3,style=list(&quot;padding-left: 3px;&quot;),
+                 colourpicker::colourInput(&quot;in_track_colour_1&quot;,label=&quot;Colour&quot;,
+                                           palette=&quot;limited&quot;,allowedCols=cols,value=cols[1])
+          )
+        ),
+        fluidRow(
+          column(3,style=list(&quot;padding-right: 3px;&quot;),
+                 textInput(&quot;in_track_name_2&quot;,label=&quot;Name&quot;,value=&quot;Offline&quot;,placeholder=&quot;Offline&quot;)
+          ),
+          column(3,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+                 dateInput(&quot;in_track_date_start_2&quot;,label=&quot;From&quot;,value=format(Sys.time(),&quot;%Y-%m-%d&quot;))
+          ),
+          column(3,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+                 dateInput(&quot;in_track_date_end_2&quot;,label=&quot;To&quot;,value=format(as.Date(Sys.time())+30,&quot;%Y-%m-%d&quot;))
+          ),
+          column(3,style=list(&quot;padding-left: 3px;&quot;),
+                 colourpicker::colourInput(&quot;in_track_colour_2&quot;,label=&quot;Colour&quot;,
+                                           palette=&quot;limited&quot;,allowedCols=cols,value=cols[2])
+          )
+        ),
+        fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+                 colourpicker::colourInput(&quot;in_track_colour_available&quot;,label=&quot;Track colour (Available)&quot;,
+                                           palette=&quot;limited&quot;,allowedCols=cols,value=cols[length(cols)-1])
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+                 colourpicker::colourInput(&quot;in_track_colour_weekend&quot;,label=&quot;Track colour (Weekend)&quot;,
+                                           palette=&quot;limited&quot;,allowedCols=cols,value=cols[length(cols)])
+          )
+        ),
+        tags$br(),
+        h3(&quot;Settings&quot;),
+        selectInput(&quot;in_legend_position&quot;,label=&quot;Legend position&quot;,
+                    choices=c(&quot;top&quot;,&quot;right&quot;,&quot;left&quot;,&quot;bottom&quot;),selected=&quot;right&quot;,multiple=F),
+        fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+                 selectInput(&quot;in_legend_justification&quot;,label=&quot;Legend justification&quot;,
+                             choices=c(&quot;left&quot;,&quot;right&quot;),selected=&quot;right&quot;,multiple=F)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+                 selectInput(&quot;in_legend_direction&quot;,label=&quot;Legend direction&quot;,
+                             choices=c(&quot;vertical&quot;,&quot;horizontal&quot;),selected=&quot;vertical&quot;,multiple=F)
+          )
+        ),
+        fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+                 numericInput(&quot;in_themefontsize&quot;,label=&quot;Theme font size&quot;,value=8,step=0.5)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+                 numericInput(&quot;in_datefontsize&quot;,label=&quot;Date font size&quot;,value=2.5,step=0.1)
+          )
+        ),
+        fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+                 numericInput(&quot;in_monthfontsize&quot;,label=&quot;Month font size&quot;,value=8,step=0.5)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+                 numericInput(&quot;in_legendfontsize&quot;,label=&quot;Legend font size&quot;,value=5,step=0.5)
+          )
+        ),
+        tags$br(),
+        h3(&quot;Download&quot;),
+        helpText(&quot;Width is automatically calculated based on the number of weeks. File type is only applicable to download and does not change preview.&quot;),
+        fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+                 numericInput(&quot;in_height&quot;,&quot;Height (cm)&quot;,step=0.5,value=5.5)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+                 numericInput(&quot;in_width&quot;,&quot;Width (cm)&quot;,step=0.5,value=NA)
+          )
+        ),
+        fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+                 selectInput(&quot;in_res&quot;,&quot;Res/DPI&quot;,choices=c(&quot;200&quot;,&quot;300&quot;,&quot;400&quot;,&quot;500&quot;),selected=&quot;200&quot;)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+                 selectInput(&quot;in_format&quot;,&quot;File type&quot;,choices=c(&quot;png&quot;,&quot;tiff&quot;,&quot;jpeg&quot;,&quot;pdf&quot;),selected=&quot;png&quot;,multiple=FALSE,selectize=TRUE)
+          )
+        ),
+        downloadButton(&quot;btn_downloadplot&quot;,&quot;Download Plot&quot;),
+        tags$hr(),
+        helpText(&quot;2019 | RaukR&quot;)
+      ),
+      mainPanel(
+        sliderInput(&quot;in_scale&quot;,&quot;Image preview scale&quot;,min=0.1,max=3,step=0.10,value=1),
+        helpText(&quot;Scale only controls preview here and does not affect download.&quot;),
+        tags$br(),
+        imageOutput(&quot;out_plot&quot;)
+      )
+    )
+  ),
+  server=function(input,output){}
+)</code></pre>
+<div class="figure">
+<img src="raukr_shiny_assets/calendar-3.png" />
+
+</div>
+</div>
+<div id="server" class="section level3">
+<h3><span class="header-section-number">11.2.3</span> Server</h3>
+<p>We can start adding content into the server function to actually enable functionality.</p>
+<p>The server code can be organised into 5 blocks.</p>
+<ol style="list-style-type: decimal">
+<li><code>fn_plot()</code>: Reactive function that generates ggplot object</li>
+<li>out_plot: Plots the ggplot object</li>
+<li><code>fn_downloadplotname()</code>: Function to create download image name</li>
+<li><code>fn_downloadplot()</code>: Function to create and download the image</li>
+<li>btn_downloadplot: Download handler that runs fn_downloadplot on button trigger</li>
+<li>observe: Observer that updates input values</li>
+</ol>
+<p>Here is a flow diagram of how these blocks work.</p>
+<pre><code>     1 &gt; [2]
+     v
+3 &gt; [4] &lt; 5
+
+    {6}</code></pre>
+<p>The core block 1 creates the preview plot in block 2. The download handler block 5 calls block 1 to generate the plot which is downloaded using block 4. Block 6 is standalone observer.</p>
+<p>Reactive values used across multiple functions can be stored using <code>reactiveValues()</code>. These can be written to or accessed from within a reactive environment.</p>
+<pre><code>store &lt;- reactiveValues(week=NULL)</code></pre>
+<p>We have our core function <code>fn_plot()</code> (block 1). Inputs are validated and gathered from input widgets. We are using <code>shiny::req()</code> to silently check that necessary input variables are available before running through the function. We use <code>validate()</code> with <code>need()</code> to run some basic sanity checks namely that track names are not duplicated and to ensure that start-dates preceed end-dates. Necessary date-time calculations are performed. The calendar plot is created and returned.</p>
+<pre class="r"><code>## RFN: fn_plot -----------------------------------------------------------
+## core plotting function, returns a ggplot object
+
+fn_plot &lt;- reactive({
+
+  shiny::req(input$in_duration_date_start)
+  shiny::req(input$in_duration_date_end)
+
+  shiny::req(input$in_track_date_start_1)
+  shiny::req(input$in_track_date_end_1)
+  shiny::req(input$in_track_name_1)
+  shiny::req(input$in_track_colour_1)
+
+  shiny::req(input$in_track_date_start_2)
+  shiny::req(input$in_track_date_end_2)
+  shiny::req(input$in_track_name_2)
+  shiny::req(input$in_track_colour_2)
+
+  shiny::req(input$in_legend_position)
+  shiny::req(input$in_legend_justification)
+  shiny::req(input$in_legend_direction)
+  shiny::req(input$in_themefontsize)
+  shiny::req(input$in_datefontsize)
+  shiny::req(input$in_monthfontsize)
+  shiny::req(input$in_legendfontsize)
+
+  validate(need(input$in_track_name_1!=input$in_track_name_2,&quot;Duplicate track names are not allowed.&quot;))
+  validate(need(as.Date(input$in_duration_date_start) &lt; as.Date(input$in_duration_date_end),&quot;End duration date must be later than start duration date.&quot;))
+
+  # prepare dates
+  dfr &lt;- data.frame(date=seq(as.Date(input$in_duration_date_start),as.Date(input$in_duration_date_end),by=1))
+  dfr$day &lt;- factor(strftime(dfr$date,format=&quot;%a&quot;),levels=rev(c(&quot;Mon&quot;,&quot;Tue&quot;,&quot;Wed&quot;,&quot;Thu&quot;,&quot;Fri&quot;,&quot;Sat&quot;,&quot;Sun&quot;)))
+  dfr$week &lt;- factor(strftime(dfr$date,format=&quot;%V&quot;))
+  dfr$month &lt;- strftime(dfr$date,format=&quot;%B&quot;)
+  dfr$month &lt;- factor(dfr$month,levels=unique(dfr$month))
+  dfr$ddate &lt;- factor(strftime(dfr$date,format=&quot;%d&quot;))
+
+  #add tracks
+  dfr$track &lt;- &quot;Available&quot;
+  dfr$track[dfr$day==&quot;Sat&quot; | dfr$day==&quot;Sun&quot;] &lt;- &quot;Weekend&quot;
+
+  temp_start_date_1 &lt;- as.Date(input$in_track_date_start_1)
+  temp_end_date_1 &lt;- as.Date(input$in_track_date_end_1)
+  temp_track_name_1 &lt;- input$in_track_name_1
+  temp_track_col_1 &lt;- input$in_track_colour_1
+  validate(need(temp_start_date_1 &lt; temp_end_date_1,&quot;End track duration date must be later than start track duration date.&quot;))
+  dfr$track[dfr$date&gt;=temp_start_date_1 &amp; dfr$date&lt;=temp_end_date_1] &lt;- temp_track_name_1
+
+  temp_start_date_2 &lt;- as.Date(input$in_track_date_start_2)
+  temp_end_date_2 &lt;- as.Date(input$in_track_date_end_2)
+  temp_track_name_2 &lt;- input$in_track_name_2
+  temp_track_col_2 &lt;- input$in_track_colour_2
+  validate(need(temp_start_date_2 &lt; temp_end_date_2,&quot;End track duration date must be later than start track duration date.&quot;))
+  dfr$track[dfr$date&gt;=temp_start_date_2 &amp; dfr$date&lt;=temp_end_date_2] &lt;- temp_track_name_2
+
+  # create order factor
+  fc &lt;- vector(mode=&quot;character&quot;)
+  if(&quot;Available&quot; %in% unique(dfr$track)) fc &lt;- c(fc,&quot;Available&quot;)
+  fc &lt;- c(fc,temp_track_name_1,temp_track_name_2)
+  if(&quot;Weekend&quot; %in% unique(dfr$track)) fc &lt;- c(fc,&quot;Weekend&quot;)
+  dfr$track &lt;- factor(dfr$track,levels=fc)
+
+  # prepare colours
+  all_cols &lt;- c(input$in_track_colour_available,temp_track_col_1,temp_track_col_2,input$in_track_colour_weekend)
+
+  # plot
+  p &lt;- ggplot(dfr,aes(x=week,y=day))+
+    geom_tile(aes(fill=track))+
+    geom_text(aes(label=ddate),size=input$in_datefontsize)+
+    scale_fill_manual(values=all_cols)+
+    facet_grid(~month,scales=&quot;free&quot;,space=&quot;free&quot;)+
+    labs(x=&quot;Week&quot;,y=&quot;&quot;)+
+    theme_bw(base_size=input$in_themefontsize)+
+    theme(legend.title=element_blank(),
+          panel.grid=element_blank(),
+          panel.border=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title=element_text(colour=&quot;grey30&quot;),
+          strip.background=element_blank(),
+          strip.text=element_text(size=input$in_monthfontsize),
+          legend.position=input$in_legend_position,
+          legend.justification=input$in_legend_justification,
+          legend.direction=input$in_legend_direction,
+          legend.text=element_text(size=input$in_legendfontsize),
+          legend.key.size=unit(0.3,&quot;cm&quot;),
+          legend.spacing.x=unit(0.2,&quot;cm&quot;))
+
+  # add number of weeks to reactive value
+  store$week &lt;- length(levels(dfr$week))
+
+  return(p)
+})</code></pre>
+<p>Here is the block that generates the output image. Image dimensions and resolution is obtained from input widgets. Default width is computed based on number of weeks. This is why the number of weeks was stored as a reactive value. The plot is exported to the working directly and then displayed in the browser. The scale slider allows the plot preview to be scaled in the browser.</p>
+<pre class="r"><code>## OUT: out_plot ------------------------------------------------------------
+## plots figure
+
+output$out_plot &lt;- renderImage({
+
+  shiny::req(fn_plot())
+  shiny::req(input$in_height)
+  shiny::req(input$in_res)
+  shiny::req(input$in_scale)
+
+  height &lt;- as.numeric(input$in_height)
+  width &lt;- as.numeric(input$in_width)
+  res &lt;- as.numeric(input$in_res)
+
+  if(is.na(width)) {
+    width &lt;- (store$week*1.2)
+    if(width &lt; 4.5) width &lt;- 4.5
+  }
+
+  p &lt;- fn_plot()
+  ggsave(&quot;calendar_plot.png&quot;,p,height=height,width=width,units=&quot;cm&quot;,dpi=res)
+
+  return(list(src=&quot;calendar_plot.png&quot;,
+              contentType=&quot;image/png&quot;,
+              width=round(((width*res)/2.54)*input$in_scale,0),
+              height=round(((height*res)/2.54)*input$in_scale,0),
+              alt=&quot;calendar_plot&quot;))
+})</code></pre>
+<p>The downloadplotname function simple generates the output filename depending on the filetype extension.</p>
+<pre class="r"><code># FN: fn_downloadplotname ----------------------------------------------------
+# creates filename for download plot
+
+fn_downloadplotname &lt;- function()
+{
+  return(paste0(&quot;calendar_plot.&quot;,input$in_format))
+}</code></pre>
+<p>The downloadplot function uses <code>fn_plot()</code> to create the image and then export the image.</p>
+<pre class="r"><code>## FN: fn_downloadplot -------------------------------------------------
+## function to download plot
+
+fn_downloadplot &lt;- function(){
+  shiny::req(fn_plot())
+  shiny::req(input$in_height)
+  shiny::req(input$in_res)
+  shiny::req(input$in_scale)
+
+  height &lt;- as.numeric(input$in_height)
+  width &lt;- as.numeric(input$in_width)
+  res &lt;- as.numeric(input$in_res)
+  format &lt;- input$in_format
+
+  if(is.na(width)) width &lt;- (store$week*1)+1
+
+  p &lt;- fn_plot()
+  if(format==&quot;pdf&quot; | format==&quot;svg&quot;){
+    ggsave(fn_downloadplotname(),p,height=height,width=width,units=&quot;cm&quot;,dpi=res)
+    #embed_fonts(fn_downloadplotname())
+  }else{
+    ggsave(fn_downloadplotname(),p,height=height,width=width,units=&quot;cm&quot;,dpi=res)
+  }
+}</code></pre>
+<p>The download handler then downloads the file.</p>
+<pre class="r"><code>## DHL: btn_downloadplot ----------------------------------------------------
+## download handler for downloading plot
+
+output$btn_downloadplot &lt;- downloadHandler(
+  filename=fn_downloadplotname,
+  content=function(file) {
+    fn_downloadplot()
+    file.copy(fn_downloadplotname(),file,overwrite=T)
+  }
+)</code></pre>
+<p>Finally, we have the observer function. The observer continuously monitors change in input widgets of interest (here start and end duration) and updates other widget values.</p>
+<pre class="r"><code>## OBS: tracks dates ---------------------------------------------------------
+
+observe({
+  
+  shiny::req(input$in_duration_date_start)
+  shiny::req(input$in_duration_date_end)
+  
+  validate(need(as.Date(input$in_duration_date_start) &lt; as.Date(input$in_duration_date_end),&quot;End duration date must be later than start duration date.&quot;))
+  
+  # create date intervals
+  dseq &lt;- seq(as.Date(input$in_duration_date_start),as.Date(input$in_duration_date_end),by=1)
+  r1 &lt;- unique(as.character(cut(dseq,breaks=3)))
+  
+  updateDateInput(session,&quot;in_track_date_start_1&quot;,label=&quot;From&quot;,value=as.Date(r1[1],&quot;%Y-%m-%d&quot;))
+  updateDateInput(session,&quot;in_track_date_end_1&quot;,label=&quot;To&quot;,value=as.Date(r1[1+1],&quot;%Y-%m-%d&quot;)-1)
+  updateDateInput(session,&quot;in_track_date_start_2&quot;,label=&quot;From&quot;,value=as.Date(r1[2],&quot;%Y-%m-%d&quot;))
+  updateDateInput(session,&quot;in_track_date_end_2&quot;,label=&quot;To&quot;,value=as.Date(r1[2+1],&quot;%Y-%m-%d&quot;)-1)
+  
+})</code></pre>
+<p>The complete code for the app is as below.</p>
+<pre class="r"><code>## load libraries
+library(ggplot2)
+library(shiny)
+library(colourpicker)
+
+## load colours
+cols &lt;- toupper(c(
+  &quot;#bebada&quot;,&quot;#fb8072&quot;,&quot;#80b1d3&quot;,&quot;#fdb462&quot;,&quot;#b3de69&quot;,&quot;#fccde5&quot;,&quot;#FDBF6F&quot;,&quot;#A6CEE3&quot;,
+  &quot;#56B4E9&quot;,&quot;#B2DF8A&quot;,&quot;#FB9A99&quot;,&quot;#CAB2D6&quot;,&quot;#A9C4E2&quot;,&quot;#79C360&quot;,&quot;#FDB762&quot;,&quot;#9471B4&quot;,
+  &quot;#A4A4A4&quot;,&quot;#fbb4ae&quot;,&quot;#b3cde3&quot;,&quot;#ccebc5&quot;,&quot;#decbe4&quot;,&quot;#fed9a6&quot;,&quot;#ffffcc&quot;,&quot;#e5d8bd&quot;,
+  &quot;#fddaec&quot;,&quot;#f2f2f2&quot;,&quot;#8dd3c7&quot;,&quot;#d9d9d9&quot;))
+
+shinyApp(
+
+# UI ---------------------------------------------------------------------------
+
+ui=fluidPage(
+  pageWithSidebar(
+    headerPanel(title=&quot;Calendar Planner&quot;,windowTitle=&quot;Calendar Planner&quot;),
+    sidebarPanel(
+      h3(&quot;Duration&quot;),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              dateInput(&quot;in_duration_date_start&quot;,&quot;From&quot;,value=format(Sys.time(),&quot;%Y-%m-%d&quot;))
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              dateInput(&quot;in_duration_date_end&quot;,&quot;To&quot;,value=format(as.Date(Sys.time())+30,&quot;%Y-%m-%d&quot;))
+          )
+      ),
+      h3(&quot;Tracks&quot;),
+      fluidRow(
+          column(3,style=list(&quot;padding-right: 3px;&quot;),
+              textInput(&quot;in_track_name_1&quot;,label=&quot;Name&quot;,value=&quot;Vacation&quot;,placeholder=&quot;Vacation&quot;)
+          ),
+          column(3,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+              dateInput(&quot;in_track_date_start_1&quot;,label=&quot;From&quot;,value=format(Sys.time(),&quot;%Y-%m-%d&quot;))
+          ),
+          column(3,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+              dateInput(&quot;in_track_date_end_1&quot;,label=&quot;To&quot;,value=format(as.Date(Sys.time())+30,&quot;%Y-%m-%d&quot;))
+          ),
+          column(3,style=list(&quot;padding-left: 3px;&quot;),
+              colourpicker::colourInput(&quot;in_track_colour_1&quot;,label=&quot;Colour&quot;,
+                                        palette=&quot;limited&quot;,allowedCols=cols,value=cols[1])
+          )
+      ),
+      fluidRow(
+          column(3,style=list(&quot;padding-right: 3px;&quot;),
+              textInput(&quot;in_track_name_2&quot;,label=&quot;Name&quot;,value=&quot;Offline&quot;,placeholder=&quot;Offline&quot;)
+          ),
+          column(3,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+              dateInput(&quot;in_track_date_start_2&quot;,label=&quot;From&quot;,value=format(Sys.time(),&quot;%Y-%m-%d&quot;))
+          ),
+          column(3,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+              dateInput(&quot;in_track_date_end_2&quot;,label=&quot;To&quot;,value=format(as.Date(Sys.time())+30,&quot;%Y-%m-%d&quot;))
+          ),
+          column(3,style=list(&quot;padding-left: 3px;&quot;),
+              colourpicker::colourInput(&quot;in_track_colour_2&quot;,label=&quot;Colour&quot;,
+                                        palette=&quot;limited&quot;,allowedCols=cols,value=cols[2])
+          )
+      ),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              colourpicker::colourInput(&quot;in_track_colour_available&quot;,label=&quot;Track colour (Available)&quot;,
+                                        palette=&quot;limited&quot;,allowedCols=cols,value=cols[length(cols)-1])
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              colourpicker::colourInput(&quot;in_track_colour_weekend&quot;,label=&quot;Track colour (Weekend)&quot;,
+                                        palette=&quot;limited&quot;,allowedCols=cols,value=cols[length(cols)])
+          )
+      ),
+      tags$br(),
+      h3(&quot;Settings&quot;),
+      selectInput(&quot;in_legend_position&quot;,label=&quot;Legend position&quot;,
+                  choices=c(&quot;top&quot;,&quot;right&quot;,&quot;left&quot;,&quot;bottom&quot;),selected=&quot;right&quot;,multiple=F),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              selectInput(&quot;in_legend_justification&quot;,label=&quot;Legend justification&quot;,
+                          choices=c(&quot;left&quot;,&quot;right&quot;),selected=&quot;right&quot;,multiple=F)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              selectInput(&quot;in_legend_direction&quot;,label=&quot;Legend direction&quot;,
+                          choices=c(&quot;vertical&quot;,&quot;horizontal&quot;),selected=&quot;vertical&quot;,multiple=F)
+          )
+      ),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              numericInput(&quot;in_themefontsize&quot;,label=&quot;Theme font size&quot;,value=8,step=0.5)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              numericInput(&quot;in_datefontsize&quot;,label=&quot;Date font size&quot;,value=2.5,step=0.1)
+          )
+      ),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              numericInput(&quot;in_monthfontsize&quot;,label=&quot;Month font size&quot;,value=8,step=0.5)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              numericInput(&quot;in_legendfontsize&quot;,label=&quot;Legend font size&quot;,value=5,step=0.5)
+          )
+      ),
+      tags$br(),
+      h3(&quot;Download&quot;),
+      helpText(&quot;Width is automatically calculated based on the number of weeks. File type is only applicable to download and does not change preview.&quot;),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              numericInput(&quot;in_height&quot;,&quot;Height (cm)&quot;,step=0.5,value=5.5)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              numericInput(&quot;in_width&quot;,&quot;Width (cm)&quot;,step=0.5,value=NA)
+          )
+      ),
+      fluidRow(
+          column(6,style=list(&quot;padding-right: 5px;&quot;),
+              selectInput(&quot;in_res&quot;,&quot;Res/DPI&quot;,choices=c(&quot;200&quot;,&quot;300&quot;,&quot;400&quot;,&quot;500&quot;),selected=&quot;200&quot;)
+          ),
+          column(6,style=list(&quot;padding-left: 5px;&quot;),
+              selectInput(&quot;in_format&quot;,&quot;File type&quot;,choices=c(&quot;png&quot;,&quot;tiff&quot;,&quot;jpeg&quot;,&quot;pdf&quot;),selected=&quot;png&quot;,multiple=FALSE,selectize=TRUE)
+          )
+      ),
+      downloadButton(&quot;btn_downloadplot&quot;,&quot;Download Plot&quot;),
+      tags$hr(),
+      helpText(&quot;2019 | RaukR&quot;)
+    ),
+    mainPanel(
+      sliderInput(&quot;in_scale&quot;,&quot;Image preview scale&quot;,min=0.1,max=3,step=0.10,value=1),
+      helpText(&quot;Scale only controls preview here and does not affect download.&quot;),
+      tags$br(),
+      imageOutput(&quot;out_plot&quot;)
+    )
+  )
+),
+
+# SERVER -----------------------------------------------------------------------
+
+server=function(input, output, session) {
+
+  store &lt;- reactiveValues(week=NULL)
+
+  ## RFN: fn_plot -----------------------------------------------------------
+  ## core plotting function, returns a ggplot object
+
+  fn_plot &lt;- reactive({
+
+    shiny::req(input$in_duration_date_start)
+    shiny::req(input$in_duration_date_end)
+
+    shiny::req(input$in_track_date_start_1)
+    shiny::req(input$in_track_date_end_1)
+    shiny::req(input$in_track_name_1)
+    shiny::req(input$in_track_colour_1)
+
+    shiny::req(input$in_track_date_start_2)
+    shiny::req(input$in_track_date_end_2)
+    shiny::req(input$in_track_name_2)
+    shiny::req(input$in_track_colour_2)
+
+    shiny::req(input$in_legend_position)
+    shiny::req(input$in_legend_justification)
+    shiny::req(input$in_legend_direction)
+    shiny::req(input$in_themefontsize)
+    shiny::req(input$in_datefontsize)
+    shiny::req(input$in_monthfontsize)
+    shiny::req(input$in_legendfontsize)
+
+    validate(need(input$in_track_name_1!=input$in_track_name_2,&quot;Duplicate track names are not allowed.&quot;))
+    validate(need(as.Date(input$in_duration_date_start) &lt; as.Date(input$in_duration_date_end),&quot;End duration date must be later than start duration date.&quot;))
+
+    # prepare dates
+    dfr &lt;- data.frame(date=seq(as.Date(input$in_duration_date_start),as.Date(input$in_duration_date_end),by=1))
+    dfr$day &lt;- factor(strftime(dfr$date,format=&quot;%a&quot;),levels=rev(c(&quot;Mon&quot;,&quot;Tue&quot;,&quot;Wed&quot;,&quot;Thu&quot;,&quot;Fri&quot;,&quot;Sat&quot;,&quot;Sun&quot;)))
+    dfr$week &lt;- factor(strftime(dfr$date,format=&quot;%V&quot;))
+    dfr$month &lt;- strftime(dfr$date,format=&quot;%B&quot;)
+    dfr$month &lt;- factor(dfr$month,levels=unique(dfr$month))
+    dfr$ddate &lt;- factor(strftime(dfr$date,format=&quot;%d&quot;))
+
+    #add tracks
+    dfr$track &lt;- &quot;Available&quot;
+    dfr$track[dfr$day==&quot;Sat&quot; | dfr$day==&quot;Sun&quot;] &lt;- &quot;Weekend&quot;
+
+    temp_start_date_1 &lt;- as.Date(input$in_track_date_start_1)
+    temp_end_date_1 &lt;- as.Date(input$in_track_date_end_1)
+    temp_track_name_1 &lt;- input$in_track_name_1
+    temp_track_col_1 &lt;- input$in_track_colour_1
+    validate(need(temp_start_date_1 &lt; temp_end_date_1,&quot;End track duration date must be later than start track duration date.&quot;))
+    dfr$track[dfr$date&gt;=temp_start_date_1 &amp; dfr$date&lt;=temp_end_date_1] &lt;- temp_track_name_1
+
+    temp_start_date_2 &lt;- as.Date(input$in_track_date_start_2)
+    temp_end_date_2 &lt;- as.Date(input$in_track_date_end_2)
+    temp_track_name_2 &lt;- input$in_track_name_2
+    temp_track_col_2 &lt;- input$in_track_colour_2
+    validate(need(temp_start_date_2 &lt; temp_end_date_2,&quot;End track duration date must be later than start track duration date.&quot;))
+    dfr$track[dfr$date&gt;=temp_start_date_2 &amp; dfr$date&lt;=temp_end_date_2] &lt;- temp_track_name_2
+
+    # create order factor
+    fc &lt;- vector(mode=&quot;character&quot;)
+    if(&quot;Available&quot; %in% unique(dfr$track)) fc &lt;- c(fc,&quot;Available&quot;)
+    fc &lt;- c(fc,temp_track_name_1,temp_track_name_2)
+    if(&quot;Weekend&quot; %in% unique(dfr$track)) fc &lt;- c(fc,&quot;Weekend&quot;)
+    dfr$track &lt;- factor(dfr$track,levels=fc)
+
+    # prepare colours
+    all_cols &lt;- c(input$in_track_colour_available,temp_track_col_1,temp_track_col_2,input$in_track_colour_weekend)
+
+    # plot
+    p &lt;- ggplot(dfr,aes(x=week,y=day))+
+      geom_tile(aes(fill=track))+
+      geom_text(aes(label=ddate),size=input$in_datefontsize)+
+      scale_fill_manual(values=all_cols)+
+      facet_grid(~month,scales=&quot;free&quot;,space=&quot;free&quot;)+
+      labs(x=&quot;Week&quot;,y=&quot;&quot;)+
+      theme_bw(base_size=input$in_themefontsize)+
+      theme(legend.title=element_blank(),
+            panel.grid=element_blank(),
+            panel.border=element_blank(),
+            axis.ticks=element_blank(),
+            axis.title=element_text(colour=&quot;grey30&quot;),
+            strip.background=element_blank(),
+            strip.text=element_text(size=input$in_monthfontsize),
+            legend.position=input$in_legend_position,
+            legend.justification=input$in_legend_justification,
+            legend.direction=input$in_legend_direction,
+            legend.text=element_text(size=input$in_legendfontsize),
+            legend.key.size=unit(0.3,&quot;cm&quot;),
+            legend.spacing.x=unit(0.2,&quot;cm&quot;))
+
+    # add number of weeks to reactive value
+    store$week &lt;- length(levels(dfr$week))
+
+    return(p)
+  })
+
+  ## OUT: out_plot ------------------------------------------------------------
+  ## plots figure
+
+  output$out_plot &lt;- renderImage({
+
+    shiny::req(fn_plot())
+    shiny::req(input$in_height)
+    shiny::req(input$in_res)
+    shiny::req(input$in_scale)
+
+    height &lt;- as.numeric(input$in_height)
+    width &lt;- as.numeric(input$in_width)
+    res &lt;- as.numeric(input$in_res)
+
+    if(is.na(width)) {
+      width &lt;- (store$week*1.2)
+      if(width &lt; 4.5) width &lt;- 4.5
+    }
+
+    p &lt;- fn_plot()
+    ggsave(&quot;calendar_plot.png&quot;,p,height=height,width=width,units=&quot;cm&quot;,dpi=res)
+
+    return(list(src=&quot;calendar_plot.png&quot;,
+                contentType=&quot;image/png&quot;,
+                width=round(((width*res)/2.54)*input$in_scale,0),
+                height=round(((height*res)/2.54)*input$in_scale,0),
+                alt=&quot;calendar_plot&quot;))
+  })
+
+  # FN: fn_downloadplotname ----------------------------------------------------
+  # creates filename for download plot
+
+  fn_downloadplotname &lt;- function()
+  {
+    return(paste0(&quot;calendar_plot.&quot;,input$in_format))
+  }
+
+  ## FN: fn_downloadplot -------------------------------------------------
+  ## function to download plot
+
+  fn_downloadplot &lt;- function(){
+    shiny::req(fn_plot())
+    shiny::req(input$in_height)
+    shiny::req(input$in_res)
+    shiny::req(input$in_scale)
+
+    height &lt;- as.numeric(input$in_height)
+    width &lt;- as.numeric(input$in_width)
+    res &lt;- as.numeric(input$in_res)
+    format &lt;- input$in_format
+
+    if(is.na(width)) width &lt;- (store$week*1)+1
+
+    p &lt;- fn_plot()
+    if(format==&quot;pdf&quot; | format==&quot;svg&quot;){
+      ggsave(fn_downloadplotname(),p,height=height,width=width,units=&quot;cm&quot;,dpi=res)
+      #embed_fonts(fn_downloadplotname())
+    }else{
+      ggsave(fn_downloadplotname(),p,height=height,width=width,units=&quot;cm&quot;,dpi=res)
+
+    }
+  }
+
+  ## DHL: btn_downloadplot ----------------------------------------------------
+  ## download handler for downloading plot
+
+  output$btn_downloadplot &lt;- downloadHandler(
+    filename=fn_downloadplotname,
+    content=function(file) {
+      fn_downloadplot()
+      file.copy(fn_downloadplotname(),file,overwrite=T)
+    }
+  )
+
+  ## OBS: tracks dates ---------------------------------------------------------
+  
+  observe({
+    
+    shiny::req(input$in_duration_date_start)
+    shiny::req(input$in_duration_date_end)
+    
+    validate(need(as.Date(input$in_duration_date_start) &lt; as.Date(input$in_duration_date_end),&quot;End duration date must be later than start duration date.&quot;))
+    
+    # create date intervals
+    dseq &lt;- seq(as.Date(input$in_duration_date_start),as.Date(input$in_duration_date_end),by=1)
+    r1 &lt;- unique(as.character(cut(dseq,breaks=3)))
+    
+    updateDateInput(session,&quot;in_track_date_start_1&quot;,label=&quot;From&quot;,value=as.Date(r1[1],&quot;%Y-%m-%d&quot;))
+    updateDateInput(session,&quot;in_track_date_end_1&quot;,label=&quot;To&quot;,value=as.Date(r1[1+1],&quot;%Y-%m-%d&quot;)-1)
+    updateDateInput(session,&quot;in_track_date_start_2&quot;,label=&quot;From&quot;,value=as.Date(r1[2],&quot;%Y-%m-%d&quot;))
+    updateDateInput(session,&quot;in_track_date_end_2&quot;,label=&quot;To&quot;,value=as.Date(r1[2+1],&quot;%Y-%m-%d&quot;)-1)
+    
+  })
+})</code></pre>
+<div class="figure">
+<img src="raukr_shiny_assets/calendar-preview.png" />
+
+</div>
+<p>For a variation of this app where number of tracks are user-defined, click <a href="https://github.com/royfrancis/shinyapp_calendar_plot">here</a>.</p>
+</div>
+</div>
+</div>
+<div id="nametagger-app" class="section level1">
+<h1><span class="header-section-number">12</span> Nametagger app</h1>
+<p><strong>Topics covered</strong></p>
+<ul>
+<li>UI layout using rows and columns</li>
+<li>Input and output widgets and reactivity</li>
+<li>Uploading and using the contents of a tabular text file</li>
+<li>Reading in tabular text using text field (shinyAce)</li>
+<li>Conditional settings panel</li>
+<li>Read in and plot a raster image (logo)</li>
+<li>Generate multiple output files</li>
+<li>Download zipped output files</li>
+<li>Validating inputs with custom error messages</li>
+</ul>
+<p>The following R packages will be required for this app:</p>
+<pre class="r"><code>install.packages(c(ggplot2, shiny, shinythemes, shinyAce, showtext, curl))</code></pre>
+<p>This is another small app, created to generate labels for clip-on nametags. The final app will look something like below.</p>
+<div class="figure">
+<img src="raukr_shiny_assets/nametagger_preview.png" />
+
+</div>
+<p>The idea is to create the labels suitable for A4 paper size and generate as many pages as needed. We wish to include one, two or three lines of text on each label. Also, we may choose to include a logo. We need input for label information, option to select logo, a preview plot and finally an option to download the images.</p>
+<div id="creating-the-figure" class="section level2">
+<h2><span class="header-section-number">12.1</span> Creating the figure</h2>
+<p>We need to first write the code needed to take some input labels and generate a figure.</p>
+<p>We have measured the labels to be 9cm x 5.5cm which means that 8 of them will fit on an A4 paper suitable for print. We have the function for generating the plot below.</p>
+<pre class="r"><code># nametag_plot_page ------------------------------------------------------------
+
+#&#39; @title nametag_plot_page
+#&#39; @description Creates a page with 1-8 nametags.
+#&#39; @param dfr A data.frame. See details.
+#&#39; @param logo_right A raster logo to be placed on the right.
+#&#39; @param logo_right_scale A scale value. Typically 0.1-0.4.
+#&#39; @param logo_right_offset Logo offset from the edge. Around 0.01-0.1.
+#&#39; @param height Height of nametag in cm. Defaults to 5.5.
+#&#39; @param width Width of nametag in cm. Defaults to 9.
+#&#39; @details Argument &#39;dfr&#39; is a data.frame that must have columns
+#&#39; label1, label1_x, label1_y, page, row and col.
+#&#39;
+nametag_plot_page &lt;- function(dfr,logo_right=NULL,logo_right_scale,logo_right_offset,height=5.5,width=9)
+{
+  if(missing(dfr)) stop(&quot;Input argument &#39;dfr&#39; missing.&quot;)
+
+  # check columns
+  req_cols &lt;- c(&quot;label1&quot;,&quot;label1_sz&quot;,&quot;label1_x&quot;,&quot;label1_y&quot;,&quot;page&quot;,&quot;row&quot;,&quot;col&quot;)
+  chk_cols &lt;- req_cols %in% colnames(dfr)
+  if(any(!chk_cols)) stop(paste0(&quot;Input data is missing columns: &quot;,paste0(req_cols[!chk_cols],collapse=&quot;,&quot;),&quot;.&quot;))
+
+  # add labels if any has length &gt;0
+  p &lt;- ggplot(dfr)
+  if(any(nchar(dfr$label1)!=0)) p &lt;- p + geom_text(aes(x=label1_x,y=label1_y,label=label1),size=dfr$label1_sz[1],fontface=&quot;bold&quot;)
+
+  if(&quot;label2&quot; %in% colnames(dfr)) {
+    req_cols &lt;- c(&quot;label2_sz&quot;,&quot;label2_x&quot;,&quot;label2_y&quot;)
+    chk_cols &lt;- req_cols %in% colnames(dfr)
+    if(any(!chk_cols)) stop(paste0(&quot;Input data contains column &#39;label2&#39; but missing columns: &quot;,paste0(req_cols[!chk_cols],collapse=&quot;,&quot;),&quot;.&quot;))
+
+    if(any(nchar(dfr$label2)!=0)) p &lt;- p + geom_text(aes(x=label2_x,y=label2_y,label=label2),size=dfr$label2_sz[1])
+  }
+
+  if(&quot;label3&quot; %in% colnames(dfr)) {
+    req_cols &lt;- c(&quot;label3_sz&quot;,&quot;label3_x&quot;,&quot;label3_y&quot;)
+    chk_cols &lt;- req_cols %in% colnames(dfr)
+    if(any(!chk_cols)) stop(paste0(&quot;Input data contains column &#39;label2&#39; but missing columns: &quot;,paste0(req_cols[!chk_cols],collapse=&quot;,&quot;),&quot;.&quot;))
+
+    if(any(nchar(dfr$label3)!=0)) p &lt;- p + geom_text(aes(x=label3_x,y=label3_y,label=label3),size=dfr$label3_sz[1])
+  }
+
+  p &lt;- p + scale_x_continuous(limits=c(0,1),expand=c(0,0))+
+    scale_y_continuous(limits=c(0,1),expand=c(0,0))+
+    labs(x=NULL,y=NULL)
+
+  w_scaler &lt;- width/height
+
+  # check and add right logo
+  if(!is.null(logo_right)) {
+
+    # height scaling multiplier 1.6
+    logo_right_height &lt;- ((logo_right_scale*nrow(logo_right))/ncol(logo_right))*w_scaler
+
+    # create logo positions
+    logo_right_x2 &lt;- 1-logo_right_offset
+    logo_right_x1 &lt;- logo_right_x2-logo_right_scale
+    logo_right_y2 &lt;- 1-(logo_right_offset+(logo_right_offset*w_scaler))
+    logo_right_y1 &lt;- round(logo_right_y2-logo_right_height,3)
+
+    # add right logo to plot
+    p &lt;- p + annotation_raster(logo_right,xmin=logo_right_x1,xmax=logo_right_x2,ymin=logo_right_y1,ymax=logo_right_y2)
+  }
+  
+  p &lt;- p+
+    facet_grid(row~col)+
+    theme(axis.text=element_blank(),
+          axis.title=element_blank(),
+          panel.grid=element_blank(),
+          panel.spacing=unit(0,&quot;lines&quot;),
+          strip.background=element_blank(),
+          strip.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.background=element_rect(colour=&quot;grey75&quot;,fill=&quot;white&quot;,size=0.4,linetype=&quot;25&quot;),
+          plot.background=element_blank(),
+          plot.margin=margin(0.1,0.1,0.1,0.1),
+          axis.ticks.length=unit(0,&quot;pt&quot;))
+
+  return(p)
+}
+
+# nametag ----------------------------------------------------------------------
+
+#&#39; @title nametag
+#&#39; @description Creates an A4 paper with 1-8 name tags.
+#&#39; @param dfr A data.frame with column &#39;label1&#39;. Optionally &#39;label2&#39; and &#39;label3&#39;.
+#&#39; @param label1_sz Size of label on line 1.
+#&#39; @param label1_x X-axis coordinate for the label on line 1.
+#&#39; @param label1_y Y-axis coordinate for the label on line 1.
+#&#39; @param label2_sz Size of label on line 2.
+#&#39; @param label2_x X-axis coordinate for the label on line 2.
+#&#39; @param label2_y Y-axis coordinate for the label on line 2.
+#&#39; @param label3_sz Size of label on line 3.
+#&#39; @param label3_x X-axis coordinate for the label on line 3.
+#&#39; @param label3_y Y-axis coordinate for the label on line 3.
+#&#39; @param logo_right A raster logo for the right side.
+#&#39; @param logo_right_offset Logo offset from the edge. Around 0.01-0.1.
+#&#39; @param logo_right_scale A scale value. Typically 0.1-0.4.
+#&#39; @param filename A character denoting filename (prefix) of exported files.Defaults to &#39;nametag_&#39; followed by page number and &#39;.png&#39;.
+#&#39; @param path A character path to the directory where file(s) are to be exported. Do not add / at the end of the path.
+#&#39; @param ftype Export file type. &#39;png&#39; or &#39;pdf&#39;. Defaults to &#39;png&#39;.
+#&#39; @param height Height of nametag in cm. Defaults to 5.5.
+#&#39; @param width Width of nametag in cm. Defaults to 9.
+#&#39; @details A data.frame with one column &#39;label1&#39; is the only mandatory input for this function.
+#&#39;
+nametag &lt;- function(dfr,label1_sz=8,label1_x=0.5,label1_y=0.54,
+                    label2_sz=6.5,label2_x=0.5,label2_y=0.37,
+                    label3_sz=6,label3_x=0.5,label3_y=0.22,
+                    logo_right=NULL,logo_right_offset=0.04,logo_right_scale=0.2,
+                    filename=&quot;nametag_&quot;,path=&quot;.&quot;,ftype=&quot;png&quot;,height=5.5,width=9)
+{
+  if(missing(dfr)) stop(&quot;Input argument &#39;dfr&#39; is missing.&quot;)
+  if(!is.data.frame(dfr)) stop(&quot;Input argument &#39;dfr&#39; must be a data.frame.&quot;)
+  if(nrow(dfr)&lt;1) stop(&quot;Input data must have at least 1 row.&quot;)
+  if(!(&quot;label1&quot;  %in% colnames(dfr))) stop(&quot;Input data must contain a column named &#39;label1&#39;.&quot;)
+  if(&quot;label3&quot;  %in% colnames(dfr)) {if(!(&quot;label2&quot;  %in% colnames(dfr))) stop(&quot;Column &#39;label3&#39; is present, but &#39;label2&#39; is missing. If &#39;label3&#39; is used, &#39;label2&#39; must be present.&quot; )}
+  if(is.null(filename)) filename &lt;- &quot;nametag_&quot;
+
+  # compute tags and pages
+  n &lt;- nrow(dfr)
+  npages &lt;- ceiling(n/8)
+  ntags &lt;- npages*8
+  filler &lt;- ntags-n
+  l1 &lt;- c(dfr$label1,rep(&quot;&quot;,filler))
+  if(&quot;label2&quot;  %in% colnames(dfr)) l2 &lt;- c(dfr$label2,rep(&quot;&quot;,filler))
+  if(&quot;label3&quot;  %in% colnames(dfr)) l3 &lt;- c(dfr$label3,rep(&quot;&quot;,filler))
+  nn &lt;- length(l1)
+
+  # create working df
+  dfw &lt;- data.frame(label1=l1,label1_sz=label1_sz,
+                    label1_x=rep(label1_x,nn),label1_y=rep(label1_y,nn),
+                    stringsAsFactors=F)
+
+  if(&quot;label2&quot;  %in% colnames(dfr)) {
+    dfw$label2 &lt;- l2
+    dfw$label2_sz &lt;- label2_sz
+    dfw$label2_x &lt;- rep(label2_x,nn)
+    dfw$label2_y &lt;- rep(label2_y,nn)
+  }
+
+  if(&quot;label3&quot;  %in% colnames(dfr)) {
+    dfw$label3 &lt;- l3
+    dfw$label3_sz &lt;- label3_sz
+    dfw$label3_x &lt;- rep(label3_x,nn)
+    dfw$label3_y &lt;- rep(label3_y,nn)
+  }
+
+  dfw$page &lt;- rep(1:npages,each=8)
+  dfw$row &lt;- rep(rep(1:4,each=2),npages)
+  dfw$col &lt;- rep(rep(c(1,2),4),npages)
+
+  dflist &lt;- split(dfw,dfw$page)
+  ids &lt;- names(dflist)
+
+  # creates plots and saves ggplot objects to a list
+  plist &lt;- lapply(dflist,nametag_plot_page,logo_right,logo_right_scale,logo_right_offset,height=height,width=width)
+
+  # function to export images
+  efun &lt;- function(p,id,height,width,filename,ftype) {
+    if(ftype==&quot;png&quot;) {
+      fname &lt;- paste0(path,&quot;/&quot;,filename,id,&quot;.png&quot;)
+      ggsave(filename=fname,plot=p,height=height*4,width=width*2,units=&quot;cm&quot;,dpi=300,device=&quot;png&quot;)
+    }
+    if(ftype==&quot;pdf&quot;) {
+      fname &lt;- paste0(path,&quot;/&quot;,filename,id,&quot;.pdf&quot;)
+      ggsave(filename=fname,plot=p,height=height*4*0.3937,width=width*2*0.3937,device=&quot;pdf&quot;)
+    }
+  }
+
+  # exports images
+  mapply(function(p,id,height,width,filename,ftype) efun(p,id,height,width,filename,ftype),plist,ids,height,width,filename,ftype)
+}</code></pre>
+<p>We will skip the details of the function as it is not exactly shiny related. There is a function called <code>nametag()</code> which generates the figures given appropriate input. It needs an input data.frame with at least one column named <code>label1</code>. We can test this out.</p>
+<pre class="r"><code>dfr &lt;- data.frame(label1=c(&quot;Person A&quot;,&quot;Person B&quot;),label2=c(&quot;Institution X&quot;,&quot;Institution Y&quot;),stringsAsFactors = F)
+nametag(dfr)</code></pre>
+<p>This should have exported a png image to the working directory. <code>nametag()</code> also has an argument called <code>logo_right</code> to pass in a raster image which will be plotted as a logo on the top right side. <code>nametag()</code> also has numerous other arguments to adjust label positions, logo position, size justification etc. But, these arguments have reasonable defaults.</p>
+</div>
+<div id="building-the-app-1" class="section level2">
+<h2><span class="header-section-number">12.2</span> Building the app</h2>
+<p>Now that we have the function, we are ready to build the GUI around it. Let’s remind ourselves of the app layout.</p>
+<div class="figure">
+<img src="raukr_shiny_assets/nametagger_preview.png" />
+
+</div>
+<div id="ui-1" class="section level3">
+<h3><span class="header-section-number">12.2.1</span> UI</h3>
+<p>We want a three-column layout with a title panel on the top. The input widgets go on the left and the preview figure in the middle and the optional settings on the right. We can start by building up the structure using row and column functions.</p>
+<pre class="r"><code>shinyApp(
+ui=fluidPage(
+  fixedRow(
+      column(12,
+    h1(&quot;Nametagger&quot;),
+    fixedRow(
+    column(3
+    ),
+    column(6
+    ),
+    uiOutput(&quot;ui_settings&quot;)
+    )
+  )
+)
+),
+server=function(input,output) {}
+)</code></pre>
+<p><img src="shiny_lab_files/figure-html/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>This code displays a blank page with the title. But, there is quite a bit going on here. We started with a responsive <code>fluidPage</code> container. We added a row and a column to hold everything. This column has the full width of 12. We added the h1 heading. Then we added a new row which contains 3 columns of widths 3,6 and 3 adding up to 12. The first column will hold the standard input widgets, second column will contain the preview plot and the last column is a hidden conditional UI which will hold the optional settings. Conditional UI defined using <code>uiOutput()</code> is hidden by default and is displayed only if a condition is true.</p>
+<p>Next, we will populate the columns with widgets.</p>
+<pre class="r"><code>shinyApp(
+ui=fluidPage(
+  fixedRow(
+      column(12,style=&quot;margin:15px;&quot;,
+    h1(&quot;Nametagger&quot;),
+    fixedRow(
+    column(3,
+      fluidRow(
+        column(6,
+               selectInput(&quot;in_input&quot;,&quot;Input method&quot;,choices=c(&quot;Upload file&quot;,&quot;Paste text&quot;),
+                           selected=&quot;Paste text&quot;,multiple=FALSE)),
+        column(6,
+               selectInput(&quot;in_data_format&quot;,&quot;File format&quot;,choices=c(&quot;tsv&quot;,&quot;csv&quot;,&quot;csv2&quot;),selected=&quot;csv&quot;,multiple=FALSE))
+        ),
+      uiOutput(&quot;ui_input&quot;),
+      helpText(&quot;Input must contain column names. &#39;label1&#39; is a mandatory column. Optional columns are &#39;label2&#39; and &#39;label3&#39;.&quot;,style=&quot;display:inline;&quot;),
+      selectInput(&quot;in_logo_right&quot;,label=&quot;Logo&quot;,c(&quot;None&quot;,&quot;NBIS Green&quot;,&quot;NBIS Blue&quot;,&quot;NBIS Orange&quot;,&quot;SciLifeLab Green&quot;,&quot;SciLifeLab Blue&quot;,&quot;SciLifeLab Orange&quot;,&quot;Elixir&quot;),selected=&quot;None&quot;,multiple=FALSE),
+      downloadButton(&quot;btn_download&quot;,&quot;Download&quot;),
+      checkboxInput(&quot;in_settings&quot;,&quot;Settings&quot;,value=FALSE),
+      tags$hr(),
+      helpText(&quot;2019 | NBIS&quot;)
+    ),
+    column(6,
+      textOutput(&quot;out_pagecount&quot;),
+      tags$br(),
+      imageOutput(&quot;out_plot&quot;)
+    ),
+    uiOutput(&quot;ui_settings&quot;)
+    )
+  )
+)),
+server=function(input,output) {}
+)</code></pre>
+<div class="figure">
+<img src="raukr_shiny_assets/nametagger-1.png" />
+
+</div>
+<p>We have added input for file upload and paste text so that users can input labels either way. The tabular column delimiter can be user-defined. The actual input widget is hidden since it’s a conditional UI. This works only when further code is defined under server. A help text is added to explain the input format to the user. A download button to download the images. A settings checkbox to optionally display the advanced settings panel. The main column has text showing number of files generated and the preview plot.</p>
+<p>Finally, we will add some custom styling to the columns. For example <code>style=&quot;max-width:300px;border-radius:4px;background:#ebedef;&quot;</code> was added to the left input column to colour the background grey, rounded corners and limit responsive width to 300px.</p>
+<pre class="r"><code>shinyApp(
+ui=fluidPage(
+  fixedRow(
+      column(12,style=&quot;margin:15px;&quot;,
+    h1(&quot;Nametagger&quot;),
+    fixedRow(
+    column(3,style=&quot;max-width:300px;background:#ebedef;padding-top:15px;padding-bottom:15px;border-radius:4px;&quot;,
+      fluidRow(
+        column(6,style=list(&quot;padding-right:5px;&quot;),
+               selectInput(&quot;in_input&quot;,&quot;Input method&quot;,choices=c(&quot;Upload file&quot;,&quot;Paste text&quot;),
+                           selected=&quot;Paste text&quot;,multiple=FALSE)),
+        column(6,style=list(&quot;padding-left: 5px;&quot;),
+               selectInput(&quot;in_data_format&quot;,&quot;File format&quot;,choices=c(&quot;tsv&quot;,&quot;csv&quot;,&quot;csv2&quot;),selected=&quot;csv&quot;,multiple=FALSE))
+        ),
+      uiOutput(&quot;ui_input&quot;),
+      helpText(&quot;Input must contain column names. &#39;label1&#39; is a mandatory column. Optional columns are &#39;label2&#39; and &#39;label3&#39;.&quot;,style=&quot;display:inline;&quot;),
+      selectInput(&quot;in_logo_right&quot;,label=&quot;Logo&quot;,c(&quot;None&quot;,&quot;NBIS Green&quot;,&quot;NBIS Blue&quot;,&quot;NBIS Orange&quot;,&quot;SciLifeLab Green&quot;,&quot;SciLifeLab Blue&quot;,&quot;SciLifeLab Orange&quot;,&quot;Elixir&quot;),selected=&quot;None&quot;,multiple=FALSE),
+      downloadButton(&quot;btn_download&quot;,&quot;Download&quot;),
+      checkboxInput(&quot;in_settings&quot;,&quot;Settings&quot;,value=FALSE),
+      tags$hr(),
+      helpText(&quot;2019 | NBIS&quot;)
+    ),
+    column(6,style=&quot;max-width:450px;min-width:400px;padding-top:15px;padding-bottom:15px;border-radius:4px;&quot;,
+      textOutput(&quot;out_pagecount&quot;),
+      tags$br(),
+      imageOutput(&quot;out_plot&quot;)
+    ),
+    uiOutput(&quot;ui_settings&quot;)
+    )
+  )
+)
+),
+server=function(input,output) {}
+)</code></pre>
+<div class="figure">
+<img src="raukr_shiny_assets/nametagger-2.png" />
+
+</div>
+</div>
+<div id="server-1" class="section level3">
+<h3><span class="header-section-number">12.2.2</span> Server</h3>
+<p>Now let’s plan a bit on how to organise the server code. We can break it up into 8 blocks.</p>
+<ol style="list-style-type: decimal">
+<li>Conditional UI for input</li>
+<li>Conditional UI for settings</li>
+<li>Reactive function for reading and processing input</li>
+<li>Reactive function for computing plotting parameters</li>
+<li>Plot output for plotting preview</li>
+<li>Text output for displaying number of files generated</li>
+<li>Function for downloading files</li>
+<li>A download handler for the download button</li>
+</ol>
+<p>Here is a flow diagram roughly showing the sequence of steps. <code>&lt; &gt; v</code> denotes direction, <code>()</code> denotes optional input and <code>[]</code> denotes endpoint outputs.</p>
+<pre><code>      1
+      v
+[6] &lt; 3 &lt; (2)
+      v
+      4 &gt; [7] &lt; 8
+      v
+     [5]</code></pre>
+<p>The plot preview block (5) and download block (7) depends on common reactive functions 3 and 4.</p>
+<p>Let’s look at block 1. This is a conditional UI which is active only if the <strong>Input method</strong> (<code>input$in_input</code>) is not NULL. If input method is <strong>Upload file</strong>, then the UI for file upload is displayed, otherwise the input method is paste text (aceEditor).</p>
+<pre class="r"><code>## UI: ui_input --------------------------------------------------------------
+## ui to select input type: upload or paste
+output$ui_input &lt;- renderUI({
+validate(fn_validate(input$in_input))
+
+if(input$in_input==&quot;Upload file&quot;) {
+  fileInput(&quot;in_data&quot;,&quot;Upload a text file.&quot;,multiple=FALSE)
+}else{
+  shinyAce::aceEditor(&quot;in_data&quot;,&quot;label1,label2\nJohn Doe,Uppsala University\nMary Jane,Stockholm University&quot;,mode=&quot;text&quot;,theme=&quot;textmate&quot;,readOnly=FALSE,height=&quot;150px&quot;,fontSize=12)
+}
+})</code></pre>
+<p>The settings panel is displayed only if the <strong>Settings</strong> checkbox is displayed. This panel contains input widgets for adjusting the position and alignment of text and logo.</p>
+<p>Let’s look at block 3 to process input data. It depends on input method and input data format. Depending on the input method (file upload/paste text), different processing steps are carried out eventually resulting in identical output data.frame structure. Upload file is read in using defined separator. For paste-text field, the input is split by separator and organised into a data.frame.</p>
+<pre class="r"><code>## FN: fn_input --------------------------------------------------------
+## function to get input data
+
+fn_input &lt;- reactive({
+  validate(fn_validate(input$in_input))
+  validate(fn_validate(try(input$in_data),message1=&quot;Upload a file or paste text.&quot;))
+  validate(fn_validate(input$in_data_format))
+  fr &lt;- ifelse(input$in_data_format==&quot;tsv&quot;,&quot;\t&quot;,ifelse(input$in_data_format==&quot;csv&quot;,&quot;,&quot;,&quot;;&quot;))
+
+  if(input$in_input==&quot;Upload file&quot;) {
+    dfr &lt;- read.delim(input$in_data$datapath,header=TRUE,sep=fr,stringsAsFactors=F)
+  }
+  if(input$in_input==&quot;Paste text&quot;) {
+    df1 &lt;- as.data.frame(strsplit(as.character(unlist(strsplit(input$in_data,&quot;\n&quot;))),fr))
+    cnames &lt;- as.character(df1[,1])
+    df1[,1] &lt;- NULL
+    dfr &lt;- as.data.frame(t(df1),stringsAsFactors=F)
+    colnames(dfr) &lt;- cnames
+    rownames(dfr) &lt;- 1:nrow(dfr)
+  }
+
+  colnames(dfr) &lt;- tolower(colnames(dfr))
+  return(dfr)
+})</code></pre>
+<p>Let’s explore the block 4 that generates the plotting parameters. It depends on block 3 (<code>fn_input()</code>), settings checkbox (<code>input$in_settings</code>) and logo dropdown (<code>input$in_logo_right</code>).</p>
+<p>It checks if columns <code>label1</code>,<code>label2</code> and <code>label3</code> are present in the input data.frame. Label size, x-position, y-position, logo scale and logo offset and set from input widgets or defaults are set. Depending on selected logo, the path is set and logo is read in. All these parameters are returned as a list.</p>
+<p>The logos are placed under a directory labelled <strong>www</strong> in the app root.</p>
+<pre class="r"><code>## FN: fn_params ------------------------------------------------------------
+## function to get plot params
+
+fn_params &lt;- reactive({
+
+  validate(fn_validate(fn_input()))
+  validate(fn_validate(input$in_settings))
+  validate(fn_validate(input$in_logo_right))
+
+  if(&quot;label1&quot; %in% colnames(fn_input())) {l1 &lt;- TRUE}else{l1 &lt;- FALSE}
+  if(&quot;label2&quot; %in% colnames(fn_input())) {l2 &lt;- TRUE}else{l2 &lt;- FALSE}
+  if(&quot;label3&quot; %in% colnames(fn_input())) {l3 &lt;- TRUE}else{l3 &lt;- FALSE}
+
+  # if values are available, use them, else use defaults
+  if(is.null(input$in_label1_size)){l1s &lt;- 8}else{l1s &lt;- input$in_label1_size}
+  if(is.null(input$in_label1_x)){l1x &lt;- 0.5}else{l1x &lt;- input$in_label1_x}
+  if(is.null(input$in_label1_y)){l1y &lt;- 0.54}else{l1y &lt;- input$in_label1_y}
+  if(is.null(input$in_label2_size)){l2s &lt;- 6.5}else{l2s &lt;- input$in_label2_size}
+  if(is.null(input$in_label2_x)){l2x &lt;- 0.5}else{l2x &lt;- input$in_label2_x}
+  if(is.null(input$in_label2_y)){l2y &lt;- 0.37}else{l2y &lt;- input$in_label2_y}
+  if(is.null(input$in_label3_size)){l3s &lt;- 6}else{l3s &lt;- input$in_label3_size}
+  if(is.null(input$in_label3_x)){l3x &lt;- 0.5}else{l3x &lt;- input$in_label3_x}
+  if(is.null(input$in_label3_y)){l3y &lt;- 0.22}else{l3y &lt;- input$in_label3_y}
+  if(is.null(input$in_logo_right_offset)){lro &lt;- 0.04}else{lro &lt;- input$in_logo_right_offset}
+  if(is.null(input$in_logo_right_scale)){lrs &lt;- 0.2}else{lrs &lt;- input$in_logo_right_scale}
+
+  # logos
+  lr = switch(
+    input$in_logo_right,
+    &quot;None&quot;=NULL,
+    &quot;NBIS Green&quot;=&quot;./www/nbis_200_green.png&quot;,
+    &quot;NBIS Blue&quot;=&quot;./www/nbis_200_blue.png&quot;,
+    &quot;NBIS Orange&quot;=&quot;./www/nbis_200_orange.png&quot;,
+    &quot;SciLifeLab Green&quot;=&quot;./www/scilifelab_200_green.png&quot;,
+    &quot;SciLifeLab Blue&quot;=&quot;./www/scilifelab_200_blue.png&quot;,
+    &quot;SciLifeLab Orange&quot;=&quot;./www/scilifelab_200_orange.png&quot;,
+    &quot;Elixir&quot;=&quot;./www/elixir_200.png&quot;
+  )
+  if(!is.null(lr)) {lri &lt;- readPNG(lr)}else{lri &lt;- NULL}
+
+  return(list(l1s=l1s,l1x=l1x,l1y=l1y,l2s=l2s,l2x=l2x,l2y=l2y,l3s=l3s,l3x=l3x,l3y=l3y,
+              lro=lro,lrs=lrs,lri=lri))
+})</code></pre>
+<p>Now, we have block 5 which creates the preview plot. It takes input from block 3 (<code>fn_input()</code>) and parameters from block 4 (<code>fn_params()</code>) which are passed to our <code>nametag()</code> function. Lastly, a list is returned with image path and render dimensions.</p>
+<pre class="r"><code>## OUT: out_plot ------------------------------------------------------------
+## plots figure
+output$out_plot &lt;- renderImage({
+
+  validate(fn_validate(fn_input()))
+  validate(fn_validate(fn_params()))
+  p &lt;- fn_params()
+
+  nametag(dfr=fn_input(),label1_sz=p$l1s,label1_x=p$l1x,label1_y=p$l1y,
+          label2_sz=p$l2s,label2_x=p$l2x,label2_y=p$l2y,
+          label3_sz=p$l3s,label3_x=p$l3x,label3_y=p$l3y,
+          logo_right=p$lri,logo_right_offset=p$lro,logo_right_scale=p$lrs)
+
+  return(list(src=&quot;nametag_1.png&quot;,contentType=&quot;image/png&quot;,
+              width=round(9*2*37.7*0.6,0),
+              height=round(5.5*4*37.7*0.6,0),
+              alt=&quot;nametagger_image&quot;))
+})</code></pre>
+<p>Block 6 simply prints out the number of pages of images.</p>
+<pre class="r"><code>## OUT: out_pagecount -------------------------------------------------------
+## prints general variables for debugging
+
+output$out_pagecount &lt;- renderText({
+
+  req(fn_input())
+
+  npages &lt;- ceiling(nrow(fn_input())/8)
+  paste0(&quot;Showing 1 of &quot;,npages,&quot; pages.&quot;)
+})</code></pre>
+<p>Here is block 7 and 8. Block 7 is the download function. This is very similar to the plotting block. The only real addition here is creation of the zip file collating all output PNGs. Individual images are then deleted. Block 8 below when triggered using the download button calls the <code>fn_download()</code> function.</p>
+<pre class="r"><code>## FN: fn_download -----------------------------------------------------------
+## function to download a zipped file with images
+
+fn_download &lt;- function(){
+
+  validate(fn_validate(fn_input()))
+  validate(fn_validate(fn_params()))
+
+  p &lt;- fn_params()
+  nametag(dfr=fn_input(),label1_sz=p$l1s,label1_x=p$l1x,label1_y=p$l1y,
+          label2_sz=p$l2s,label2_x=p$l2x,label2_y=p$l2y,
+          label3_sz=p$l3s,label3_x=p$l3x,label3_y=p$l3y,
+          logo_right=p$lri,logo_right_offset=p$lro,logo_right_scale=p$lrs,
+          path=&quot;.&quot;)
+
+  unlink(&quot;nametagger.zip&quot;)
+  zip(&quot;nametagger.zip&quot;,files=list.files()[grep(&quot;nametag_[0-9]+[.png$|.pdf$]&quot;,list.files())])
+  unlink(list.files()[grep(&quot;nametag_[0-9]+[.png$|.pdf$]&quot;,list.files())])
+}
+
+## DHL: btn_download ---------------------------------------------------------
+## download handler for downloading zipped file
+
+output$btn_download &lt;- downloadHandler(
+  filename=&quot;nametagger.zip&quot;,
+  content=function(file) {
+    fn_download()
+    file.copy(&quot;nametagger.zip&quot;,file,overwrite=T)
+  }
+)</code></pre>
+<p>Now, we can add all of this to the server section. The final code looks like below.</p>
+<pre class="r"><code>library(ggplot2)
+library(shinyAce)
+
+shinyApp(
+  
+  # UI -------------------------------------------------------------------------
+  ui=fluidPage(
+    fixedRow(
+      column(12,style=&quot;margin:15px;&quot;,
+             h1(&quot;Nametagger&quot;),
+             fixedRow(
+               column(3,style=&quot;max-width:300px;background:#ebedef;padding-top:15px;padding-bottom:15px;border-radius:4px;&quot;,
+                      fluidRow(
+                        column(6,style=list(&quot;padding-right:5px;&quot;),
+                               selectInput(&quot;in_input&quot;,&quot;Input method&quot;,choices=c(&quot;Upload file&quot;,&quot;Paste text&quot;),
+                                           selected=&quot;Paste text&quot;,multiple=FALSE)),
+                        column(6,style=list(&quot;padding-left: 5px;&quot;),
+                               selectInput(&quot;in_data_format&quot;,&quot;File format&quot;,choices=c(&quot;tsv&quot;,&quot;csv&quot;,&quot;csv2&quot;),selected=&quot;csv&quot;,multiple=FALSE))
+                      ),
+                      uiOutput(&quot;ui_input&quot;),
+                      helpText(&quot;Input must contain column names. &#39;label1&#39; is a mandatory column. Optional columns are &#39;label2&#39; and &#39;label3&#39;.&quot;,style=&quot;display:inline;&quot;),
+                      selectInput(&quot;in_logo_right&quot;,label=&quot;Logo&quot;,c(&quot;None&quot;,&quot;NBIS Green&quot;,&quot;NBIS Blue&quot;,&quot;NBIS Orange&quot;,&quot;SciLifeLab Green&quot;,&quot;SciLifeLab Blue&quot;,&quot;SciLifeLab Orange&quot;,&quot;Elixir&quot;),selected=&quot;None&quot;,multiple=FALSE),
+                      downloadButton(&quot;btn_download&quot;,&quot;Download&quot;),
+                      checkboxInput(&quot;in_settings&quot;,&quot;Settings&quot;,value=FALSE),
+                      tags$hr(),
+                      helpText(&quot;2019 | NBIS&quot;)
+               ),
+               column(6,style=&quot;max-width:450px;min-width:400px;padding-top:15px;padding-bottom:15px;border-radius:4px;&quot;,
+                      textOutput(&quot;out_pagecount&quot;),
+                      tags$br(),
+                      imageOutput(&quot;out_plot&quot;)
+               ),
+               uiOutput(&quot;ui_settings&quot;)
+             )
+      )
+    )
+  ),
+  
+  # SERVER -----------------------------------------------------------------------
+  
+  server=function(input, output, session) {
+    
+    ## UI: ui_input --------------------------------------------------------------
+    ## ui to select input type: upload or paste
+    output$ui_input &lt;- renderUI({
+      validate(fn_validate(input$in_input))
+      
+      if(input$in_input==&quot;Upload file&quot;) {
+        fileInput(&quot;in_data&quot;,&quot;Upload a text file.&quot;,multiple=FALSE)
+      }else{
+        shinyAce::aceEditor(&quot;in_data&quot;,&quot;label1,label2\nJohn Doe,Uppsala University\nMary Jane,Stockholm University&quot;,mode=&quot;text&quot;,theme=&quot;textmate&quot;,readOnly=FALSE,height=&quot;150px&quot;,fontSize=12)
+      }
+    })
+    
+    ## UI: ui_settings -----------------------------------------------------------
+    ## ui to display settings
+    output$ui_settings &lt;- renderUI({
+      validate(fn_validate(input$in_settings))
+      
+      if(input$in_settings) {
+        column(3,style=&quot;max-width:300px;border-radius:4px;background:#ebedef;&quot;,
+               h4(&quot;Settings&quot;),
+               div(
+                 tags$b(&quot;Label 1&quot;),
+                 fluidRow(
+                   column(4,style=list(&quot;padding-right: 3px;&quot;),
+                          numericInput(&quot;in_label1_size&quot;,label=&quot;Size&quot;,value=8,min=4,max=12,step=0.5)
+                   ),
+                   column(4,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+                          numericInput(&quot;in_label1_x&quot;,label=&quot;X pos&quot;,value=0.5,min=0,max=1,step=0.02)
+                   ),
+                   column(4,style=list(&quot;padding-left: 3px;&quot;),
+                          numericInput(&quot;in_label1_y&quot;,label=&quot;Y pos&quot;,value=0.54,min=0,max=1,step=0.02)
+                   )
+                 ),
+                 tags$b(&quot;Label 2&quot;),
+                 fluidRow(
+                   column(4,style=list(&quot;padding-right: 3px;&quot;),
+                          numericInput(&quot;in_label2_size&quot;,label=&quot;Size&quot;,value=6.5,min=4,max=12,step=0.5)
+                   ),
+                   column(4,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+                          numericInput(&quot;in_label2_x&quot;,label=&quot;X pos&quot;,value=0.5,min=0,max=1,step=0.02)
+                   ),
+                   column(4,style=list(&quot;padding-left: 3px;&quot;),
+                          numericInput(&quot;in_label2_y&quot;,label=&quot;Y pos&quot;,value=0.37,min=0,max=1,step=0.02)
+                   )
+                 ),
+                 tags$b(&quot;Label 3&quot;),
+                 fluidRow(
+                   column(4,style=list(&quot;padding-right: 3px;&quot;),
+                          numericInput(&quot;in_label3_size&quot;,label=&quot;Size&quot;,value=6,min=4,max=12,step=0.5)
+                   ),
+                   column(4,style=list(&quot;padding-right: 3px; padding-left: 3px;&quot;),
+                          numericInput(&quot;in_label3_x&quot;,label=&quot;X pos&quot;,value=0.5,min=0,max=1,step=0.02)
+                   ),
+                   column(4,style=list(&quot;padding-left: 3px;&quot;),
+                          numericInput(&quot;in_label3_y&quot;,label=&quot;Y pos&quot;,value=0.22,min=0,max=1,step=0.02)
+                   )
+                 ),
+                 tags$b(&quot;Logo&quot;),
+                 fluidRow(
+                   column(6,style=list(&quot;padding-right: 3px;&quot;),
+                          numericInput(&quot;in_logo_right_offset&quot;,label=&quot;Offset&quot;,value=0.02,min=0,max=0.2,step=0.01)
+                   ),
+                   column(6,style=list(&quot;padding-left: 3px;&quot;),
+                          numericInput(&quot;in_logo_right_scale&quot;,label=&quot;Width&quot;,value=0.2,min=0.1,max=0.6,step=0.01)
+                   )
+                 )
+               )
+        )
+      }
+      
+    })
+    
+    ## FN: fn_input --------------------------------------------------------
+    ## function to get input data
+    
+    fn_input &lt;- reactive({
+      validate(fn_validate(input$in_input))
+      validate(fn_validate(try(input$in_data),message1=&quot;Upload a file or paste text.&quot;))
+      validate(fn_validate(input$in_data_format))
+      fr &lt;- ifelse(input$in_data_format==&quot;tsv&quot;,&quot;\t&quot;,ifelse(input$in_data_format==&quot;csv&quot;,&quot;,&quot;,&quot;;&quot;))
+      
+      if(input$in_input==&quot;Upload file&quot;) {
+        dfr &lt;- read.delim(input$in_data$datapath,header=TRUE,sep=fr,stringsAsFactors=F)
+      }
+      if(input$in_input==&quot;Paste text&quot;) {
+        df1 &lt;- as.data.frame(strsplit(as.character(unlist(strsplit(input$in_data,&quot;\n&quot;))),fr))
+        cnames &lt;- as.character(df1[,1])
+        df1[,1] &lt;- NULL
+        dfr &lt;- as.data.frame(t(df1),stringsAsFactors=F)
+        colnames(dfr) &lt;- cnames
+        rownames(dfr) &lt;- 1:nrow(dfr)
+      }
+      
+      colnames(dfr) &lt;- tolower(colnames(dfr))
+      return(dfr)
+    })
+    
+    ## FN: fn_params ------------------------------------------------------------
+    ## function to get plot params
+    
+    fn_params &lt;- reactive({
+      
+      validate(fn_validate(fn_input()))
+      validate(fn_validate(input$in_settings))
+      validate(fn_validate(input$in_logo_right))
+      
+      if(&quot;label1&quot; %in% colnames(fn_input())) {l1 &lt;- TRUE}else{l1 &lt;- FALSE}
+      if(&quot;label2&quot; %in% colnames(fn_input())) {l2 &lt;- TRUE}else{l2 &lt;- FALSE}
+      if(&quot;label3&quot; %in% colnames(fn_input())) {l3 &lt;- TRUE}else{l3 &lt;- FALSE}
+      
+      # if values are available, use them, else use defaults
+      if(is.null(input$in_label1_size)){l1s &lt;- 8}else{l1s &lt;- input$in_label1_size}
+      if(is.null(input$in_label1_x)){l1x &lt;- 0.5}else{l1x &lt;- input$in_label1_x}
+      if(is.null(input$in_label1_y)){l1y &lt;- 0.54}else{l1y &lt;- input$in_label1_y}
+      if(is.null(input$in_label2_size)){l2s &lt;- 6.5}else{l2s &lt;- input$in_label2_size}
+      if(is.null(input$in_label2_x)){l2x &lt;- 0.5}else{l2x &lt;- input$in_label2_x}
+      if(is.null(input$in_label2_y)){l2y &lt;- 0.37}else{l2y &lt;- input$in_label2_y}
+      if(is.null(input$in_label3_size)){l3s &lt;- 6}else{l3s &lt;- input$in_label3_size}
+      if(is.null(input$in_label3_x)){l3x &lt;- 0.5}else{l3x &lt;- input$in_label3_x}
+      if(is.null(input$in_label3_y)){l3y &lt;- 0.22}else{l3y &lt;- input$in_label3_y}
+      if(is.null(input$in_logo_right_offset)){lro &lt;- 0.04}else{lro &lt;- input$in_logo_right_offset}
+      if(is.null(input$in_logo_right_scale)){lrs &lt;- 0.2}else{lrs &lt;- input$in_logo_right_scale}
+      
+      # logos
+      lr = switch(
+        input$in_logo_right,
+        &quot;None&quot;=NULL,
+        &quot;NBIS Green&quot;=&quot;./www/nbis_200_green.png&quot;,
+        &quot;NBIS Blue&quot;=&quot;./www/nbis_200_blue.png&quot;,
+        &quot;NBIS Orange&quot;=&quot;./www/nbis_200_orange.png&quot;,
+        &quot;SciLifeLab Green&quot;=&quot;./www/scilifelab_200_green.png&quot;,
+        &quot;SciLifeLab Blue&quot;=&quot;./www/scilifelab_200_blue.png&quot;,
+        &quot;SciLifeLab Orange&quot;=&quot;./www/scilifelab_200_orange.png&quot;,
+        &quot;Elixir&quot;=&quot;./www/elixir_200.png&quot;
+      )
+      if(!is.null(lr)) {lri &lt;- readPNG(lr)}else{lri &lt;- NULL}
+      
+      return(list(l1s=l1s,l1x=l1x,l1y=l1y,l2s=l2s,l2x=l2x,l2y=l2y,l3s=l3s,l3x=l3x,l3y=l3y,
+                  lro=lro,lrs=lrs,lri=lri))
+    })
+    
+    ## OUT: out_plot ------------------------------------------------------------
+    ## plots figure
+    
+    output$out_plot &lt;- renderImage({
+      
+      validate(fn_validate(fn_input()))
+      validate(fn_validate(fn_params()))
+      p &lt;- fn_params()
+      
+      nametag(dfr=fn_input(),label1_sz=p$l1s,label1_x=p$l1x,label1_y=p$l1y,
+              label2_sz=p$l2s,label2_x=p$l2x,label2_y=p$l2y,
+              label3_sz=p$l3s,label3_x=p$l3x,label3_y=p$l3y,
+              logo_right=p$lri,logo_right_offset=p$lro,logo_right_scale=p$lrs)
+      
+      return(list(src=&quot;nametag_1.png&quot;,contentType=&quot;image/png&quot;,
+                  width=round(9*2*37.7*0.6,0),
+                  height=round(5.5*4*37.7*0.6,0),
+                  alt=&quot;nametagger_image&quot;))
+    })
+    
+    ## OUT: out_pagecount -------------------------------------------------------
+    ## prints general variables for debugging
+    
+    output$out_pagecount &lt;- renderText({
+      
+      req(fn_input())
+      
+      npages &lt;- ceiling(nrow(fn_input())/8)
+      paste0(&quot;Showing 1 of &quot;,npages,&quot; pages.&quot;)
+    })
+    
+    ## FN: fn_download -----------------------------------------------------------
+    ## function to download a zipped file with images
+    
+    fn_download &lt;- function(){
+      
+      validate(fn_validate(fn_input()))
+      validate(fn_validate(fn_params()))
+      
+      p &lt;- fn_params()
+      nametag(dfr=fn_input(),label1_sz=p$l1s,label1_x=p$l1x,label1_y=p$l1y,
+              label2_sz=p$l2s,label2_x=p$l2x,label2_y=p$l2y,
+              label3_sz=p$l3s,label3_x=p$l3x,label3_y=p$l3y,
+              logo_right=p$lri,logo_right_offset=p$lro,logo_right_scale=p$lrs,
+              path=&quot;.&quot;)
+      
+      unlink(&quot;nametagger.zip&quot;)
+      zip(&quot;nametagger.zip&quot;,files=list.files()[grep(&quot;nametag_[0-9]+[.png$|.pdf$]&quot;,list.files())])
+      unlink(list.files()[grep(&quot;nametag_[0-9]+[.png$|.pdf$]&quot;,list.files())])
+    }
+    
+    ## DHL: btn_download ---------------------------------------------------------
+    ## download handler for downloading zipped file
+    
+    output$btn_download &lt;- downloadHandler(
+      filename=&quot;nametagger.zip&quot;,
+      content=function(file) {
+        fn_download()
+        file.copy(&quot;nametagger.zip&quot;,file,overwrite=T)
+      }
+    )
+  }
+)</code></pre>
+<div class="figure">
+<img src="raukr_shiny_assets/nametagger_preview.png" />
+
+</div>
+<p>For a variation of this app with left and right logos and custom fonts, click <a href="https://github.com/royfrancis/nametagger">here</a>.</p>
+<p>Hopefully, this has not been too overwhelming. Shiny app code may look like a jungle on the first look, but it is easier to understand what is happening by breaking it apart into smaller chunks and creating a flow diagram of how functions are connected. It is crucial to plan out the structure of your app well in advanced as it is easy to get lost and confused. Remember to name functions and variables sensibly. Use text output widgets and/or print statements in the code to keep track of internal variable values during run-time. Go forth and build awesome apps!</p>
+<!-- --------------------- Do not edit this and below ---------------------- -->
+</div>
+</div>
+</div>
+<div id="session-info" class="section level1">
+<h1><span class="header-section-number">13</span> Session info</h1>
+<pre><code>## R version 3.5.2 (2018-12-20)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 18.04.2 LTS
+## 
+## Matrix products: default
+## BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+## 
+## locale:
+##  [1] LC_CTYPE=en_GB.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_GB.UTF-8        LC_COLLATE=en_GB.UTF-8    
+##  [5] LC_MONETARY=en_GB.UTF-8    LC_MESSAGES=en_GB.UTF-8   
+##  [7] LC_PAPER=en_GB.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_GB.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     datasets  grDevices utils     graphics  methods   base     
+## 
+## other attached packages:
+##  [1] shiny_1.3.2      revealjs_0.9     xaringan_0.9     ggrepel_0.8.0   
+##  [5] stringr_1.4.0    captioner_2.2.3  gdtools_0.1.8    gridExtra_2.3   
+##  [9] kableExtra_1.1.0 ggplot2_3.1.1    tidyr_0.8.3      dplyr_0.8.0.1   
+## [13] bookdown_0.9     knitr_1.23      
+## 
+## loaded via a namespace (and not attached):
+##  [1] httr_1.4.0        pkgload_1.0.2     jsonlite_1.6     
+##  [4] viridisLite_0.3.0 assertthat_0.2.1  highr_0.8        
+##  [7] yaml_2.2.0        remotes_2.0.4     sessioninfo_1.1.1
+## [10] pillar_1.3.1      backports_1.1.4   glue_1.3.1       
+## [13] digest_0.6.19     promises_1.0.1    rvest_0.3.3      
+## [16] colorspace_1.4-1  cowplot_0.9.4     htmltools_0.3.6  
+## [19] httpuv_1.5.1      plyr_1.8.4        pkgconfig_2.0.2  
+## [22] devtools_2.0.2    rmdshower_2.1.1   purrr_0.3.2      
+## [25] xtable_1.8-3      scales_1.0.0      webshot_0.5.1    
+## [28] processx_3.3.0    later_0.8.0       tibble_2.1.1     
+## [31] usethis_1.5.0     ggpubr_0.2        withr_2.1.2      
+## [34] lazyeval_0.2.2    cli_1.1.0         magrittr_1.5     
+## [37] crayon_1.3.4      mime_0.6          memoise_1.1.0    
+## [40] evaluate_0.14     ps_1.3.0          fs_1.2.7         
+## [43] xml2_1.2.0        pkgbuild_1.0.3    Cairo_1.5-10     
+## [46] rsconnect_0.8.13  tools_3.5.2       data.table_1.12.2
+## [49] prettyunits_1.0.2 hms_0.4.2         plotly_4.9.0     
+## [52] munsell_0.5.0     callr_3.2.0       compiler_3.5.2   
+## [55] tinytex_0.13      rlang_0.3.4       grid_3.5.2       
+## [58] rstudioapi_0.10   htmlwidgets_1.3   crosstalk_1.0.0  
+## [61] base64enc_0.1-3   labeling_0.3      rmarkdown_1.13   
+## [64] testthat_2.0.1    gtable_0.3.0      curl_3.3         
+## [67] reshape2_1.4.3    R6_2.4.0          ggiraph_0.6.1    
+## [70] rprojroot_1.3-2   readr_1.3.1       desc_1.2.0       
+## [73] stringi_1.4.3     Rcpp_1.0.1        tidyselect_0.2.5 
+## [76] xfun_0.7</code></pre>
+<p style="text-align: left; font-size: small;">
+Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 08-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 19:59:31.
+</p>
+<hr/>
+<div style="padding-bottom: 1.5em">
+<p><span style="float:left; vertical-align:middle"> <b>2019</b> • <a href="https://www.scilifelab.se/">SciLifeLab</a> • <a href="https://nbis.se/">NBIS</a> • <a href="https://nbisweden.github.io/workshop-RaukR-1906/">RaukR</a> </span> <span style="float:right; vertical-align:middle"> <span class="footericon" style="padding-right:4px; padding-left:4px"> <a href="https://nbisweden.github.io/workshop-RaukR-1806/"><img src="assets/icons8-globe-26.png" alt="website" border="0" style="height:15px"></a> </span> <span class="footericon" style="padding-right:4px; padding-left:4px"> <a href="https://twitter.com/hashtag/RaukR?src=hash"><img src="assets/icons8-twitter-26.png" alt="twitter" border="0" style="height:15px"></a> </span> </span></p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
