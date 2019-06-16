@@ -1,0 +1,11 @@
+base
+knitr
+bookdown
+Matrix
+lme4
+ggplot2
+MASS
+arm
+Rcpp
+brms
+Rtsne
