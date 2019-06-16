@@ -1,0 +1,775 @@
+---
+title: "Machine Learning in R"
+subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
+author: "Nikolay Oskolkov"
+output:
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    number_sections: true
+    theme: united
+    highlight: textmate
+    df_print: paged
+    code_folding: none
+    self_contained: false
+    keep_md: false
+    encoding: "UTF-8"
+    css: ["assets/lab.css"]
+---
+
+```{r,echo=FALSE,child="assets/header-lab.Rmd"}
+```
+
+<!-- ------------ Only edit title, subtitle & author above this ------------ -->
+
+```{r,echo=FALSE,results='hide',warning=FALSE,message=FALSE}
+## LIBRARIES AND VARIABLES
+# load the packages you need for this document
+
+#library(ggplot2)
+#library(tidyverse)
+
+# variables needed in this document
+# raukr colours
+#rv_col_dark <- "#125687"
+#rv_col_light <- "#e7eef3"
+```
+
+<br>
+<div class="abstract spaced">
+In this tutorial, we talk about what Machine Learning does and why to use it. We discuss Supervised and Unsupervised as well as Linear vs. Non-Linear algorithms. As an example of model evaluation we will concentrate on K-fold cros-validation and compare most important Machine Learning algorithms. Finally, we will briefly cover Artificial Neural Networks (ANN) and check how it compares to traditional Machine Learning algorithms.
+</div>
+<br>
+
+# What is Machine Learning?
+
+In this section we will brifly describe what Machine Learning (ML) is, why to use it in Computational Biology, and how it works. In order to introduce principals of ML we will start with a few basic definitions.
+
+* Machine Learning is a powerful technique that allows to map input X to output Y as
+
+\[Y = f ( X )\]
+
+without necessarily knowing the functional form of f. Machine Learning provides two major benifits that have a wide application in e.g. Biomedicine:
+
+1. **Prediction**: Biomedicine needs precise classification of disease sub-types in order to make correct treatment prescription
+2. **Feature Selection**: Biomedicine needs biomarkers for understanding mechanisms of a disease
+
+Beyond biomedical applications, ML is widely used in business, industry, physics, astronomy, and even in psychology, archeology etc. Internet is heavily based on Artificial Intellegence (AI), Deep Learning and Machine Learning and Google, Amazon, Facebook and Microsoft are world leading drivers and promoters of AI.
+
+* Machine Learning can be categorized into:
+
+  * **Parametric**: assumtion on f(X), often linear, easy to learn, fast, little data needed, poor prediction (example: Linear and Logistic Regression)
+  * **Non-Parametric**: assumtion free, difficult to train, slow, needs a lot of data, higher prediction power (example: Random Forest, LASSO)
+
+* Machine Learning by default involves five basic steps:
+
+1. Split data set into **train**, **validation** and **test** subsets.
+2. Fit the model in the train subset.
+3. Validate your model in the validation suset via calculating the error of prediction.
+4. Repeat steps 1-3 many times and find **hyperparameters** of your model which minimize the error of reproducibility from 3.
+5. Test the accuracy of the optimized model on the test subset for final evaluation.
+
+The steps 1-4 are called **cross-validation (CV)**. CV is a common technique for finding optimal hyperparameters in Machine Learning.
+
+* Finally, Machine Learning is divided into:
+  * **Supervised**: data are labelled and Y is predicted from X as Y=f(X)
+  * **Unsupervised**: only X is present and we infer hidden patterns in X
+
+
+# How Does Machine Learning Work?
+
+Let us demonstrate how Machine Lerning works using a toy example. Let us simulate a noisy linear relation of two variables x and y with a known coefficient (true beta):
+
+```{r,fig.width=10,fig.height=8}
+set.seed(12345)
+
+N<-100
+true_beta<-2
+
+x<-rnorm(N)
+y<-true_beta*x+rnorm(N)
+
+df<-data.frame(x,y)
+head(df,10)
+
+plot(y~x,data=df)
+```
+
+Let us randomly split our sample into training (70% of sample) and test (30% of sample) data sets. Further, let us display the training (blue points) and test (red points) sets on the linear regression plot:
+
+```{r,fig.width=10,fig.height=8}
+set.seed(123)
+train<-df[sample(1:dim(df)[1],0.7*dim(df)[1]),]
+test<-df[!rownames(df)%in%rownames(train),]
+
+df$color[rownames(df)%in%rownames(train)]<-"blue"
+df$color[rownames(df)%in%rownames(test)]<-"red"
+head(df,10)
+
+plot(y~x,data=df,col=df$color)
+legend("topleft",c("Train","Test"),fill=c("blue","red"),inset=0.02)
+abline(lm(y~x,data=train),col="blue")
+abline(lm(y~x,data=test),col="red")
+```
+
+The blue line is the linear fit obtained on the training set while the red line corresponds to the fit on the test data set. **We are not supposed to fit the model on the test data set** but we show the red line for comparision in order to demonstrate that the lines do not coinside which means that the model trained on the training data set will not fit perfectly the test data. This is how it is in real biology where there is always substantial amount of noise and technical variation. 
+
+Let us now again fit the linear regression model (train the model) on the training data set and try to use this model in order to predict (validate, evaluate) the slope on the test data set. For this purpose we will plot predicted vs. real y values in the test data set and calculate how much of the variance in y we can capture with our model:
+
+```{r,fig.width=10,fig.height=8}
+summary(lm(y~x,data=train))
+test_predicted<-as.numeric(predict(lm(y~x,data=train),newdata=test))
+plot(test$y~test_predicted,ylab="True y",xlab="Predicted y")
+abline(lm(test$y~test_predicted))
+summary(lm(test$y~test_predicted))
+```
+
+Thus, our model trained on the training data set explains approximately 86% of variation in the training daat set and 76% of variation in the test data which can be seen from the reported above adjusted R squared statistics. In theory, the model can explain 100% of variation in the training data set (it does not in our case because we used random noise to model relationship between the variables), but this is not interesting for us, this is the case of so-called "over-fitting", we will come back to this later. More interesting for us is how much of the variation the model explains in the unseen test data, this will be an ultimate objective criterion of how successful our model is. So in our case the model is not ideal but not too bad. Note that in order to establish a confidence interval for that statistic we need to randomly split the data into training and test subsets many times and calculate the distribution of adjusted R squared.
+
+
+
+# The Curse of Dimensionality
+
+Above we described a simplified Machine Learning design, i.e. a minimal training and validation one must always do. A more comprehensive Machine Learning analysis can be achieved by fine-tuning hyperparameters which almost all models have. The Machine Learning toy example from the previous section did not involve hyperparameters due to its simplicity such as only two variables were regressed against each other, Gaussian distribution was assumed by default. We can make a more complicated, i.e. closer to real world model and demonstrate how we can use cross-validation to adjust additional (hyper-)parameters.  
+
+For this purpose we need to define a hyperparameter for our model. This could be for example **the number of variables to adjust the main variable x of interest for**. Let us assume that y is a phenotype of interest (disease, speciation, cell state etc.) and x is the main explanatory variable of interest (genotype, methylation status, gene expression etc.) whose effect we would like to study. Suppose the relation y vs. x is confounded by other factors of unwanted variation (batch, ethnicity, age etc.) which we will call PC1, PC2, ..., PC10 assuming that the unwanted variation can be factorized via e.g. PCA and adjusted for in the y vs. x linear regression model. Let us simulate the PCs which are correlated with y slightly weaker (smaller effect size) than x is correlated with y.
+
+```{r}
+set.seed(1)
+for(i in 1:10)
+{
+  df[,paste0("PC",i)]<-1*(1-i/10)*y+rnorm(N)
+}
+head(df,10)
+```
+
+Please note the coefficient 1 in front of (1-i/10). This implies, PC1 will be correlated with y with coefficient 0.9, PC2 wil be correlated with 0.8 etc. down to PC10 which is not correlated with y at all, we model PC10 by just a white noise. Now let us monitor the strength of correlation y vs. x as we adjust the model for more and more PCs. 
+
+```{r,fig.width=10,fig.height=8}
+summary(lm(y~x,data=df))
+summary(lm(y~x+PC1,data=df))
+summary(lm(y~x+PC1+PC2,data=df))
+summary(lm(y~x+PC1+PC2+PC3+PC4+PC5+PC6+PC7+PC8+PC9+PC10,data=df))
+effect<-vector()
+effect<-append(effect,2)
+adj_r_squared<-vector()
+adj_r_squared<-append(adj_r_squared,summary(lm(y~x,data=df))$adj.r.squared)
+for(i in 1:10)
+{
+  formula<-as.formula(paste0("y~x+",paste0("PC",seq(1:i),collapse="+")))
+  effect<-append(effect,summary(lm(formula,data=df))$coefficients[2,1])
+  adj_r_squared<-append(adj_r_squared,summary(lm(formula,data=df))$adj.r.squared)
+}
+plot(effect~seq(from=0,to=10,by=1),type='o',xlab="PRINCIPAL COMPONENTS",ylab="EFFECT")
+plot(adj_r_squared~seq(from=0,to=10,by=1),type='o',xlab="PRINCIPAL COMPONENTS",ylab="VARIANCE EXPLAINED BY MODEL")
+```
+
+This is really striking! The unadjusted model gives us almost the true effect size 2 while when we adjust for PC1, it drops drammatically down to 1.07. If we adjust for PC1 and PC2 it becomes 0.88 and so on down to 0.55 when adjusting for all 10 PCs. And now look at the adjusted R squared statistic demonstrating how much of variation in y is explained by the explanatory variables. It is increasing!
+
+What does it mean? It means that we are fiting the data better and better (explain more and more variation in y) by adding more explanatory variables into the model due to the combined effect of all the variables. Simultaneously, the capasity of our model to discover true x vs. y effect of correlation is rapidly decreasing when we go to high-dimensional space. In other words, prediction of our model is increasing but individual effects are no longer true although the ranking variables by their importance is still true, look at the effect sizes and see that x is still the most important. This is known as "the curse of dimensionality" and is one of the major chellanges in Data Science. The toy example above emphizes the fact that Machine Learning is preddominantly multivariate, i.e. the goal is to get the best **prediction and feature selection**, however individual effects and biological meaning of each variable gets duluted and sucrifised for the beter multivariate model performance. 
+
+We know that both the PCs and x are slightly correlated with y, thus PCs are also correlated with x, therefore we have multiple correlated variables in the linear regression model, this is the case of multi-collinearity which is not bad by itself but breaks the assumtions of Maximum Likelihood principle which lies behind the linear regression model.
+
+As a final shot, let us look at the effect of x and adjusted R squared when only PC10 is a covariate, remember PC10 was a pure white noise. 
+
+```{r}
+summary(lm(y~x+PC10,data=df))
+```
+
+Correct! The effect size of x and adjusted R squared are very similar to the ones from the unadjusted model. Thus, less multi-collinearity brings more correct individual effect size estimates and avoids inflation of adjusted R squared statistic.
+
+What if we increase the strength of covariation between y and PCs from 1 to 2 and 3, i.e. make PCs covary with y equally or even stronger than x?
+
+```{r,fig.width=10,fig.height=8}
+effect_master<-list()
+for(k in 1:3)
+{
+  for(i in 1:10)
+  {
+    df[,paste0("PC",i)]<-k*(1-i/10)*y+rnorm(N)
+  }
+
+  effect<-vector()
+  effect<-append(effect,2)
+  for(i in 1:10)
+  {
+    formula<-as.formula(paste0("y~x+",paste0("PC",seq(1:i),collapse="+")))
+    effect<-append(effect,summary(lm(formula,data=df))$coefficients[2,1])
+  }
+  effect_master[[k]]<-effect
+}
+plot(effect_master[[1]]~seq(from=0,to=10,by=1),type='o',xlab="PRINCIPAL COMPONENTS",ylab="EFFECT",xlim=c(0,10),ylim=c(0,2),col="blue",main="Effect of x vs. y at different covariation between y and PCs")
+points(effect_master[[2]]~seq(from=0,to=10,by=1),col="green")
+lines(effect_master[[2]]~seq(from=0,to=10,by=1),col="green")
+points(effect_master[[3]]~seq(from=0,to=10,by=1),col="red")
+lines(effect_master[[3]]~seq(from=0,to=10,by=1),col="red")
+legend("topright",c("1","2","3"),title="Covariation",fill=c("blue","green","red"),inset=0.02)
+```
+
+Again, very strikingly, the effect of x reaches zero when increasing the strength of covariation between y and the PCs. This implies that the PCs are more important variables for explaining variation in y so the rank and effect of variable x is becoming negligible.
+
+
+# How Does Cross-Validation Work?
+
+Now let us ask a question: how many PCs should we include into our model, are they all equally informative for predicting the relation y vs. x? Thus the number of PCs to include into the model becomes a hyperparameter which we should somehow tune. Another valid question to ask would be: why not to include all 10 PCs? The reason we do not want to do it is because our model will loose its generalizibility, i.e. a lot of fitting parameters will make the model work best in one particular data set but not in another. Our goal is to figure out a balance between the goodness of fit and the minimal number of fitting parameters required, this is known as **Bias vs. Variance** tradeoff in Machine Learning. 
+
+The optimal number of PCs can be found via **cross-validation (CV)**, a procedure which minimizes the error of reproducibility of the fit across multiple sub-samples drawn from the data. In this way we produce the most generalizable model which very little depends on a particular training data set.
+
+To demonstrate how cross-validation works, let us randomly assign 60% of the data to training set, 10% to validation set and 30% to test set. Further, let us display the training (blue points), validation (red points) and test (green points) sets on the linear regression plot:
+
+```{r,fig.width=10,fig.height=8}
+set.seed(1234)
+train<-df[sample(1:dim(df)[1],0.6*dim(df)[1]),]
+validate_and_test<-df[!rownames(df)%in%rownames(train),]
+validate<-validate_and_test[sample(1:dim(validate_and_test)[1],0.25*dim(validate_and_test)[1]),]
+test<-validate_and_test[!rownames(validate_and_test)%in%rownames(validate),]
+
+df$color[rownames(df)%in%rownames(train)]<-"blue"
+df$color[rownames(df)%in%rownames(validate)]<-"red"
+df$color[rownames(df)%in%rownames(test)]<-"green"
+plot(y~x,data=df,col=df$color)
+legend("topleft",c("Train","Validate","Test"),fill=c("blue","red","green"),inset=0.02)
+abline(lm(y~x,data=train),col="blue")
+abline(lm(y~x,data=validate),col="red")
+```
+
+Recall that previously we had just training and test subsamples. Why do we need one additional (validation) subsample? We need the validation subsample in order to tune the hyperparameter of the model, this is a part of training of the model. The validation subsample should not have anything to do with the test subsample, the latter will be used for an ultimate evaluation of the model while the former will participate in the training cross-validation procedure. 
+
+Let us now fit the linear regression model in the training set and validate the error (root mean squared difference between predicted y from the trained model for the validation set and the real y in the validation set) in the validation data set:
+
+```{r CV,fig.width=10,fig.height=8}
+set.seed(1)
+
+train_and_validate<-df[sample(1:dim(df)[1],0.7*dim(df)[1]),]
+test<-df[!rownames(df)%in%rownames(train_and_validate),]
+
+N_cv<-100
+error<-vector()
+
+error_null<-vector()
+for(j in 1:N_cv)
+{
+  train<-train_and_validate[sample(1:dim(train_and_validate)[1],(6/7)*dim(train_and_validate)[1]),]
+  validate<-train_and_validate[!rownames(train_and_validate)%in%rownames(train),]
+  error_null<-append(error_null,sqrt(sum((predict(lm(y~x,data=train),newdata=validate)-validate$y)^2)/dim(validate)[1]))
+}
+error<-append(error,mean(error_null))
+
+for(j in 1:10)
+{
+  error_at_pc<-vector()
+  formula<-as.formula(paste0("y~x+",paste0("PC",seq(1:j),collapse="+")))
+  for(i in 1:N_cv)
+  {
+    train<-train_and_validate[sample(1:dim(train_and_validate)[1],(6/7)*dim(train_and_validate)[1]),]
+    validate<-train_and_validate[!rownames(train_and_validate)%in%rownames(train),]
+    error_at_pc<-append(error_at_pc,sqrt(sum((predict(lm(formula,data=train),newdata=validate)-validate$y)^2)/dim(validate)[1]))
+  }
+  error<-append(error,mean(error_at_pc))
+}
+plot(error~seq(from=0,to=10,by=1),type='o',xlab="PRINCIPAL COMPONENTS",ylab="RMSE")
+```
+
+Looks like the error drops drammatically when adding PC1 and PC2 and after that does not change much. We can conclude that the most generalizable model which also gives a fair goodness of fit is the one adjusted for two first PCs, i.e. "y~x+PC1+PC2". Let us perform the final evaluation of the optimized/trained model on the test data set and report the final accuracy (adjusted R squared of the model):
+
+```{r}
+summary(lm(predict(lm(y~x+PC1+PC2,data=df),newdata=test)~test$y))
+```
+
+Therefore the model explains over 90% of variation on the unseen test data set which is excellent.
+
+
+Let us see what cross-validation gives us depending on the strength of covariation of y with PCs:
+
+```{r CV in High Dimensions,fig.width=10,fig.height=8}
+error_master<-list()
+for(k in 1:3)
+{
+  for(i in 1:10)
+  {
+    df[,paste0("PC",i)]<-k*(1-i/10)*y+rnorm(N)
+  }
+
+  set.seed(123)
+
+  train_and_validate<-df[sample(1:dim(df)[1],0.7*dim(df)[1]),]
+  test<-df[!rownames(df)%in%rownames(train_and_validate),]
+
+  N_cv<-100
+  error<-vector()
+
+  error_null<-vector()
+  for(j in 1:N_cv)
+  {
+    train<-train_and_validate[sample(1:dim(train_and_validate)[1],(6/7)*dim(train_and_validate)[1]),]
+    validate<-train_and_validate[!rownames(train_and_validate)%in%rownames(train),]
+    error_null<-append(error_null,sqrt(sum((predict(lm(y~x,data=train),newdata=validate)-validate$y)^2)/dim(validate)[1]))
+  }
+  error<-append(error,mean(error_null))
+
+  for(j in 1:10)
+  {
+    error_at_pc<-vector()
+    formula<-as.formula(paste0("y~x+",paste0("PC",seq(1:j),collapse="+")))
+    for(i in 1:N_cv)
+    {
+      train<-train_and_validate[sample(1:dim(train_and_validate)[1],(6/7)*dim(train_and_validate)[1]),]
+      validate<-train_and_validate[!rownames(train_and_validate)%in%rownames(train),]
+      error_at_pc<-append(error_at_pc,sqrt(sum((predict(lm(formula,data=train),newdata=validate)-validate$y)^2)/dim(validate)[1]))
+    }
+    error<-append(error,mean(error_at_pc))
+  }
+  error_master[[k]]<-error
+}
+plot(error_master[[1]]~seq(from=0,to=10,by=1),type='o',xlab="PRINCIPAL COMPONENTS",ylab="RMSE",col="blue",main="RMSE of cross-validation at different covariation between y and PCs",xlim=c(0,10),ylim=c(0.2,1))
+points(error_master[[2]]~seq(from=0,to=10,by=1),col="green")
+lines(error_master[[2]]~seq(from=0,to=10,by=1),col="green")
+points(error_master[[3]]~seq(from=0,to=10,by=1),col="red")
+lines(error_master[[3]]~seq(from=0,to=10,by=1),col="red")
+legend("topright",c("1","2","3"),title="Covariation",fill=c("blue","green","red"),inset=0.02)
+```
+
+The main conclusion we can draw here is that the higher is the correlation between y and the PCs the more abruptly drops the error of reproducibility. I.e. for strong correlation between y and the PCs it is becoming very important to adjust the model for the PCs (i.e. the PCs are more important features than x for explaining variation in y), while with a moderate correlation this adjustment is not extremely important.
+
+
+# Comparing Machine Learning Methods
+
+Now let us do Rock-n-Roll and move to real hard-core Machine Learning. When introducing main concepts and developing basic understanding of Machine Learning in the previous sectionswe were dealing with so-called **Regression** Machine Learning using a linear method which was Linear Regressor (same as Linear Regression Model) because our phenotype of interest y was a continuous variable. Now we will be talking about **Classification** problem where we have a categotical (or even binary) phenotype of interest, i.e. sick-healthy, lean-overweight-obese, small-medium-large etc. We will be using the classic Pima Indians Diabetes data set which contains a few hudred individuals with and without diabetes and 8 explanatory variables (predictors) for making prediction about disease status of an individual. 
+
+```{r}
+library("mlbench")
+data(PimaIndiansDiabetes2)
+head(PimaIndiansDiabetes2,10)
+dim(PimaIndiansDiabetes2)
+sum(is.na(PimaIndiansDiabetes2))
+```
+
+Here we have a real world problem therefore lots of missing values, NA, are present in the data set. If we just delete individuals with missing values, we will not only end up with only `r dim(na.omit(PimaIndiansDiabetes2))[1]` individuals but more importantly introduce a bias (e.g. gender bias if we delete individuals with missing age, which are usually women), therefore a list-wise delettion is not a recommended way of handling missing data. Here for simplicity we will use mean imputation strategy, i.e. will replace each NA value with mean value of the respective variable.
+
+```{r}
+phen<-colnames(PimaIndiansDiabetes2)[2:6]
+for(i in phen)
+{
+  PimaIndiansDiabetes2[,i][is.na(PimaIndiansDiabetes2[,i])==TRUE]<-mean(PimaIndiansDiabetes2[,i],na.rm=TRUE)
+}
+head(PimaIndiansDiabetes2,10)
+```
+
+Further, we define Y and X variables and perform mean centering and scaling of the variables in the X matrix in order to take into account that they all have very different scale and variation.
+
+```{r}
+Y<-factor(PimaIndiansDiabetes2$diabetes)
+X<-scale(PimaIndiansDiabetes2[,1:8],center=TRUE,scale=TRUE)
+scaled_PimaIndiansDiabetes2<-data.frame(X,diabetes=Y)
+scaled_PimaIndiansDiabetes2$random<-rnorm(dim(scaled_PimaIndiansDiabetes2)[1])
+head(scaled_PimaIndiansDiabetes2)
+```
+
+Note that we have also added an artificial random variable (white noise) as a new feature for controlling how ML algorithms can distinguish between signal and noise. We will check this variable later when we look at feature importances from the algorithms.
+
+Now according to Machine Learning phylosophy we are going to split the data set into training and test data sets. The former will be used for tuning hyperparameters and training the model while the latter will be used only once at the very end for ultimate evaluation of the models accuracy: 
+
+```{r}
+set.seed(1)
+train<-scaled_PimaIndiansDiabetes2[sample(1:dim(scaled_PimaIndiansDiabetes2)[1],0.7*dim(scaled_PimaIndiansDiabetes2)[1]),]
+head(train)
+dim(train)
+test<-scaled_PimaIndiansDiabetes2[!rownames(scaled_PimaIndiansDiabetes2)%in%rownames(train),]
+head(test)
+dim(test)
+```
+
+Now let us start training different Machine Learning algorithms such as Linear Descriminant Analysis (LDA), Desicion Tree (CART), K-Nearest Neighbors (KNN), Support Vectir Machines (SVM), Random Forest (RF) by applying K-fold cross-validation in order to tune hyperparameters of each algorithm. As a metric for optimization of hyperparameters we will use ROC which is a balance between sensitivity and specificity of the algorithms.
+
+```{r Train Algorithms,fig.width=10,fig.height=8,cache=TRUE}
+library("caret")
+set.seed(1)
+control<-trainControl(method="repeatedcv", number=10, savePredictions=T, repeats=5, classProbs=T, summaryFunction=twoClassSummary)
+
+metric <- "ROC"
+
+fit.lda <- train(diabetes~., data=train, method="lda", metric=metric, trControl=control, na.action=na.omit)
+fit.cart <- train(diabetes~., data=train, method="rpart", metric=metric, trControl=control, na.action=na.omit)
+fit.knn <- train(diabetes~., data=train, method="knn", metric=metric, trControl=control,na.action=na.omit)
+fit.svm <- train(diabetes~., data=train, method="svmRadial", metric=metric, trControl=control,na.action=na.omit)
+fit.rf <- train(diabetes~., data=train, method="rf", metric=metric, trControl=control, na.action=na.omit)
+results <- resamples(list(lda=fit.lda, cart=fit.cart, knn=fit.knn, svm=fit.svm, rf=fit.rf))
+summary(results)
+dotplot(results)
+```
+
+Looking at the mean ROC values for each algorithm we conclude that Linear Descriminant Analysis (LDA) performed slightly better than the other algorithms, so for our particular data set there is no need to run non-linear algorithms like Random Forest (RF) or Support Vector Machines (SVM) with non-linear Radial Base Function (RBF) kernel. Diabetics and Non-Diabetics seem to be linearly separable.
+
+Now we will summarize the best model:
+
+```{r}
+best_model<-get(paste0("fit.",names(summary(results)$statistics$ROC[,4])[as.numeric(summary(results)$statistics$ROC[,4])==max(summary(results)$statistics$ROC[,4])]))
+print(best_model)
+```
+
+Let us now have a look at the ranking of the predictors by their importance:
+
+```{r,fig.width=10,fig.height=8}
+varImp(best_model)
+my_features<-varImp(best_model)$importance$pos
+names(my_features)<-rownames(varImp(best_model)$importance)
+barplot(sort(my_features,decreasing=TRUE),ylab="FEATURE IMPORTANCE",col="darkred")
+```
+
+We can see that glucose, age, mass and insulin seems to be the most important predictors which is what we would also expect based on our knowledge about Type 2 Diabetes (T2D). Note, that the random noise variable got the lowest rank. What does it mean? It implies that it is safe to add "garbage" variables (which do not have anything to do with the phenotype of interest) into the data set without doing a manual curation/selection of the variables. This is because ML will recognize them and filter out automatically. So no need to rely on your hypothesis and intuition when building a data set for analysis. ML can discriminate signal from noise very well providing large enough data set. 
+
+Now let us use the test data set and make predictions about disease status (positive or negative) of the individuals in the test data:
+
+```{r}
+predictions <- predict(best_model, test)
+confusionMatrix(predictions, test$diabetes)
+```
+
+The accuracy of prediction is `r round(as.numeric(confusionMatrix(predictions, test$diabetes)$overall["Accuracy"]),2)*100`% which is quite high.
+
+To compare different algorithms by their performance on the test data set let us plot ROC curves for each algorithm:
+
+```{r,fig.width=10,fig.height=8}
+library("pROC")
+predictions <- predict(best_model, test, type="prob")
+my_ROC<-roc(test$diabetes, predictions[,"pos"])
+tpr<-my_ROC$sensitivities
+fpr<-1-my_ROC$specificities
+plot(tpr~fpr,type='l', ylab="TRUE POSITIVE RATE", xlab="FALSE POSITIVE RATE",col="red")
+lines(c(0,1),c(0,1))
+
+colors_vector<-c("blue","green","magenta","orange")
+names_vector<-names(summary(results)$statistics$ROC[,4])
+names_vector<-names_vector[-which(names_vector==names(summary(results)$statistics$ROC[,4])[as.numeric(summary(results)$statistics$ROC[,4])==max(summary(results)$statistics$ROC[,4])])]
+for(i in 1:length(names_vector))
+{
+  current_model<-get(paste0("fit.",names_vector[i]))
+  current_predictions <- predict(current_model, test, type="prob")
+  current_ROC<-roc(test$diabetes, current_predictions[,"pos"])
+  current_tpr<-current_ROC$sensitivities
+  current_fpr<-1-current_ROC$specificities
+  lines(current_tpr~current_fpr,type='l',col=colors_vector[i])
+}
+legend("bottomright", c("LDA","CART","KNN","SVM","RF"), fill=c("red",colors_vector), inset=0.02)
+```
+
+We conclude that all algorithms except maybe CART perform with comparable accuracy.
+
+
+# Artificial Neural Networks (ANN)
+
+We have seen in the previous section that diabetics and non-diabetics seem to be linearly separable. So in this particular case it does not make much sense to run a Neural Network on this data set because one uses the full power of ANN when there are non-linear relationships in the data, i.e. classes are non-linearly separable. However for demonstration purpose let us run a Neural Network with 1 hidden layer and 3 hidden neurons:
+
+
+```{r}
+library("neuralnet")
+set.seed(12345)
+train$diabetes<-as.numeric(train$diabetes)
+test$diabetes<-as.numeric(test$diabetes)
+NN = neuralnet(diabetes ~ pregnant + glucose + pressure + triceps + insulin + mass + pedigree + age, data=train, hidden = 3 , linear.output = TRUE, act.fct="logistic" )
+```
+
+
+```{r echo = FALSE}
+library(neuralnet)
+
+plot.nn <-
+function (x, rep = NULL, x.entry = NULL, x.out = NULL, radius = 0.15,
+    arrow.length = 0.2, intercept = TRUE, intercept.factor = 0.4,
+    information = TRUE, information.pos = 0.1, col.entry.synapse = "black",
+    col.entry = "black", col.hidden = "black", col.hidden.synapse = "black",
+    col.out = "black", col.out.synapse = "black", col.intercept = "blue",
+    fontsize = 12, dimension = 6, show.weights = TRUE, file = NULL,
+    ...)
+{
+    net <- x
+    if (is.null(net$weights))
+        stop("weights were not calculated")
+    if (!is.null(file) && !is.character(file))
+        stop("'file' must be a string")
+    if (is.null(rep)) {
+        for (i in 1:length(net$weights)) {
+            if (!is.null(file))
+                file.rep <- paste(file, ".", i, sep = "")
+            else file.rep <- NULL
+            #grDevices::dev.new()
+            plot.nn(net, rep = i, x.entry, x.out, radius, arrow.length,
+                intercept, intercept.factor, information, information.pos,
+                col.entry.synapse, col.entry, col.hidden, col.hidden.synapse,
+                col.out, col.out.synapse, col.intercept, fontsize,
+                dimension, show.weights, file.rep, ...)
+        }
+    }
+    else {
+        if (is.character(file) && file.exists(file))
+            stop(sprintf("%s already exists", sQuote(file)))
+        result.matrix <- t(net$result.matrix)
+        if (rep == "best")
+            rep <- as.integer(which.min(result.matrix[, "error"]))
+        if (rep > length(net$weights))
+            stop("'rep' does not exist")
+        weights <- net$weights[[rep]]
+        if (is.null(x.entry))
+            x.entry <- 0.5 - (arrow.length/2) * length(weights)
+        if (is.null(x.out))
+            x.out <- 0.5 + (arrow.length/2) * length(weights)
+        width <- max(x.out - x.entry + 0.2, 0.8) * 8
+        radius <- radius/dimension
+        entry.label <- net$model.list$variables
+        out.label <- net$model.list$response
+        neuron.count <- array(0, length(weights) + 1)
+        neuron.count[1] <- nrow(weights[[1]]) - 1
+        neuron.count[2] <- ncol(weights[[1]])
+        x.position <- array(0, length(weights) + 1)
+        x.position[1] <- x.entry
+        x.position[length(weights) + 1] <- x.out
+        if (length(weights) > 1)
+            for (i in 2:length(weights)) {
+                neuron.count[i + 1] <- ncol(weights[[i]])
+                x.position[i] <- x.entry + (i - 1) * (x.out -
+                  x.entry)/length(weights)
+            }
+        y.step <- 1/(neuron.count + 1)
+        y.position <- array(0, length(weights) + 1)
+        y.intercept <- 1 - 2 * radius
+        information.pos <- min(min(y.step) - 0.1, 0.2)
+        if (length(entry.label) != neuron.count[1]) {
+            if (length(entry.label) < neuron.count[1]) {
+                tmp <- NULL
+                for (i in 1:(neuron.count[1] - length(entry.label))) {
+                  tmp <- c(tmp, "no name")
+                }
+                entry.label <- c(entry.label, tmp)
+            }
+        }
+        if (length(out.label) != neuron.count[length(neuron.count)]) {
+            if (length(out.label) < neuron.count[length(neuron.count)]) {
+                tmp <- NULL
+                for (i in 1:(neuron.count[length(neuron.count)] -
+                  length(out.label))) {
+                  tmp <- c(tmp, "no name")
+                }
+                out.label <- c(out.label, tmp)
+            }
+        }
+        grid::grid.newpage()
+        for (k in 1:length(weights)) {
+            for (i in 1:neuron.count[k]) {
+                y.position[k] <- y.position[k] + y.step[k]
+                y.tmp <- 0
+                for (j in 1:neuron.count[k + 1]) {
+                  y.tmp <- y.tmp + y.step[k + 1]
+                  result <- calculate.delta(c(x.position[k],
+                    x.position[k + 1]), c(y.position[k], y.tmp),
+                    radius)
+                  x <- c(x.position[k], x.position[k + 1] - result[1])
+                  y <- c(y.position[k], y.tmp + result[2])
+                  grid::grid.lines(x = x, y = y, arrow = grid::arrow(length = grid::unit(0.15,
+                    "cm"), type = "closed"), gp = grid::gpar(fill = col.hidden.synapse,
+                    col = col.hidden.synapse, ...))
+                  if (show.weights)
+                    draw.text(label = weights[[k]][neuron.count[k] -
+                      i + 2, neuron.count[k + 1] - j + 1], x = c(x.position[k],
+                      x.position[k + 1]), y = c(y.position[k],
+                      y.tmp), xy.null = 1.25 * result, color = col.hidden.synapse,
+                      fontsize = fontsize - 2, ...)
+                }
+                if (k == 1) {
+                  grid::grid.lines(x = c((x.position[1] - arrow.length),
+                    x.position[1] - radius), y = y.position[k],
+                    arrow = grid::arrow(length = grid::unit(0.15, "cm"),
+                      type = "closed"), gp = grid::gpar(fill = col.entry.synapse,
+                      col = col.entry.synapse, ...))
+                  draw.text(label = entry.label[(neuron.count[1] +
+                    1) - i], x = c((x.position - arrow.length),
+                    x.position[1] - radius), y = c(y.position[k],
+                    y.position[k]), xy.null = c(0, 0), color = col.entry.synapse,
+                    fontsize = fontsize, ...)
+                  grid::grid.circle(x = x.position[k], y = y.position[k],
+                    r = radius, gp = grid::gpar(fill = "white", col = col.entry,
+                      ...))
+                }
+                else {
+                  grid::grid.circle(x = x.position[k], y = y.position[k],
+                    r = radius, gp = grid::gpar(fill = "white", col = col.hidden,
+                      ...))
+                }
+            }
+        }
+        out <- length(neuron.count)
+        for (i in 1:neuron.count[out]) {
+            y.position[out] <- y.position[out] + y.step[out]
+            grid::grid.lines(x = c(x.position[out] + radius, x.position[out] +
+                arrow.length), y = y.position[out], arrow = grid::arrow(length = grid::unit(0.15,
+                "cm"), type = "closed"), gp = grid::gpar(fill = col.out.synapse,
+                col = col.out.synapse, ...))
+            draw.text(label = out.label[(neuron.count[out] +
+                1) - i], x = c((x.position[out] + radius), x.position[out] +
+                arrow.length), y = c(y.position[out], y.position[out]),
+                xy.null = c(0, 0), color = col.out.synapse, fontsize = fontsize,
+                ...)
+            grid::grid.circle(x = x.position[out], y = y.position[out],
+                r = radius, gp = grid::gpar(fill = "white", col = col.out,
+                  ...))
+        }
+        if (intercept) {
+            for (k in 1:length(weights)) {
+                y.tmp <- 0
+                x.intercept <- (x.position[k + 1] - x.position[k]) *
+                  intercept.factor + x.position[k]
+                for (i in 1:neuron.count[k + 1]) {
+                  y.tmp <- y.tmp + y.step[k + 1]
+                  result <- calculate.delta(c(x.intercept, x.position[k +
+                    1]), c(y.intercept, y.tmp), radius)
+                  x <- c(x.intercept, x.position[k + 1] - result[1])
+                  y <- c(y.intercept, y.tmp + result[2])
+                  grid::grid.lines(x = x, y = y, arrow = grid::arrow(length = grid::unit(0.15,
+                    "cm"), type = "closed"), gp = grid::gpar(fill = col.intercept,
+                    col = col.intercept, ...))
+                  xy.null <- cbind(x.position[k + 1] - x.intercept -
+                    2 * result[1], -(y.tmp - y.intercept + 2 *
+                    result[2]))
+                  if (show.weights)
+                    draw.text(label = weights[[k]][1, neuron.count[k +
+                      1] - i + 1], x = c(x.intercept, x.position[k +
+                      1]), y = c(y.intercept, y.tmp), xy.null = xy.null,
+                      color = col.intercept, alignment = c("right",
+                        "bottom"), fontsize = fontsize - 2, ...)
+                }
+                grid::grid.circle(x = x.intercept, y = y.intercept,
+                  r = radius, gp = grid::gpar(fill = "white", col = col.intercept,
+                    ...))
+                grid::grid.text(1, x = x.intercept, y = y.intercept,
+                  gp = grid::gpar(col = col.intercept, ...))
+            }
+        }
+        if (information)
+          grid::grid.text(paste("Error: ", round(result.matrix[rep,
+                "error"], 6), "   Steps: ", result.matrix[rep,
+                "steps"], sep = ""), x = 0.5, y = information.pos,
+                just = "bottom", gp = grid::gpar(fontsize = fontsize +
+                  2, ...))
+        if (!is.null(file)) {
+            weight.plot <- grDevices::recordPlot()
+            save(weight.plot, file = file)
+        }
+    }
+}
+calculate.delta <-
+function (x, y, r)
+{
+    delta.x <- x[2] - x[1]
+    delta.y <- y[2] - y[1]
+    x.null <- r/sqrt(delta.x^2 + delta.y^2) * delta.x
+    if (y[1] < y[2])
+        y.null <- -sqrt(r^2 - x.null^2)
+    else if (y[1] > y[2])
+        y.null <- sqrt(r^2 - x.null^2)
+    else y.null <- 0
+    c(x.null, y.null)
+}
+draw.text <-
+function (label, x, y, xy.null = c(0, 0), color, alignment = c("left",
+    "bottom"), ...)
+{
+    x.label <- x[1] + xy.null[1]
+    y.label <- y[1] - xy.null[2]
+    x.delta <- x[2] - x[1]
+    y.delta <- y[2] - y[1]
+    angle = atan(y.delta/x.delta) * (180/pi)
+    if (angle < 0)
+        angle <- angle + 0
+    else if (angle > 0)
+        angle <- angle - 0
+    if (is.numeric(label))
+        label <- round(label, 5)
+    vp <- grid::viewport(x = x.label, y = y.label, width = 0, height = ,
+        angle = angle, name = "vp1", just = alignment)
+    grid::grid.text(label, x = 0, y = grid::unit(0.75, "mm"), just = alignment,
+        gp = grid::gpar(col = color, ...), vp = vp)
+}
+```
+
+
+
+```{r,fig.width=10,fig.height=8}
+plot(NN, rep="best")
+```
+
+Here we visualize the architecture of the ANN in order to be able to monitor weights and biases. We can also take the trained model and check its performance on the test data set, i.e. make predictions and produce a Confusion Matrix summarizing how many times (per class) our prediction was correct and how many times it was wrong.
+
+```{r}
+prediction <- neuralnet::compute(NN, test[,1:8])
+cm<-table(test$diabetes,round(prediction$net.result[,1]))
+cm
+```
+
+To calculate the accuracy of the prediction we need to take the sum of diagonal elements (trace) of the Confusion Matrix, which show how many times we made a correct prediction per class, and divide it by the total number of samples in the test data set.
+
+```{r}
+library("psych")
+tr(cm)/sum(cm)
+```
+
+So far so good, but why did we select only one hidden layer and 3 hidden neurons and not 2 or 5 or 20? Well, one hidden layer is very often enough to address majority of real-world problems unless heavily non-linear data is analyzed. The number of hidden neurons is actually a hyperparameter which can be found via Cross-Validation (CV).
+
+```{r NeuralNet CV,fig.width=10,fig.height=8}
+set.seed(1)
+train_and_validate<-scaled_PimaIndiansDiabetes2[sample(1:dim(scaled_PimaIndiansDiabetes2)[1],0.7*dim(scaled_PimaIndiansDiabetes2)[1]),]
+train_and_validate$diabetes<-as.numeric(train_and_validate$diabetes)
+test<-scaled_PimaIndiansDiabetes2[!rownames(scaled_PimaIndiansDiabetes2)%in%rownames(train_and_validate),]
+test$diabetes<-as.numeric(test$diabetes)
+
+N_neurons<-10
+N_cv<-10
+accuracy<-vector(length=N_neurons)
+for(i in 1:N_neurons)
+{
+  print(paste0("NUMBER OF HIDDEN NEURONS: ",i))
+  accuracy_cv<-vector(length=N_cv)
+  for(j in 1:N_cv)
+  {
+    validate<-train_and_validate[sample(1:dim(train_and_validate)[1],0.2*dim(train_and_validate)[1]),]
+    train<-train_and_validate[!rownames(train_and_validate)%in%rownames(validate),]
+
+    NN = neuralnet(diabetes ~ pregnant + glucose + pressure + triceps + insulin + mass + pedigree + age, data=train, hidden = i , linear.output = TRUE, act.fct="logistic")
+    prediction <- neuralnet::compute(NN, validate[,1:8])
+    corrected_prediction<-round(prediction$net.result[,1])
+    corrected_prediction[corrected_prediction==0]<-1
+    corrected_prediction[corrected_prediction==3]<-2
+    cm<-table(validate$diabetes,corrected_prediction)
+    accuracy_cv[j]<-tr(cm)/sum(cm)
+  }
+  accuracy[i]<-mean(accuracy_cv,na.rm=TRUE)
+}
+names(accuracy)<-seq(1:N_neurons)
+accuracy
+plot(accuracy~seq(1:N_neurons),type='o',xlab="Number of Hidden Neurons",ylab="Accuracy",main="Cross-Validation Accuracy")
+```
+
+It seems that the accuracy of Cross-Validation (CV) peaks at `r as.numeric(names(accuracy)[accuracy==max(accuracy)])` neurons. Let us use this optimal number of neurons for the final test of accuracy at the test/unseen data set.
+
+```{r}
+NN = neuralnet(diabetes ~ pregnant + glucose + pressure + triceps + insulin + mass + pedigree + age, data=train_and_validate, hidden = as.numeric(names(accuracy)[accuracy==max(accuracy)]) , linear.output = TRUE, act.fct="logistic")
+prediction <- neuralnet::compute(NN, test[,1:8])
+cm<-table(test$diabetes,round(prediction$net.result[,1]))
+cm
+accuracy<-tr(cm)/sum(cm)
+accuracy
+```
+
+We can see that 1) the accuracy on the test data set was not as good as on the training and validation data sets, 2) overall ANN does not seem to perform better than Random Forest (RF) or Linear Discriminant Analysis (LDA). Further tuning and optimizations are needed, we have tuned only one hyperparameter. Welcome to the real world! Artificial Neural Networks (ANN) have many hyperparameters, they are typically optimized via so-called Grid Search when each combination of hyperparameters is tested. This is a very expensive operation and very often needs GPU computing available. Nevertheless, hyperparameter tuning might lead to a drammatic increase in performance of Neural Networks which is not really the case for traditional Machine Learning algorithms. This represents a huge flexibility and potential of ANNs.
+
+<!-- --------------------- Do not edit this and below ---------------------- -->
+
+```{r,echo=FALSE,child="assets/footer-lab.Rmd"}
+```
+
+```{r,eval=FALSE,echo=FALSE}
+# manually run this to render this document to HTML
+rmarkdown::render("lab.Rmd")
+# manually run this to convert HTML to PDF
+#pagedown::chrome_print("lab.html",output="lab.pdf")
+```
+
