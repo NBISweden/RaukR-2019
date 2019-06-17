@@ -49,7 +49,7 @@ Course materials are listed below. (The GitHub repo for RaukR 2019 can be access
     
 ### Week 2
 #### 17-Jun-2019 (Mon)
-* **Basic statistics** -- Models
+* **Basic statistics** -- Models (*Author:* Bengt Sennblad)
     + [Presentation](basic_stats_Bengt/presentation/presentation1.html)
     + [Lab](basic_stats_Bengt/lab/lab1.html)
 * **Basic statistics** -- Model estimation
@@ -57,11 +57,12 @@ Course materials are listed below. (The GitHub repo for RaukR 2019 can be access
 * **Advanced Statistics**
     + [Presentation](GeneralStats/Presentation_GeneralStats/Presentation_GeneralStats.html)
     + [Lab](GeneralStats/Lab_GeneralStats/Lab_GeneralStats.html)
-* **Machine Learning**
-    + [Presentation](MachineLearning/Presentation_MachineLearning/Presentation_MachineLearning.html)
-    + [Lab](MachineLearning/Lab_MachineLearning/Lab_MachineLearning.html)
 
 #### 18-Jun-2019 (Tue)
+* **Machine Learning** (*Author:* Nikolay Oskolkov)
+    + [Presentation](MachineLearning/Presentation_MachineLearning/Presentation_MachineLearning.html)
+    + [Lab](MachineLearning/Lab_MachineLearning/Lab_MachineLearning.html)
+    
 #### 19-Jun-2019 (Wed)
 #### 20-Jun-2019 (Thu)
 
