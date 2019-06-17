@@ -125,44 +125,44 @@ $$L[\theta|D] \propto Pr[D| \theta]$$
 <details>
 <summary> Extra Reading </summary>
 
-Notice that this notation is not uncommonly mixed up, so you might also see the notation $L[Y|X,\theta]$ for the likelihood.
+Notice that this notation is not uncommonly mixed up, so you might also see the notation $L[D|\theta]$ for the likelihood.
 
-Similarly $\propto Pr[Y|X, \theta]$ is often referred to as the *likelihood function*.
+Similarly $\propto Pr[D|\theta]$ is often referred to as the *likelihood function*.
 
 ***
 </details>
 
-The proportionality (indicated by '$\propto$') means there are some unknown constant factor, $k$, such that $L[\theta|Y,X] = k Pr[Y|X, \theta]$. However, the factor $k$ is assumed to be constant over $\theta$s and over models. 
+The proportionality (indicated by '$\propto$') means there are some unknown constant factor, $k$, such that $L[\theta|D] = k Pr[D|\theta]$. However, the factor $k$ is assumed to be constant over $\theta$s and over models. 
 
 Using a Bayesian perspective, we can see that the proportionality constant $k = \frac{Pr[\theta]}{Pr[D]}$, and that Likelihood would correspond to assuming a uniform prior over all possible values of $\theta$.
 
 
 In practice, the proportionality is ignored and we set
 
-$$L[\theta|Y,X] = Pr[Y|X, \theta]$$
+$$L[\theta|D] = Pr[D|\theta]$$
 
 <details>
 <summary> Extra Reading </summary>
 
 When the likelihood of two $\theta$s (or models) are compared this is almost always done as a _likelihood ratio_, 
 
-$$\frac{L[\theta_1|Y,X]}{L[\theta_0|Y,X]} = \frac{k Pr[Y|X, \theta_1]}{ k  Pr[Y|X, \theta_0]} =\frac{Pr[Y|X, \theta_1]}{ Pr[Y|X, \theta_0]}$$
+$$\frac{L[\theta_1|D]}{L[\theta_0|D]} = \frac{k Pr[D| \theta_1]}{ k  Pr[D| \theta_0]} =\frac{PrD| \theta_1]}{ Pr[D|\theta_0]}$$
 
 which means that the factor $k$ disappears. Hence the factor $k$ is always ignored. Likelihood ratios is the basis of most model comparison statistics, e.g., the Wald test, the Score test, regularization... 
 
 ***
 </details>
 
-In maximum likelihood estimation of some parameters $\theta$, one simply selects the estimates $\widehat\theta$ that gives the highest likelihood, $max_{\theta}L[\theta|X,Y] = L[\widehat\theta|X,Y]$. In many applications of  likelihood and maximum likelihood, it is practical to instead use the logarithm of the likelihood, the logLikelihood, $\log L[\theta_1|Y,X]$.
+In maximum likelihood estimation of some parameters $\theta$, one simply selects the estimates $\widehat\theta$ that gives the highest likelihood, $max_{\theta}L[\theta|D] = L[\widehat\theta|D]$. In many applications of  likelihood and maximum likelihood, it is practical to instead use the logarithm of the likelihood, the logLikelihood, $\log L[\theta_1|D]$.
 
 <details>
 <summary> Extra Reading </summary>
 
-As mentioned above, the logarithm of the likelihood, the logLikelihood, $\log L[\theta_1|Y,X]$, or sometimes the negative logLikelihood, $-\log L[\theta_1|Y,X]$, is often used. Notice, that 
+As mentioned above, the logarithm of the likelihood, the logLikelihood, $\log L[\theta_1|D]$, or sometimes the negative logLikelihood, $-\log L[\theta_1|D]$, is often used. Notice, that 
 
-1. The $\theta$ estimates that maximizes  $\log L[\theta|Y,X]$ also maximizes $L[\theta|Y,X]$
-2. The $\theta$ estimates that minimizes $-\log L[\theta|Y,X]$ maximizes $L[\theta|Y,X]$
-3. A likelihood ratio corresponds to a logLikelihood difference, $$\log\left(\frac{L[\theta_1|Y,X]}{L[\theta_0|Y,X]}\right) = \frac{\log L[\theta_1|Y,X]}{\log L[\theta_0|Y,X]} = \log L[\theta_1|Y,X] - \log L[\theta_0|Y,X]$$.
+1. The $\theta$ estimates that maximizes  $\log L[\theta|D]$ also maximizes $L[\theta|D]$
+2. The $\theta$ estimates that minimizes $-\log L[\theta|D]$ maximizes $L[\theta|D]$
+3. A likelihood ratio corresponds to a logLikelihood difference, $$\log\left(\frac{L[\theta_1|D]}{L[\theta_0|D]}\right) = \frac{\log L[\theta_1|D]}{\log L[\theta_0|D]} = \log L[\theta_1|D] - \log L[\theta_0|D]$$.
 
 ***
 
