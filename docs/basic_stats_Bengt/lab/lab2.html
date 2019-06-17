@@ -377,29 +377,29 @@ Notice that this also works if we have more than one condition:
 <p><span class="math display">\[L[\theta|D] \propto Pr[D| \theta]\]</span></p>
 <details>
 <p><summary> Extra Reading </summary></p>
-<p>Notice that this notation is not uncommonly mixed up, so you might also see the notation <span class="math inline">\(L[Y|X,\theta]\)</span> for the likelihood.</p>
-<p>Similarly <span class="math inline">\(\propto Pr[Y|X, \theta]\)</span> is often referred to as the <em>likelihood function</em>.</p>
+<p>Notice that this notation is not uncommonly mixed up, so you might also see the notation <span class="math inline">\(L[D|\theta]\)</span> for the likelihood.</p>
+<p>Similarly <span class="math inline">\(\propto Pr[D|\theta]\)</span> is often referred to as the <em>likelihood function</em>.</p>
 <hr />
 </details>
-<p>The proportionality (indicated by ‘<span class="math inline">\(\propto\)</span>’) means there are some unknown constant factor, <span class="math inline">\(k\)</span>, such that <span class="math inline">\(L[\theta|Y,X] = k Pr[Y|X, \theta]\)</span>. However, the factor <span class="math inline">\(k\)</span> is assumed to be constant over <span class="math inline">\(\theta\)</span>s and over models.</p>
+<p>The proportionality (indicated by ‘<span class="math inline">\(\propto\)</span>’) means there are some unknown constant factor, <span class="math inline">\(k\)</span>, such that <span class="math inline">\(L[\theta|D] = k Pr[D|\theta]\)</span>. However, the factor <span class="math inline">\(k\)</span> is assumed to be constant over <span class="math inline">\(\theta\)</span>s and over models.</p>
 <p>Using a Bayesian perspective, we can see that the proportionality constant <span class="math inline">\(k = \frac{Pr[\theta]}{Pr[D]}\)</span>, and that Likelihood would correspond to assuming a uniform prior over all possible values of <span class="math inline">\(\theta\)</span>.</p>
 <p>In practice, the proportionality is ignored and we set</p>
-<p><span class="math display">\[L[\theta|Y,X] = Pr[Y|X, \theta]\]</span></p>
+<p><span class="math display">\[L[\theta|D] = Pr[D|\theta]\]</span></p>
 <details>
 <p><summary> Extra Reading </summary></p>
 <p>When the likelihood of two <span class="math inline">\(\theta\)</span>s (or models) are compared this is almost always done as a <em>likelihood ratio</em>,</p>
-<p><span class="math display">\[\frac{L[\theta_1|Y,X]}{L[\theta_0|Y,X]} = \frac{k Pr[Y|X, \theta_1]}{ k  Pr[Y|X, \theta_0]} =\frac{Pr[Y|X, \theta_1]}{ Pr[Y|X, \theta_0]}\]</span></p>
+<p><span class="math display">\[\frac{L[\theta_1|D]}{L[\theta_0|D]} = \frac{k Pr[D| \theta_1]}{ k  Pr[D| \theta_0]} =\frac{PrD| \theta_1]}{ Pr[D|\theta_0]}\]</span></p>
 <p>which means that the factor <span class="math inline">\(k\)</span> disappears. Hence the factor <span class="math inline">\(k\)</span> is always ignored. Likelihood ratios is the basis of most model comparison statistics, e.g., the Wald test, the Score test, regularization…</p>
 <hr />
 </details>
-<p>In maximum likelihood estimation of some parameters <span class="math inline">\(\theta\)</span>, one simply selects the estimates <span class="math inline">\(\widehat\theta\)</span> that gives the highest likelihood, <span class="math inline">\(max_{\theta}L[\theta|X,Y] = L[\widehat\theta|X,Y]\)</span>. In many applications of likelihood and maximum likelihood, it is practical to instead use the logarithm of the likelihood, the logLikelihood, <span class="math inline">\(\log L[\theta_1|Y,X]\)</span>.</p>
+<p>In maximum likelihood estimation of some parameters <span class="math inline">\(\theta\)</span>, one simply selects the estimates <span class="math inline">\(\widehat\theta\)</span> that gives the highest likelihood, <span class="math inline">\(max_{\theta}L[\theta|D] = L[\widehat\theta|D]\)</span>. In many applications of likelihood and maximum likelihood, it is practical to instead use the logarithm of the likelihood, the logLikelihood, <span class="math inline">\(\log L[\theta_1|D]\)</span>.</p>
 <details>
 <p><summary> Extra Reading </summary></p>
-<p>As mentioned above, the logarithm of the likelihood, the logLikelihood, <span class="math inline">\(\log L[\theta_1|Y,X]\)</span>, or sometimes the negative logLikelihood, <span class="math inline">\(-\log L[\theta_1|Y,X]\)</span>, is often used. Notice, that</p>
+<p>As mentioned above, the logarithm of the likelihood, the logLikelihood, <span class="math inline">\(\log L[\theta_1|D]\)</span>, or sometimes the negative logLikelihood, <span class="math inline">\(-\log L[\theta_1|D]\)</span>, is often used. Notice, that</p>
 <ol style="list-style-type: decimal">
-<li>The <span class="math inline">\(\theta\)</span> estimates that maximizes <span class="math inline">\(\log L[\theta|Y,X]\)</span> also maximizes <span class="math inline">\(L[\theta|Y,X]\)</span></li>
-<li>The <span class="math inline">\(\theta\)</span> estimates that minimizes <span class="math inline">\(-\log L[\theta|Y,X]\)</span> maximizes <span class="math inline">\(L[\theta|Y,X]\)</span></li>
-<li>A likelihood ratio corresponds to a logLikelihood difference, <span class="math display">\[\log\left(\frac{L[\theta_1|Y,X]}{L[\theta_0|Y,X]}\right) = \frac{\log L[\theta_1|Y,X]}{\log L[\theta_0|Y,X]} = \log L[\theta_1|Y,X] - \log L[\theta_0|Y,X]\]</span>.</li>
+<li>The <span class="math inline">\(\theta\)</span> estimates that maximizes <span class="math inline">\(\log L[\theta|D]\)</span> also maximizes <span class="math inline">\(L[\theta|D]\)</span></li>
+<li>The <span class="math inline">\(\theta\)</span> estimates that minimizes <span class="math inline">\(-\log L[\theta|D]\)</span> maximizes <span class="math inline">\(L[\theta|D]\)</span></li>
+<li>A likelihood ratio corresponds to a logLikelihood difference, <span class="math display">\[\log\left(\frac{L[\theta_1|D]}{L[\theta_0|D]}\right) = \frac{\log L[\theta_1|D]}{\log L[\theta_0|D]} = \log L[\theta_1|D] - \log L[\theta_0|D]\]</span>.</li>
 </ol>
 <hr />
 </details>
@@ -1488,11 +1488,11 @@ Some possible answers
 ## Running under: macOS High Sierra 10.13.6
 ## 
 ## Matrix products: default
-## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+## BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
 ## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
-## [1] sv_SE.UTF-8/sv_SE.UTF-8/sv_SE.UTF-8/C/sv_SE.UTF-8/sv_SE.UTF-8
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
@@ -1503,21 +1503,24 @@ Some possible answers
 ##  [9] bookdown_0.11    knitr_1.23      
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.1        pillar_1.4.1      compiler_3.5.3   
-##  [4] highr_0.8         iterators_1.0.10  tools_3.5.3      
-##  [7] digest_0.6.19     evaluate_0.14     tibble_2.1.3     
-## [10] lattice_0.20-38   viridisLite_0.3.0 pkgconfig_2.0.2  
-## [13] rlang_0.3.4       rstudioapi_0.10   yaml_2.2.0       
-## [16] xfun_0.7          stringr_1.4.0     httr_1.4.0       
-## [19] xml2_1.2.0        hms_0.4.2         tidyselect_0.2.5 
-## [22] grid_3.5.3        webshot_0.5.1     glue_1.3.1       
-## [25] R6_2.4.0          rmarkdown_1.13    purrr_0.3.2      
-## [28] readr_1.3.1       magrittr_1.5      codetools_0.2-16 
-## [31] scales_1.0.0      htmltools_0.3.6   assertthat_0.2.1 
-## [34] rvest_0.3.4       colorspace_1.4-1  stringi_1.4.3    
-## [37] munsell_0.5.0     crayon_1.3.4</code></pre>
+##  [1] tidyselect_0.2.5  xfun_0.7          purrr_0.3.2      
+##  [4] lattice_0.20-38   colorspace_1.4-1  htmltools_0.3.6  
+##  [7] viridisLite_0.3.0 yaml_2.2.0        rlang_0.3.4      
+## [10] pillar_1.4.1      later_0.8.0       glue_1.3.1       
+## [13] stringr_1.4.0     munsell_0.5.0     rvest_0.3.4      
+## [16] codetools_0.2-16  evaluate_0.14     httpuv_1.5.1     
+## [19] highr_0.8         Rcpp_1.0.1        readr_1.3.1      
+## [22] scales_1.0.0      promises_1.0.1    webshot_0.5.1    
+## [25] jsonlite_1.6      mime_0.6          servr_0.13       
+## [28] hms_0.4.2         packrat_0.5.0     digest_0.6.19    
+## [31] stringi_1.4.3     xaringan_0.10     grid_3.5.3       
+## [34] tools_3.5.3       magrittr_1.5      tibble_2.1.3     
+## [37] crayon_1.3.4      pkgconfig_2.0.2   xml2_1.2.0       
+## [40] assertthat_0.2.1  rmarkdown_1.13    httr_1.4.0       
+## [43] rstudioapi_0.10   iterators_1.0.10  R6_2.4.0         
+## [46] compiler_3.5.3</code></pre>
 <p style="text-align: left; font-size: small;">
-Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 14-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 14:22:16.
+Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 16-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 22:42:47.
 </p>
 <hr/>
 <div style="padding-bottom: 1.5em">
