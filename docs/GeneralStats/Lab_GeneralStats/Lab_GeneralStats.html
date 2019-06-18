@@ -663,7 +663,11 @@ summary(lm(Y~X))</code></pre>
 <p><span class="math display">\[Au = \lambda u\]</span></p>
 <p>where A is the variance-covariance matrix of the initial data X.</p>
 <p>Let us demonstrate how PCA works using the MNIST data set [2]. The MNIST database (Modified National Institute of Standards and Technology database) is a large database of handwritten digits that is commonly used for training various image processing systems.</p>
-<pre class="r"><code>mnist&lt;-read.csv(&quot;/home/nikolay/Documents/Teaching/RaukR/2017-10-13-mnist_train.csv&quot;)
+<pre class="r"><code># NB! Before performing this code;
+# Download data using the link &#39;Data&#39; under Advanced Statistics on
+# https://github.com/NBISweden/RaukR-2019/blob/master/docs/index.md 
+# Then change the path below to where you downloaded the &#39;Data&#39; file
+mnist&lt;-read.csv(&quot;Data/2017-10-13-mnist_train.csv&quot;) 
 labels&lt;-mnist$label
 mnist$label&lt;-NULL
 mnist[1:10,1:10]
@@ -728,29 +732,29 @@ text(tsne.out$Y, labels = labels, col = colors[as.character(labels)], cex = 0.5)
 ## Computing input similarities...
 ## Building tree...
 ##  - point 10000 of 10000
-## Done in 5.38 seconds (sparsity = 0.011811)!
+## Done in 3.71 seconds (sparsity = 0.011811)!
 ## Learning embedding...
-## Iteration 50: error is 97.884243 (50 iterations in 2.12 seconds)
-## Iteration 100: error is 88.610422 (50 iterations in 2.41 seconds)
-## Iteration 150: error is 84.694789 (50 iterations in 2.14 seconds)
-## Iteration 200: error is 84.152254 (50 iterations in 2.13 seconds)
-## Iteration 250: error is 84.013859 (50 iterations in 2.17 seconds)
-## Iteration 300: error is 3.084129 (50 iterations in 2.03 seconds)
-## Iteration 350: error is 2.668967 (50 iterations in 1.90 seconds)
-## Iteration 400: error is 2.446272 (50 iterations in 1.91 seconds)
-## Iteration 450: error is 2.299339 (50 iterations in 1.91 seconds)
-## Iteration 500: error is 2.195407 (50 iterations in 1.89 seconds)
-## Iteration 550: error is 2.116715 (50 iterations in 1.93 seconds)
-## Iteration 600: error is 2.055204 (50 iterations in 1.94 seconds)
-## Iteration 650: error is 2.006747 (50 iterations in 1.94 seconds)
-## Iteration 700: error is 1.968076 (50 iterations in 1.93 seconds)
-## Iteration 750: error is 1.938544 (50 iterations in 1.96 seconds)
-## Iteration 800: error is 1.916364 (50 iterations in 1.98 seconds)
-## Iteration 850: error is 1.900569 (50 iterations in 1.97 seconds)
-## Iteration 900: error is 1.889160 (50 iterations in 1.96 seconds)
-## Iteration 950: error is 1.880252 (50 iterations in 2.03 seconds)
-## Iteration 1000: error is 1.871919 (50 iterations in 2.04 seconds)
-## Fitting performed in 40.30 seconds.</code></pre>
+## Iteration 50: error is 97.884243 (50 iterations in 1.82 seconds)
+## Iteration 100: error is 88.610422 (50 iterations in 1.99 seconds)
+## Iteration 150: error is 84.694759 (50 iterations in 1.80 seconds)
+## Iteration 200: error is 84.151973 (50 iterations in 1.85 seconds)
+## Iteration 250: error is 84.013703 (50 iterations in 1.87 seconds)
+## Iteration 300: error is 3.087292 (50 iterations in 1.74 seconds)
+## Iteration 350: error is 2.673824 (50 iterations in 1.65 seconds)
+## Iteration 400: error is 2.448611 (50 iterations in 1.66 seconds)
+## Iteration 450: error is 2.302975 (50 iterations in 1.70 seconds)
+## Iteration 500: error is 2.199284 (50 iterations in 1.72 seconds)
+## Iteration 550: error is 2.120491 (50 iterations in 1.71 seconds)
+## Iteration 600: error is 2.058767 (50 iterations in 1.72 seconds)
+## Iteration 650: error is 2.009280 (50 iterations in 1.74 seconds)
+## Iteration 700: error is 1.969873 (50 iterations in 1.72 seconds)
+## Iteration 750: error is 1.938684 (50 iterations in 1.76 seconds)
+## Iteration 800: error is 1.914119 (50 iterations in 1.76 seconds)
+## Iteration 850: error is 1.895928 (50 iterations in 1.77 seconds)
+## Iteration 900: error is 1.884434 (50 iterations in 1.77 seconds)
+## Iteration 950: error is 1.875729 (50 iterations in 1.80 seconds)
+## Iteration 1000: error is 1.867896 (50 iterations in 1.78 seconds)
+## Fitting performed in 35.32 seconds.</code></pre>
 <p><img src="Lab_GeneralStats_files/figure-html/tSNE-1.svg" width="960" style="display: block; margin: auto auto auto 0;" /></p>
 <p>It is obvious that the clouds of different digits look more distinct now compared to the linear Dimensionality Reduction representations. Thus tSNE is handy when it concerns non-linear relations between data points which can not be captured by PCA or MDS. One caution is important to remember: due to its highly non-linear nature, the visual distances at the tSNE plot do not necessarily reflect the true distances in the high-dimensional space. In other words, it is hard to say with certanty how far or how close two clusters on the tSNE plot are since tSNE distances do not have a trivial meaning. Another consequence of the non-linear transformation is that the features that drive the clustering on the tSNE plot are not easy to extract since we are not doing any linear matrix decomposition as with e.g. PCA.</p>
 </div>
@@ -857,8 +861,8 @@ lasso_fit &lt;- cv.glmnet(as.matrix(X), Y, family=&quot;binomial&quot;, alpha=1)
 plot(lasso_fit)
 lasso_fit$lambda.min
 log(lasso_fit$lambda.min)</code></pre>
-<pre><code>## [1] 0.03008887
-## [1] -3.5036</code></pre>
+<pre><code>## [1] 0.03624215
+## [1] -3.317532</code></pre>
 <p><img src="Lab_GeneralStats_files/figure-html/LASSO-1.svg" width="960" style="display: block; margin: auto auto auto 0;" /></p>
 <p>Once we know the optimal <span class="math inline">\(\lambda\)</span>, we can display the names of the most informative features selected by LASSO for that optimal <span class="math inline">\(\lambda\)</span>.</p>
 <pre class="r"><code>coef&lt;-predict(lasso_fit, s = &quot;lambda.min&quot;, type = &quot;nonzero&quot;)
@@ -867,29 +871,26 @@ colnames(X)[unlist(coef)]</code></pre>
 ##  [3] &quot;ENSG00000244306.5_CTD-2314B22.3&quot;  &quot;ENSG00000135541.16_AHI1&quot;         
 ##  [5] &quot;ENSG00000151023.12_ENKUR&quot;         &quot;ENSG00000257647.1_RP11-701H24.3&quot; 
 ##  [7] &quot;ENSG00000184949.10_FAM227A&quot;       &quot;ENSG00000261529.1_RP13-487P22.1&quot; 
-##  [9] &quot;ENSG00000234336.2_JAZF1-AS1&quot;      &quot;ENSG00000198954.4_KIAA1279&quot;      
-## [11] &quot;ENSG00000109943.4_CRTAM&quot;          &quot;ENSG00000144677.10_CTDSPL&quot;       
-## [13] &quot;ENSG00000198729.4_PPP1R14C&quot;       &quot;ENSG00000187239.12_FNBP1&quot;        
-## [15] &quot;ENSG00000203836.7_NBPF24&quot;         &quot;ENSG00000250240.1_CTD-2154I11.2&quot; 
-## [17] &quot;ENSG00000233012.2_HDAC1P2&quot;        &quot;ENSG00000016602.8_CLCA4&quot;         
-## [19] &quot;ENSG00000136279.14_DBNL&quot;          &quot;ENSG00000162512.11_SDC3&quot;         
-## [21] &quot;ENSG00000124749.12_COL21A1&quot;       &quot;ENSG00000254510.1_RP11-867G23.10&quot;
-## [23] &quot;ENSG00000155761.9_SPAG17&quot;         &quot;ENSG00000130300.4_PLVAP&quot;         
-## [25] &quot;ENSG00000184368.11_MAP7D2&quot;        &quot;ENSG00000267834.1_RP11-167N5.5&quot;  
-## [27] &quot;ENSG00000168566.11_SNRNP48&quot;       &quot;ENSG00000128487.12_SPECC1&quot;       
-## [29] &quot;ENSG00000230267.2_HERC2P4&quot;        &quot;ENSG00000110013.8_SIAE&quot;          
-## [31] &quot;ENSG00000113312.6_TTC1&quot;           &quot;ENSG00000227407.1_AC008746.3&quot;    
-## [33] &quot;ENSG00000271964.1_RP11-415F23.2&quot;  &quot;ENSG00000261064.1_RP11-1000B6.3&quot; 
-## [35] &quot;ENSG00000207697.1_MIR573&quot;         &quot;ENSG00000182742.5_HOXB4&quot;         
-## [37] &quot;ENSG00000140391.10_TSPAN3&quot;        &quot;ENSG00000161847.9_RAVER1&quot;        
-## [39] &quot;ENSG00000172766.14_NAA16&quot;         &quot;ENSG00000152766.5_ANKRD22&quot;</code></pre>
-<p>We can see that LASSO selected 40 most informative features and set the coefficients in front of the other features to zero. Finally, let us use LASSO scoring system for ranking of selected features by their importance:</p>
+##  [9] &quot;ENSG00000234336.2_JAZF1-AS1&quot;      &quot;ENSG00000144677.10_CTDSPL&quot;       
+## [11] &quot;ENSG00000198729.4_PPP1R14C&quot;       &quot;ENSG00000203836.7_NBPF24&quot;        
+## [13] &quot;ENSG00000250240.1_CTD-2154I11.2&quot;  &quot;ENSG00000153904.14_DDAH1&quot;        
+## [15] &quot;ENSG00000016602.8_CLCA4&quot;          &quot;ENSG00000136279.14_DBNL&quot;         
+## [17] &quot;ENSG00000162512.11_SDC3&quot;          &quot;ENSG00000124749.12_COL21A1&quot;      
+## [19] &quot;ENSG00000254510.1_RP11-867G23.10&quot; &quot;ENSG00000130300.4_PLVAP&quot;         
+## [21] &quot;ENSG00000184368.11_MAP7D2&quot;        &quot;ENSG00000267834.1_RP11-167N5.5&quot;  
+## [23] &quot;ENSG00000168566.11_SNRNP48&quot;       &quot;ENSG00000128487.12_SPECC1&quot;       
+## [25] &quot;ENSG00000110013.8_SIAE&quot;           &quot;ENSG00000113312.6_TTC1&quot;          
+## [27] &quot;ENSG00000227407.1_AC008746.3&quot;     &quot;ENSG00000271964.1_RP11-415F23.2&quot; 
+## [29] &quot;ENSG00000207697.1_MIR573&quot;         &quot;ENSG00000182742.5_HOXB4&quot;         
+## [31] &quot;ENSG00000140391.10_TSPAN3&quot;        &quot;ENSG00000161847.9_RAVER1&quot;        
+## [33] &quot;ENSG00000172766.14_NAA16&quot;         &quot;ENSG00000152766.5_ANKRD22&quot;</code></pre>
+<p>We can see that LASSO selected 34 most informative features and set the coefficients in front of the other features to zero. Finally, let us use LASSO scoring system for ranking of selected features by their importance:</p>
 <pre class="r"><code>result&lt;-data.frame(GENE = names(as.matrix(coef(lasso_fit, s = &quot;lambda.min&quot;))[as.matrix(coef(lasso_fit, s = &quot;lambda.min&quot;))[,1]!=0, 1])[-1], SCORE = as.numeric(as.matrix(coef(lasso_fit, s = &quot;lambda.min&quot;))[as.matrix(coef(lasso_fit, s = &quot;lambda.min&quot;))[,1]!=0, 1])[-1])
 result&lt;-result[order(-abs(result$SCORE)),]
 head(result,10)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["GENE"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["SCORE"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"ENSG00000254510.1_RP11-867G23.10","2":"-0.05715689","_rn_":"22"},{"1":"ENSG00000227407.1_AC008746.3","2":"-0.03660998","_rn_":"32"},{"1":"ENSG00000184368.11_MAP7D2","2":"-0.03376858","_rn_":"25"},{"1":"ENSG00000151023.12_ENKUR","2":"0.03027998","_rn_":"5"},{"1":"ENSG00000267834.1_RP11-167N5.5","2":"-0.02619840","_rn_":"26"},{"1":"ENSG00000152766.5_ANKRD22","2":"-0.02486524","_rn_":"40"},{"1":"ENSG00000233012.2_HDAC1P2","2":"-0.02280388","_rn_":"17"},{"1":"ENSG00000129007.10_CALML4","2":"0.02133383","_rn_":"2"},{"1":"ENSG00000183808.7_RBM12B","2":"-0.02117233","_rn_":"1"},{"1":"ENSG00000207697.1_MIR573","2":"-0.02056845","_rn_":"35"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["GENE"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["SCORE"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"ENSG00000254510.1_RP11-867G23.10","2":"-0.04124318","_rn_":"19"},{"1":"ENSG00000184368.11_MAP7D2","2":"-0.03108179","_rn_":"21"},{"1":"ENSG00000267834.1_RP11-167N5.5","2":"-0.02334456","_rn_":"22"},{"1":"ENSG00000227407.1_AC008746.3","2":"-0.02096731","_rn_":"27"},{"1":"ENSG00000152766.5_ANKRD22","2":"-0.01926631","_rn_":"34"},{"1":"ENSG00000129007.10_CALML4","2":"0.01889021","_rn_":"2"},{"1":"ENSG00000183808.7_RBM12B","2":"-0.01789051","_rn_":"1"},{"1":"ENSG00000151023.12_ENKUR","2":"0.01598639","_rn_":"5"},{"1":"ENSG00000016602.8_CLCA4","2":"-0.01239232","_rn_":"15"},{"1":"ENSG00000261529.1_RP13-487P22.1","2":"-0.01224265","_rn_":"8"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>We conclude that the features selected by Multivariate Feature Selection approach do not look quite similar to the ones selected by Univariate Feature Selection in the previous section, this is generally the case in practice and it is good to remember that the features selected in Multivariate fashion have proven to have much higher modelling/predictive capacity.</p>
@@ -920,65 +921,60 @@ Nature Genetics. 29 May 2013. 45(6):580-5.</p>
 </div>
 <div id="session-info" class="section level1">
 <h1><span class="header-section-number">14</span> Session info</h1>
-<pre><code>## R version 3.6.0 (2019-04-26)
-## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 14.04.6 LTS
+<pre><code>## R version 3.5.3 (2019-03-11)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS High Sierra 10.13.6
 ## 
 ## Matrix products: default
-## BLAS:   /usr/local/lib/R/lib/libRblas.so
-## LAPACK: /usr/local/lib/R/lib/libRlapack.so
+## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
-##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-##  [3] LC_TIME=sv_SE.UTF-8        LC_COLLATE=en_US.UTF-8    
-##  [5] LC_MONETARY=sv_SE.UTF-8    LC_MESSAGES=en_US.UTF-8   
-##  [7] LC_PAPER=sv_SE.UTF-8       LC_NAME=C                 
-##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-## [11] LC_MEASUREMENT=sv_SE.UTF-8 LC_IDENTIFICATION=C       
+## [1] sv_SE.UTF-8/sv_SE.UTF-8/sv_SE.UTF-8/C/sv_SE.UTF-8/sv_SE.UTF-8
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] glmnet_2.0-18   foreach_1.4.4   mixOmics_6.8.0  lattice_0.20-38
+##  [1] glmnet_2.0-18   foreach_1.4.4   mixOmics_6.6.2  lattice_0.20-38
 ##  [5] Rtsne_0.15      brms_2.9.0      Rcpp_1.0.1      arm_1.10-1     
 ##  [9] MASS_7.3-51.4   ggplot2_3.1.1   lme4_1.1-21     Matrix_1.2-17  
 ## [13] captioner_2.2.3 bookdown_0.11   knitr_1.23     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] nlme_3.1-139         matrixStats_0.54.0   xts_0.11-2          
+##  [1] nlme_3.1-140         matrixStats_0.54.0   xts_0.11-2          
 ##  [4] RColorBrewer_1.1-2   threejs_0.3.1        rstan_2.18.2        
-##  [7] tools_3.6.0          backports_1.1.4      R6_2.4.0            
-## [10] DT_0.7               lazyeval_0.2.2       colorspace_1.4-1    
+##  [7] tools_3.5.3          backports_1.1.4      R6_2.4.0            
+## [10] DT_0.6               lazyeval_0.2.2       colorspace_1.4-1    
 ## [13] withr_2.1.2          tidyselect_0.2.5     gridExtra_2.3       
 ## [16] prettyunits_1.0.2    processx_3.3.1       Brobdingnag_1.2-6   
-## [19] compiler_3.6.0       cli_1.1.0            shinyjs_1.0         
+## [19] compiler_3.5.3       cli_1.1.0            shinyjs_1.0         
 ## [22] labeling_0.3         colourpicker_1.0     scales_1.0.0        
 ## [25] dygraphs_1.1.1.6     mvtnorm_1.0-10       ggridges_0.5.1      
 ## [28] callr_3.2.0          stringr_1.4.0        digest_0.6.19       
 ## [31] StanHeaders_2.18.1   minqa_1.2.4          rmarkdown_1.13      
 ## [34] base64enc_0.1-3      pkgconfig_2.0.2      htmltools_0.3.6     
-## [37] htmlwidgets_1.3      rlang_0.3.4          shiny_1.0.5         
+## [37] htmlwidgets_1.3      rlang_0.3.4          shiny_1.3.2         
 ## [40] zoo_1.8-6            jsonlite_1.6         crosstalk_1.0.0     
 ## [43] gtools_3.8.1         dplyr_0.8.1          inline_0.3.15       
 ## [46] magrittr_1.5         loo_2.1.0            bayesplot_1.7.0     
 ## [49] munsell_0.5.0        abind_1.4-5          stringi_1.4.3       
 ## [52] yaml_2.2.0           pkgbuild_1.0.3       plyr_1.8.4          
-## [55] grid_3.6.0           parallel_3.6.0       promises_1.0.1      
-## [58] crayon_1.3.4         miniUI_0.1.1.1       splines_3.6.0       
+## [55] grid_3.5.3           parallel_3.5.3       promises_1.0.1      
+## [58] crayon_1.3.4         miniUI_0.1.1.1       splines_3.5.3       
 ## [61] ps_1.3.0             pillar_1.4.1         igraph_1.2.4.1      
 ## [64] boot_1.3-22          markdown_1.0         corpcor_1.6.9       
 ## [67] shinystan_2.5.0      codetools_0.2-16     reshape2_1.4.3      
-## [70] stats4_3.6.0         rstantools_1.5.1     glue_1.3.1          
+## [70] stats4_3.5.3         rstantools_1.5.1     glue_1.3.1          
 ## [73] evaluate_0.14        nloptr_1.2.1         httpuv_1.5.1        
-## [76] tidyr_0.8.3          gtable_0.2.0         purrr_0.3.2         
-## [79] assertthat_0.2.1     xfun_0.7             mime_0.7            
-## [82] xtable_1.8-2         RSpectra_0.15-0      coda_0.19-2         
+## [76] tidyr_0.8.3          gtable_0.3.0         purrr_0.3.2         
+## [79] assertthat_0.2.1     xfun_0.7             mime_0.6            
+## [82] xtable_1.8-4         RSpectra_0.14-0      coda_0.19-2         
 ## [85] later_0.8.0          rsconnect_0.8.13     rARPACK_0.11-0      
-## [88] tibble_2.1.3         iterators_1.0.9      shinythemes_1.1.2   
+## [88] tibble_2.1.3         iterators_1.0.10     shinythemes_1.1.2   
 ## [91] ellipse_0.4.1        bridgesampling_0.6-0</code></pre>
 <p style="text-align: left; font-size: small;">
-Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 15-jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 21:24:35.
+Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 18-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 09:44:34.
 </p>
 <hr/>
 <div style="padding-bottom: 1.5em">

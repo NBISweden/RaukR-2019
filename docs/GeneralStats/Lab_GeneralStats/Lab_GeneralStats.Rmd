@@ -337,7 +337,7 @@ Let us demonstrate how PCA works using the MNIST data set [2]. The MNIST databas
 # Download data using the link 'Data' under Advanced Statistics on
 # https://github.com/NBISweden/RaukR-2019/blob/master/docs/index.md 
 # Then change the path below to where you downloaded the 'Data' file
-mnist<-read.csv("/home/nikolay/Documents/Teaching/RaukR/2017-10-13-mnist_train.csv")
+mnist<-read.csv("Data/2017-10-13-mnist_train.csv") 
 labels<-mnist$label
 mnist$label<-NULL
 mnist[1:10,1:10]
