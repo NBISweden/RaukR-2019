@@ -57,12 +57,12 @@ Course materials are listed below. (The GitHub repo for RaukR 2019 can be access
 * **Advanced Statistics**
     + [Presentation](GeneralStats/Presentation_GeneralStats/Presentation_GeneralStats.html)
     + [Lab](GeneralStats/Lab_GeneralStats/Lab_GeneralStats.html)
-    + [Data](GeneralStats/Lab_GeneralStats/Data/2017-10-13-mnist_train.csv)
+    + [Data](GeneralStats/Lab_GeneralStats/Data/2017-10-13-mnist_train.csv) *(right-click/ctrl-click and choose download)*
     
 #### 18-Jun-2019 (Tue)
 * **Machine Learning** (*Author:* Nikolay Oskolkov)
     + [Presentation](MachineLearning/Presentation_MachineLearning/Presentation_MachineLearning.html)
-    + [Lab](MachineLearning/Lab_MachineLearning/Lab_MachineLearning.html) *(right-click/ctrl-click and choose download)*
+    + [Lab](MachineLearning/Lab_MachineLearning/Lab_MachineLearning.html) 
     
 #### 19-Jun-2019 (Wed)
 #### 20-Jun-2019 (Thu)
