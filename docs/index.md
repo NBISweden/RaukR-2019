@@ -62,7 +62,7 @@ Course materials are listed below. (The GitHub repo for RaukR 2019 can be access
 #### 18-Jun-2019 (Tue)
 * **Machine Learning** (*Author:* Nikolay Oskolkov)
     + [Presentation](MachineLearning/Presentation_MachineLearning/Presentation_MachineLearning.html)
-    + [Lab](MachineLearning/Lab_MachineLearning/Lab_MachineLearning.html)
+    + [Lab](MachineLearning/Lab_MachineLearning/Lab_MachineLearning.html) *(right-click/ctrl-click and choose download)*
     
 #### 19-Jun-2019 (Wed)
 #### 20-Jun-2019 (Thu)
