@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Marcin Kierczak &amp; Sebastian DiLorenzo" />
+
+
+<title>Exploring data</title>
+
+<script src="exploring_data_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="exploring_data_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="exploring_data_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="exploring_data_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="exploring_data_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="exploring_data_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="exploring_data_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="exploring_data_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="exploring_data_files/navigation-1.1/tabsets.js"></script>
+<link href="exploring_data_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="exploring_data_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="exploring_data_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="exploring_data_files/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="exploring_data_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="exploring_data_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="exploring_data_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Exploring data</h1>
+<h3 class="subtitle">RaukR, 2019.</h3>
+<h4 class="author">Marcin Kierczak &amp; Sebastian DiLorenzo</h4>
+<h4 class="date">18-Jun-2019</h4>
+
+</div>
+
+
+<p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<p><img src="assets/logo.svg" alt="logo_raukr" class="trlogo"></p>
+<hr />
+<p class="abstract">
+The main goal of the group project is to use several tools that you have aquired during RaukR.
+</p>
+<hr />
+<div id="datasets" class="section level1">
+<h1><span class="header-section-number">1</span> Datasets</h1>
+<p>The three datasets supplied by RaukR can be installed using:</p>
+<p><code>devtools::install_github("Sebastian-D/ExploreData")</code></p>
+<p>Visit the github page, <a href="https://github.com/Sebastian-D/ExploreData" class="uri">https://github.com/Sebastian-D/ExploreData</a>, for more information on the datasets.</p>
+</div>
+<div id="task" class="section level1">
+<h1><span class="header-section-number">2</span> Task</h1>
+<p>Work in groups on a dataset, either one of your own or one given supplied by RaukR.
+During the project you should:</p>
+<ul>
+<li>Use <strong>Rstudio</strong></li>
+<li>Create a <code>R package</code> and/or a <code>shiny app</code> with functions applicable to your dataset.</li>
+<li>Collaborate using <strong>github</strong>. One person with main repo that the others fork.</li>
+<li>Visualize the data with <code>ggplot2</code> or similar extended functionality plotting packages.</li>
+<li>When appropriate, use <code>tidyverse</code>functions to tidy or massage the data.</li>
+<li>Use <strong>Best Coding Practices</strong> generally on your code.</li>
+<li><strong>Benchmark</strong> some function. If possible; improve and benchmark again.</li>
+<li>Perform some <strong>statistical test</strong> and/or <strong>machine learning</strong> on the data.</li>
+</ul>
+<p>While not all of these are mandatory, attempt to use many of the things you have learned. You are of course free to use any and all of the concepts taught during the course.</p>
+</div>
+<div id="presentation" class="section level1">
+<h1><span class="header-section-number">3</span> Presentation</h1>
+<p>Each group will have 10 minutes to present followed by 5 minutes for questions. Generate the presentation using <strong>Rmarkdown</strong> and any other presentation specific R packages that you wish (for example <code>xaringan</code>).</p>
+<p class="larger">
+Good luck!
+</p>
+</div>
+<div id="session-info" class="section level1">
+<h1><span class="header-section-number">4</span> Session info</h1>
+<pre><code>## R version 3.6.0 (2019-04-26)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS Mojave 10.14.5
+## 
+## Matrix products: default
+## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+## 
+## Random number generation:
+##  RNG:     Mersenne-Twister 
+##  Normal:  Inversion 
+##  Sample:  Rounding 
+##  
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] mlbench_2.1-1   captioner_2.2.3 shiny_1.3.2     ggmap_3.0.0    
+##  [5] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.1     purrr_0.3.2    
+##  [9] readr_1.3.1     tidyr_0.8.3     tibble_2.1.2    ggplot2_3.1.1  
+## [13] tidyverse_1.2.1 bookdown_0.11   knitr_1.23     
+## 
+## loaded via a namespace (and not attached):
+##  [1] tidyselect_0.2.5  xfun_0.7          haven_2.1.0      
+##  [4] lattice_0.20-38   colorspace_1.4-1  generics_0.0.2   
+##  [7] htmltools_0.3.6   yaml_2.2.0        rlang_0.3.4      
+## [10] later_0.8.0       pillar_1.4.1      glue_1.3.1       
+## [13] withr_2.1.2       modelr_0.1.4      readxl_1.3.1     
+## [16] jpeg_0.1-8        plyr_1.8.4        munsell_0.5.0    
+## [19] gtable_0.3.0      cellranger_1.1.0  rvest_0.3.4      
+## [22] RgoogleMaps_1.4.3 evaluate_0.14     labeling_0.3     
+## [25] httpuv_1.5.1      broom_0.5.2       Rcpp_1.0.1       
+## [28] xtable_1.8-4      promises_1.0.1    scales_1.0.0     
+## [31] backports_1.1.4   jsonlite_1.6      mime_0.6         
+## [34] servr_0.13        rjson_0.2.20      hms_0.4.2        
+## [37] png_0.1-7         digest_0.6.19     stringi_1.4.3    
+## [40] xaringan_0.10.1   grid_3.6.0        bitops_1.0-6     
+## [43] cli_1.1.0         tools_3.6.0       magrittr_1.5     
+## [46] lazyeval_0.2.2    crayon_1.3.4      pkgconfig_2.0.2  
+## [49] xml2_1.2.0        lubridate_1.7.4   assertthat_0.2.1 
+## [52] rmarkdown_1.13    httr_1.4.0        rstudioapi_0.10  
+## [55] R6_2.4.0          nlme_3.1-140      compiler_3.6.0</code></pre>
+<p style="text-align: left; font-size: small;">
+Built on: <i class="fa fa-calendar" aria-hidden="true"></i> 18-Jun-2019 at <i class="fa fa-clock-o" aria-hidden="true"></i> 15:34:26.
+</p>
+<hr/>
+<div style="padding-bottom: 1.5em">
+<p><span style="float:left; vertical-align:middle">
+<b>2019</b> • <a href="https://www.scilifelab.se/">SciLifeLab</a> • <a href="https://nbis.se/">NBIS</a> • <a href="https://nbisweden.github.io/workshop-RaukR-1906/">RaukR</a>
+</span>
+<span style="float:right; vertical-align:middle">
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://nbisweden.github.io/workshop-RaukR-1806/"><img src="assets/icons8-globe-26.png" alt="website" border="0" style="height:15px"></a>
+</span>
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://twitter.com/hashtag/RaukR?src=hash"><img src="assets/icons8-twitter-26.png" alt="twitter" border="0" style="height:15px"></a>
+</span>
+</span></p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

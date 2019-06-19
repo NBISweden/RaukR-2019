@@ -65,6 +65,9 @@ Course materials are listed below. (The GitHub repo for RaukR 2019 can be access
     + [Lab](MachineLearning/Lab_MachineLearning/Lab_MachineLearning.html) 
     
 #### 19-Jun-2019 (Wed)
+* **Group Project** -- Exploring Data (*Authors:* Sebastian DiLorenzo & Marcin Kierczak)
+    + [Instructions](exploring_data/exploring_data.html)
+
 #### 20-Jun-2019 (Thu)
 
 ---
