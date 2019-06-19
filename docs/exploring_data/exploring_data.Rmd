@@ -50,23 +50,23 @@ Visit the github page, https://github.com/Sebastian-D/ExploreData, for more info
 
 # Task
 
-Work in groups on a dataset, either one of your own or one given supplied by RaukR.
+Work in groups on a dataset, either one of your own or one supplied by RaukR.
 During the project you should:
 
-* Use **Rstudio**
+* Use **Rstudio**.
 * Create a `R package` and/or a `shiny app` with functions applicable to your dataset.
-* Collaborate using **github**. One person with main repo that the others fork.
+* Collaborate using **github**. For example one person with main repo that the others fork.
 * Visualize the data with `ggplot2` or similar extended functionality plotting packages.
 * When appropriate, use `tidyverse`functions to tidy or massage the data.
 * Use **Best Coding Practices** generally on your code.
 * **Benchmark** some function. If possible; improve and benchmark again.
 * Perform some **statistical test** and/or **machine learning** on the data.
 
-While not all of these are mandatory, attempt to use many of the things you have learned. You are of course free to use any and all of the concepts taught during the course.
+While these are suggestions, and not mandatory, do attempt to use many of the things you have learned. You are of course free to use any and all of the concepts taught during the course.
 
 # Presentation
 
-Each group will have 10 minutes to present followed by 5 minutes for questions. Generate the presentation using **Rmarkdown** and any other presentation specific R packages that you wish (for example `xaringan`).
+Each group will have 10 minutes to present on **Thursday morning** followed by 5 minutes for questions. Generate the presentation using **Rmarkdown** and any other presentation specific R packages that you wish (for example `xaringan`).
 
 <p class="larger">
 Good luck!
