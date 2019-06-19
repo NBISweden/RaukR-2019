@@ -3,6 +3,11 @@
 Course materials are listed below. (The GitHub repo for RaukR 2019 can be accessed by teachers [here](https://github.com/NBISweden/RaukR-2019).)
 
 ---
+
+#### Link to Jennys Bryan, RStudio, lectures
+
+http://rstd.io/raukr
+
 ### Week 1
 #### 10-Jun-2019 (Mon)
 
