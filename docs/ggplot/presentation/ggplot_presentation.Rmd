@@ -4,7 +4,7 @@ subtitle: "RaukR 2019 • Advanced R for Bioinformatics"
 author: "<b>Roy Francis</b>"
 institute: NBIS, SciLifeLab
 keywords: r, RaukR, markdown, ggplot, graphics
-output: 
+output:
   xaringan::moon_reader:
     encoding: 'UTF-8'
     self_contained: false
@@ -65,7 +65,7 @@ rv_col_light <- "#e7eef3"
 
 ---
 name: intro
-class: spaced 
+class: spaced
 
 ## Why `ggplot2`?
 
@@ -318,8 +318,8 @@ iris %>% head(n=3) %>%
 **Long**
 
 ```{r,echo=FALSE}
-iris %>% 
-  gather(key=variable,value=value,-Species) %>% 
+iris %>%
+  gather(key=variable,value=value,-Species) %>%
   head(n=3) %>%
   kable("html",escape=F,align="c") %>%
   kable_styling(bootstrap_options=c("striped","hover","responsive","condensed"),
@@ -463,11 +463,11 @@ name: aes-2
 ## Aesthetics
 
 ```{r,echo=TRUE,fig.height=4,fig.width=8}
-x1 <- ggplot(iris) + 
+x1 <- ggplot(iris) +
   geom_point(aes(x=Sepal.Length,y=Sepal.Width))+
   stat_smooth(aes(x=Sepal.Length,y=Sepal.Width))
 
-x2 <- ggplot(iris,aes(x=Sepal.Length,y=Sepal.Width))+ 
+x2 <- ggplot(iris,aes(x=Sepal.Length,y=Sepal.Width))+
                       geom_point() + geom_smooth()
 
 grid.arrange(x1,x2,nrow=1,ncol=2)
@@ -512,7 +512,7 @@ ggplot(iris,aes(x=Sepal.Length,y=Sepal.Width))+
       geom_point()+
 ```
 
-Each geom takes input from `ggplot()` inputs. If extra input is required to a geom, it can be specified additionally inside `aes()`. 
+Each geom takes input from `ggplot()` inputs. If extra input is required to a geom, it can be specified additionally inside `aes()`.
 
 `data` can be changed if needed for specific geoms.
 
@@ -573,12 +573,12 @@ p
 
 .pull-right-50[
 ```{r,fig.height=4,fig.width=5}
-p + 
+p +
 scale_color_gradient(name="Pet Len",
   breaks=range(iris$Petal.Length),
   labels=c("Min","Max"),
   low="black",high="red")
-              
+
 ```
 ]
 
@@ -605,11 +605,11 @@ p
 
 .pull-right-50[
 ```{r,fig.height=4,fig.width=5}
-p + 
+p +
 scale_color_manual(name="New",
    values=c("blue","green","red"))+
 scale_shape_manual(name="Bla",values=c(0,1,2))
-              
+
 ```
 ]
 
@@ -688,7 +688,7 @@ p + facet_wrap(~Species,nrow=3)
 
 ???
 
-`facet_wrap` is used to split a plot into subplots based on the categories in one or more variables. 
+`facet_wrap` is used to split a plot into subplots based on the categories in one or more variables.
 
 ---
 name: facet-grid
@@ -1091,7 +1091,7 @@ class: spaced
 * [**ggraph**](https://github.com/thomasp85/ggraph): Network graphs  
 * [**ggiraph**](http://davidgohel.github.io/ggiraph/): Converting ggplot2 to interactive graphics  
 
-A collection of ggplot extension packages: <https://www.ggplot2-exts.org/>.
+A collection of ggplot extension packages: [https://exts.ggplot2.tidyverse.org/](https://exts.ggplot2.tidyverse.org/).
 
 ---
 name: help
